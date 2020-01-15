@@ -29,6 +29,11 @@ const navList = [
         text: "Books",
         icon: "menu_book",
         link: "/books"
+    },
+    {
+        text: "Post",
+        icon: "library_add",
+        link: "/post"
     }
 ];
 
@@ -66,7 +71,9 @@ const NavDrawer = ({ history }) => {
                                 button
                                 key={item.text}
                             >
-                                <ListItemIcon>
+                                <ListItemIcon
+                                    style={{ minWidth: 40 }}
+                                >
                                     <Icon>{item.icon}</Icon>
                                 </ListItemIcon>
 

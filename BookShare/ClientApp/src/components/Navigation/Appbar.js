@@ -16,7 +16,7 @@ import {
 
 const useStyles = makeStyles(() => ({
     toolbar: {
-        backgroundColor: '#5AB9EA'
+        backgroundColor: '#8E8D9A'
     },
     navHeader: {
         color: 'white',

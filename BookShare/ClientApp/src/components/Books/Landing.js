@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '10%',
-        backgroundColor: '#8860D0',
+        backgroundColor: '#EAE7DC',
         height: '100vh'
     }
 }));

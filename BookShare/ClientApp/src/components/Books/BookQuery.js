@@ -1,11 +1,14 @@
 ﻿import React, { useState } from 'react';
 
+import Notify from '../Notifications/Notify';
+
 import { makeStyles } from '@material-ui/styles';
 import {
     TextField,
     Select,
     MenuItem,
-    Button
+    Button,
+    Input
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -15,12 +18,12 @@ const useStyles = makeStyles(() => ({
     },
     search: {
         width: '100%',
-        backgroundColor: '#5680E9',
+        backgroundColor: '#E85A4F',
         color: 'white',
         padding: 10,
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#5AB9EA',
+            backgroundColor: '#E98074',
             color: 'white'
         }
     }
@@ -28,20 +31,37 @@ const useStyles = makeStyles(() => ({
 
 const fields = ["Mathmatics", "History", "Medical", "Computer Science", "Psycology"];
 const initBook = { Title: "", Study: "" };
+const initNotify = {
+    error: false,
+    success: false,
+    warning: false,
+    message: ""
+};
 
 export default ({ history }) => {
 
     const classes = useStyles();
 
     const [book, setBook] = useState({ ...initBook });
+    const [notify, setNotify] = useState({ ...initNotify });
 
     const handleInput = (event, type) => {
         setBook({ ...book, [type]: event.target.value });
     };
 
+    const handleClose = () => setNotify({ ...initNotify });
+
     const handleSearch = () => {
         const { Title, Study } = book;
         history.push(`/books/${Title}/${Study}`);
+    };
+
+    const preSubmit = () => {
+        if (book.Title.length <= 0) {
+            return setNotify({ ...notify, warning: true, message: "Book field is blank" });
+        }
+
+        handleSearch();
     };
 
     return (
@@ -58,6 +78,7 @@ export default ({ history }) => {
                 value={book.Study}
                 onChange={(e) => handleInput(e, "Study")}
                 label="Field of Study"
+                input={<Input color="secondary" />}
             >
                 {fields.map((item) => {
                     return (
@@ -70,10 +91,15 @@ export default ({ history }) => {
 
             <Button
                 className={classes.search}
-                onClick={handleSearch}
+                onClick={preSubmit}
             >
                 Search
             </Button>
+
+            <Notify
+                handleClose={handleClose}
+                notification={notify}
+            />
         </>
     );
 };

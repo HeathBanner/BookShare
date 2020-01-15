@@ -1,7 +1,9 @@
 ﻿import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, Divider } from '@material-ui/core';
+
+import Img from './imgs/janko-ferlic.jpg';
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -11,18 +13,26 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '10%',
-        backgroundColor: '#8860D0',
+        backgroundImage: `url(${Img})`,
+        backgroundSize: 'cover',
+        //backgroundColor: '#EAE7DC',
         height: '100vh'
     },
     title: {
         textAlign: 'center',
         width: '100%',
-        color: '#84CEEB',
-        border: '3px solid #C1C8E4'
+        color: '#E98074',
     },
     introBody: {
         marginTop: 40,
-        color: 'white'
+        color: '#8E8D8A',
+        textAlign: 'center'
+    },
+    divider: {
+        marginBlockStart: '0.5em',
+        marginBottom: 20,
+        width: '60%',
+        backgroundColor: 'rgb(0, 0, 0, 0.4)'
     }
 }));
 
@@ -39,10 +49,12 @@ export default () => {
                 Booksies
             </Typography>
 
+            <Divider className={classes.divider} />
+
             <Typography
                 className={classes.introBody}
             >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eu lacinia tellus. Donec nulla sapien, maximus et lectus in, molestie molestie nulla. Phasellus quis vulputate nisi. Integer mi mauris, dapibus ac turpis sed, ornare facilisis libero. Aliquam erat volutpat. Fusce venenatis massa sit amet erat vulputate dictum. Donec rhoncus urna justo. Donec feugiat est sit amet elementum tempor. Phasellus luctus arcu nisl, vitae pulvinar ligula lobortis vel.
+                The one, the only, text book trading platform
             </Typography>
         </Grid>
     );

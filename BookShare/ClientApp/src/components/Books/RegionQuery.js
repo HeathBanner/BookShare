@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
-import { withRouter } from 'react-router';
+
+import Notify from '../Notifications/Notify';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -8,7 +9,8 @@ import {
     Button,
     Paper,
     Select,
-    MenuItem
+    MenuItem,
+    Input
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -56,12 +58,12 @@ const useStyles = makeStyles(() => ({
     },
     search: {
         width: '100%',
-        backgroundColor: '#5680E9',
+        backgroundColor: '#E85A4F',
         color: 'white',
         padding: 10,
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#5AB9EA',
+            backgroundColor: '#E98074',
             color: 'white'
         }
     }
@@ -73,17 +75,38 @@ const initInfo = {
     state: "",
     study: ""
 };
+const initNotify = {
+    error: false,
+    success: false,
+    warning: false,
+    message: ""
+};
 
 export default ({ history }) => {
     const classes = useStyles();
 
     const [info, setInfo] = useState({ ...initInfo });
+    const [notify, setNotify] = useState({ ...initNotify });
 
     const handleInput = (type) => event => setInfo({ ...info, [type]: event.target.value });
+
+    const handleClose = () => setNotify({ ...initNotify });
 
     const handleSearch = () => {
         const { city, state, study } = info;
         history.push(`/books/${city}/${state}/${study}`);
+    };
+
+    const preSubmit = () => {
+        console.log("pre")
+        switch (true) {
+            case info.city.length <= 0:
+                return setNotify({ ...notify, warning: true, message: "City field is blank" });
+            case info.state.length <= 2:
+                return setNotify({ ...notify, warning: true, message: "State name is too short" });
+            default:
+                return handleSearch();
+        }
     };
 
     return (
@@ -93,6 +116,7 @@ export default ({ history }) => {
                 value={info.city}
                 onChange={handleInput("city")}
                 label="City"
+                color="secondary"
             />
 
             <TextField
@@ -100,6 +124,7 @@ export default ({ history }) => {
                 value={info.state}
                 onChange={handleInput("state")}
                 label="State"
+                color="secondary"
             />
 
             <Select
@@ -107,6 +132,7 @@ export default ({ history }) => {
                 value={info.study}
                 onChange={handleInput("study")}
                 label="Field of Study"
+                input={<Input color="secondary" />}
             >
                 {fields.map((item) => {
                     return (
@@ -119,10 +145,15 @@ export default ({ history }) => {
 
             <Button
                 className={classes.search}
-                onClick={handleSearch}
+                onClick={preSubmit}
             >
                 Search
             </Button>
+
+            <Notify
+                handleClose={handleClose}
+                notification={notify}
+            />
         </>
     );
 };

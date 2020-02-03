@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using BookShare.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
 namespace BookShare.Services
@@ -9,6 +12,7 @@ namespace BookShare.Services
     public class UserService
     {
         private readonly IMongoCollection<Users> _users;
+        private readonly IMongoCollection<Book> _books;
 
         public UserService(IBookDatabaseSettings settings)
         {
@@ -16,8 +20,19 @@ namespace BookShare.Services
             var database = client.GetDatabase(settings.DatabaseName);
 
             _users = database.GetCollection<Users>(settings.UsersCollectionName);
+            _books = database.GetCollection<Book>(settings.BooksCollectionName);
         }
 
+        public Users GetUser(string id)
+        {
+            var builder = Builders<Users>.Filter;
+            var filter = builder.Eq("Id", new Guid(id));
+            var query = _users.Find(filter).ToList();
+
+            if (query.Count == 0) return null;
+
+            return query[0];
+        }
         public HttpResponseMessage Register(Users user)
         {
             var filter = Builders<Users>.Filter;
@@ -27,8 +42,6 @@ namespace BookShare.Services
                     );
             var findQuery = _users.Find(findFilter).ToList();
 
-            Console.WriteLine("\n\n\n {0} \n\n\n", findQuery.Count);
-
             if (findQuery.Count >= 1) return new HttpResponseMessage(HttpStatusCode.Forbidden);
 
             _users.InsertOne(user);
@@ -36,7 +49,7 @@ namespace BookShare.Services
             return new HttpResponseMessage(HttpStatusCode.Created);
         }
 
-        public HttpResponseMessage Login(Users user)
+        public List<Users> Login(Users user)
         {
             var filter = Builders<Users>.Filter;
             var findFilter = filter.Eq("Email", user.Email);
@@ -44,10 +57,27 @@ namespace BookShare.Services
 
             Console.WriteLine("\n\n\n {0} \n\n\n", findQuery.Count);
 
-            if (findQuery.Count == 0) return new HttpResponseMessage(HttpStatusCode.NotFound);
-            if (findQuery[0].Password != user.Password) return new HttpResponseMessage(HttpStatusCode.Forbidden);
+            return findQuery;
+        }
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+        public CustomCodes DeleteBook(string id, string username)
+        {
+            var filter = Builders<Book>.Filter.Eq("_id", new Guid(id));
+            _books.DeleteOne(filter);
+
+            var builder = Builders<Users>.Update;
+            
+            var update = builder.PullFilter(x => x.Posted, y => y.Id == new Guid(id));
+            var options = new FindOneAndUpdateOptions<Users>()
+            {
+                ReturnDocument = ReturnDocument.After
+            };
+            var result = _users.FindOneAndUpdate<Users>(u => u.Username == username, update, options);
+
+            return new CustomCodes {
+                user = result,
+                statusCode = 200
+            };
         }
     }
 }

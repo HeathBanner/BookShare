@@ -1,6 +1,4 @@
-﻿import React, { useState } from 'react';
-
-import { fetchRegister } from './Services/AuthServices';
+﻿import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -15,52 +13,35 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const initRegister = {
-    Username: "",
-    Email: "",
-    Password: ""
-};
-
-export default () => {
+export default ({ handleInput, handleSubmit, register }) => {
 
     const classes = useStyles();
-
-    const [register, setRegister] = useState({ ...initRegister });
-
-    const handleInput = (event, type) => {
-        setRegister({ ...register, [type]: event.target.value });
-    };
-
-    const handleSubmit = async () => {
-        const result = await fetchRegister(register);
-        console.log(result);
-    };
 
     return (
         <>
             <TextField
                 className={classes.inputs}
                 value={register.Username}
-                onChange={(e) => handleInput(e, "Username")}
+                onChange={handleInput("register", "Username")}
                 label="Username"
             />
 
             <TextField
                 className={classes.inputs}
                 value={register.Email}
-                onChange={(e) => handleInput(e, "Email")}
+                onChange={handleInput("register", "Email")}
                 label="Email"
             />
 
             <TextField
                 className={classes.inputs}
                 value={register.Password}
-                onChange={(e) => handleInput(e, "Password")}
+                onChange={handleInput("register", "Password")}
                 label="Password"
             />
 
             <Button
-                onClick={handleSubmit}
+                onClick={() => handleSubmit("register")}
             >
                 Submit
             </Button>

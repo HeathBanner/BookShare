@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-import { withRouter } from 'react-router';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -47,18 +46,16 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const BookCards = ({ book, id, history }) => {
+export default ({ book, handleOpen }) => {
 
     const classes = useStyles();
 
-    const handleClick = () => history.push(`/books/${id}`);
-
-    const { image, title, description, condition, eMedia, state, city } = book;
+    const { image, title, description, city, state, condition, eMedia, id } = book;
 
     return (
         <Card className={classes.card}>
             <CardActionArea
-                onClick={handleClick}
+                onClick={() => handleOpen(id)}
             >
                 <CardMedia
                     className={classes.media}
@@ -110,5 +107,3 @@ const BookCards = ({ book, id, history }) => {
         </Card>
     );
 };
-
-export default withRouter(BookCards);

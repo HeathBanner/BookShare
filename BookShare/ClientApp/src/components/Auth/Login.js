@@ -1,6 +1,4 @@
-﻿import React, { useState } from 'react';
-
-import { fetchLogin } from './Services/AuthServices';
+﻿import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -15,44 +13,28 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const initLogin = {
-    Email: "",
-    Password: ""
-};
-
-export default () => {
+export default ({ handleInput, handleSubmit, login }) => {
 
     const classes = useStyles();
-
-    const [login, setLogin] = useState({ ...initLogin });
-
-    const handleInput = (event, type) => {
-        setLogin({ ...login, [type]: event.target.value });
-    };
-
-    const handleSubmit =  async () => {
-        const result = await fetchLogin(login);
-        console.log(result);
-    };
 
     return (
         <>
             <TextField
                 className={classes.inputs}
                 value={login.Email}
-                onChange={(e) => handleInput(e, "Email")}
+                onChange={handleInput("login", "Email")}
                 label="Email"
             />
 
             <TextField
                 className={classes.inputs}
                 value={login.Password}
-                onChange={(e) => handleInput(e, "Password")}
+                onChange={handleInput("login", "Password")}
                 label="Password"
             />
 
             <Button
-                onClick={handleSubmit}
+                onClick={() => handleSubmit("login")}
             >
                 Submit
             </Button>

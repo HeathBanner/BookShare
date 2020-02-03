@@ -49,7 +49,10 @@ const NavDrawer = ({ history }) => {
         setOpen(open);
     };
 
-    const handleRedirect = (link) => history.push(link);
+    const handleRedirect = (link) => {
+        setOpen(false);
+        history.push(link);
+    };
 
     return (
         <>

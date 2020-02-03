@@ -1,7 +1,9 @@
 ﻿import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import Drawer from './Drawer';
 import Container from '../Auth/Container';
+import User from './User';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -27,12 +29,20 @@ const useStyles = makeStyles(() => ({
     },
     placeHolder: {
         minHeight: 56
+    },
+    button: {
+        position: 'absolute',
+        right: 16,
+        top: '50%',
+        transform: 'translate(0%, -50%)',
+        padding: 12
     }
 }));
 
 export default ({ window }) => {
 
     const classes = useStyles();
+    const store = useSelector(state => state);
 
     const [auth, setAuth] = useState(false);
 
@@ -40,6 +50,21 @@ export default ({ window }) => {
 
     const handleOpen = () => setAuth(true);
     const handleClose = () => setAuth(false);
+
+    const renderAuth = () => {
+        if (store.loggedIn) {
+            return <User user={store.user} />;
+        }
+
+        return (
+            <Button
+                className={classes.button}
+                onClick={handleOpen}
+            >
+                Login
+            </Button>
+        );
+    }
 
     return (
         <>
@@ -56,12 +81,10 @@ export default ({ window }) => {
                         Booksies
                     </Typography>
 
-                    <Button
-                        onClick={handleOpen}
-                    >
-                        Login
-                    </Button>
+                    {renderAuth()}
+
                     </Toolbar>
+
                     <Container
                         auth={auth}
                         handleClose={handleClose}

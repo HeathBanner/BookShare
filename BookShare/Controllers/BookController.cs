@@ -7,8 +7,6 @@ using BookShare.Models;
 using BookShare.Services;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace BookShare.Controllers
 {
     [ApiController]
@@ -23,24 +21,12 @@ namespace BookShare.Controllers
         }
 
         [HttpGet]
-        [Route("state={state}&city={city}&study={study}")]
-        public ActionResult<List<Region>> Get(string state, string city, string study)
-        {
-            Console.WriteLine("\n\n\n {0} {1} {2}", state, city, study);
-
-            List<Region> document;
-
-            _bookService.GetBooks(state, city, study, out document);
-
-            return document;
-        }
-
-        [Route("title={title}&study={study}")]
-        public ActionResult<List<Region>> Get(string title, string study)
+        [Route("Title={Title}&State={State}&City={City}")]
+        public ActionResult<List<Region>> Get(string Title, string State, string City)
         {
             List<Region> document;
 
-            _bookService.GetBooks(title, study, out document);
+            _bookService.GetBooks(Title, State, City, out document);
 
             return document;
         }
@@ -55,14 +41,25 @@ namespace BookShare.Controllers
             return document;
         }
 
+        [Route("filter/Title={Title}&State={State}&City={City}&Study={Study}&Condition={Condition}&ISBN={ISBN}&CourseId={CourseId}")]
+        public ActionResult<List<Region>> Get(string Title, string State, string City, string Study, string Condition, string ISBN, string CourseId)
+        {
+            List<Region> document;
+
+            Console.WriteLine("\n\n\n {0} \n {1} \n {2} \n {3} \n\n\n",
+                Study, Condition, ISBN, CourseId);
+
+            _bookService.BookFilter(Title, State, City, Study, Condition, ISBN, CourseId, out document);
+
+            return document;
+        }
+
         [HttpPost]
-        public HttpResponseMessage Books([FromBody] Region book)
+        public IActionResult Books([FromBody] Region book)
         {
             var response = _bookService.Books(book);
 
-            return response;
+            return StatusCode(201, response);
         }
-
-        
     }
 }

@@ -39,27 +39,10 @@ namespace BookShare.Services
             return new HttpResponseMessage(HttpStatusCode.Created);
         }
 
-        public List<Region> GetBooks(string state, string city, string study, out List<Region> document)
-        {
-            Console.WriteLine("\n\n\n {0} {1} {2}", state, city, study);
-
-            var builder = Builders<Region>.Filter;
-            var filter = builder.And(
-                    builder.Eq("State", state),
-                    builder.Eq("City", city),
-                    builder.Eq("Study", study)
-                );
-
-            return document = _books.Find(filter).ToList();
-        }
-
-        public List<Region> GetBooks(string title, string study, out List<Region> document)
+        public List<Region> GetBooks(string title, string state, string city, out List<Region> document)
         {
             var builder = Builders<Region>.Filter;
-            var filter = builder.And(
-                        builder.Eq("Title", title),
-                        builder.Eq("Study", study)
-                    );
+            var filter = builder.Eq("Title", title) & builder.Eq("State", state) & builder.Eq("City", city);
 
             return document = _books.Find(filter).ToList();
         }
@@ -73,23 +56,35 @@ namespace BookShare.Services
             return document = result;
         }
 
-        public HttpResponseMessage Books(Region book)
+        public List<Region> BookFilter(string Title, string State, string City, string Study, string Condition, string ISBN, string CourseId, out List<Region> document)
+        {
+            var builder = Builders<Region>.Filter;
+            var filter = builder.Eq("Title", Title) & builder.Eq("State", State) & builder.Eq("City", City);
+            
+            if (Study != "null") filter = filter & builder.Eq("Study", Study);
+            if (Condition != "null") filter = filter & builder.Eq("Condition", Condition);
+            if (ISBN != "null") filter = filter & builder.Eq("ISBN", ISBN);
+            if (CourseId != "null") filter = filter & builder.Eq("CourseId", CourseId);
+
+            var result = _books.Find(filter).ToList();
+
+            return document = result;
+        }
+
+        public CustomCodes Books(Region book)
         {
             _books.InsertOne(book);
 
-            return new HttpResponseMessage(HttpStatusCode.Created);
+            var filter = Builders<Users>.Filter.Eq(x => x.Username, "Heath");
+            var options = new FindOneAndUpdateOptions<Users>() { ReturnDocument = ReturnDocument.After };
+            var update = Builders<Users>.Update.Push(x => x.Posted, book);
+
+            var result = _users.FindOneAndUpdate(filter, update, options);
+
+            return new CustomCodes {
+                statusCode = 201,
+                user = result
+            };
         }
-
-        //public List<Users> Create(Users user)
-        //{
-        //    var filter = Builders<Users>.Filter.Eq("Username", "Heath");
-
-        //    var doc = _users.Find(filter).ToList();
-
-        //    Console.WriteLine("\n\n\n RESULT \n {0} \n\n\n", doc);
-
-        //    return doc;
-        //}
-
     }
 }

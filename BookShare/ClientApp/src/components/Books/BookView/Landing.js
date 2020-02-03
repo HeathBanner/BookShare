@@ -7,7 +7,8 @@ import {
     Paper,
     Button,
     Divider,
-    CircularProgress
+    CircularProgress,
+    Icon
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -45,6 +46,12 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         marginBottom: 30
     },
+    infoContainer: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        width: '100%',
+        marginBottom: 10
+    },
     info: {
         width: '100%',
         marginBottom: 10,
@@ -76,7 +83,20 @@ export default ({ params }) => {
 
     if (!book.loaded) return <CircularProgress />;
 
-    const { image, title, description, condition, eMedia } = book.info;
+    const { image, title, description, condition, eMedia, city, state } = book.info;
+
+    const renderCondition = () => {
+        switch (condition) {
+            case "Mint":
+                return "sentiment_very_satisfied";
+            case "Good":
+                return "sentiment_satisfied";
+            case "Fair":
+                return "sentiment_dissatisfied";
+            default:
+                return "sentiment_very_dissatisfied";
+        }
+    };
 
     return (
         <Grid className={classes.container} item xs={12}>
@@ -102,17 +122,46 @@ export default ({ params }) => {
                     {description}
                 </Typography>
 
-                <Typography
-                    className={classes.info}
+                <div
+                    className={classes.infoContainer}
                 >
-                    Condition: {condition}
-                </Typography>
+                    <Icon
+                        style={{ marginRight: 10 }}
+                    >
+                        my_location
+                    </Icon>
+                    <Typography
+                    >
+                        Location: {city}, {state}
+                    </Typography>
+                </div>
 
-                <Typography
-                    className={classes.info}
+                <div
+                    className={classes.infoContainer}
                 >
-                    External Media: {eMedia}
-                </Typography>
+                    <Icon
+                        style={{ marginRight: 10 }}
+                    >
+                        { renderCondition() }
+                    </Icon>
+                    <Typography>
+                        Condition: {condition}
+                    </Typography>
+                </div>
+
+                <div
+                    className={classes.infoContainer}
+                >
+                    <Icon
+                        style={{ marginRight: 10 }}
+                    >
+                        attachment
+                    </Icon>
+                    <Typography>
+                        External Media: {eMedia}
+                    </Typography>
+                </div>
+
 
                 <Button
                     className={classes.buttons}

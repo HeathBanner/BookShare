@@ -1,7 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { withRouter } from 'react-router';
 
-import RegionQuery from './RegionQuery';
 import BookQuery from './BookQuery';
 
 import { makeStyles } from '@material-ui/styles';
@@ -45,14 +44,9 @@ const QueryContainer = ({ isModal, history }) => {
     const handleChange = (event, value) => setQuery(value);
 
     const renderSearch = () => {
-        switch (query) {
-            case 0:
-                return <RegionQuery history={history} />;
-            case 1:
-                return <BookQuery history={history} />;
-            default:
-                return "";
-        }
+        if (query === 0) return <BookQuery history={history} />
+
+        return "";
     };
 
     return (
@@ -61,8 +55,7 @@ const QueryContainer = ({ isModal, history }) => {
                 value={query}
                 onChange={handleChange}
             >
-                <Tab label="Region" />
-                <Tab label="Book" />
+                <Tab label="Query" />
                 <Tab label="Advanced" />
             </Tabs>
 

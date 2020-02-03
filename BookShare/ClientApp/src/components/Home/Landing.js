@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Typography, Divider } from '@material-ui/core';
@@ -39,6 +40,9 @@ const useStyles = makeStyles(() => ({
 export default () => {
 
     const classes = useStyles();
+
+    const store = useSelector(state => state);
+    console.log(store);
 
     return (
         <Grid item xs={12} className={classes.container}>

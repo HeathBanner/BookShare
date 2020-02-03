@@ -1,7 +1,16 @@
 ﻿import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import {
+    fetchLogin,
+    fetchRegister,
+    initInfo,
+    initNotify
+} from './Services/AuthServices';
 
 import Login from './Login';
 import Register from './Register';
+import Notify from '../Notifications/Notify';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -30,15 +39,50 @@ const useStyles = makeStyles(() => ({
 export default ({ auth, handleClose }) => {
 
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [mode, setMode] = useState(0);
+    const [info, setInfo] = useState({ ...initInfo });
+    const [notify, setNotify] = useState({ ...initNotify });
 
     const handleChange = (event, value) => setMode(value);
 
-    const renderAuth = () => {
-        if (mode === 0) return <Login />;
+    const handleInput = (mode, type) => event => {
+        setInfo({ ...info, [type]: event.target.value });
+    };
 
-        return <Register />;
+    const handleSubmit = async (mode) => {
+        let result;
+
+        if (mode === "login") result = await fetchLogin(info);
+        if (mode === "register") result = await fetchRegister(info);
+
+        if (result.error) return setNotify({ ...notify, ...result });
+        if (result.success) {
+            dispatch({
+                type: "LOGIN",
+                payload: result.payload
+            });
+            handleClose();
+        }
+    };
+
+    const handleNotify = () => setNotify({ ...initNotify });
+
+    const renderAuth = () => {
+        if (mode === 0) {
+            return <Login
+                login={info}
+                handleInput={handleInput}
+                handleSubmit={handleSubmit}
+            />;
+        }
+
+        return <Register
+            register={info}
+            handleInput={handleInput}
+            handleSubmit={handleSubmit}
+        />;
     };
 
     return (
@@ -57,8 +101,14 @@ export default ({ auth, handleClose }) => {
                     <Tab label="Register" />
                 </Tabs>
 
-                { renderAuth() }
+                {renderAuth()}
+
+                <Notify
+                    notification={notify}
+                    handleClose={handleNotify}
+                />
             </Paper>
+
         </Modal>
     );
 };

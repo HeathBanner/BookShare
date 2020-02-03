@@ -10,6 +10,6 @@ namespace BookShare.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public Book[] Posted { get; set; }
+        public Region[] Posted { get; set; }
     }
 }

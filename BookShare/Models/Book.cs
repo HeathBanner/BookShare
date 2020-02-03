@@ -12,5 +12,7 @@ namespace BookShare.Models
         public string Description { get; set; }
         public string Condition { get; set; }
         public string EMedia { get; set; }
+        public string ISBN { get; set; }
+        public string CourseId { get; set; }
     }
 }

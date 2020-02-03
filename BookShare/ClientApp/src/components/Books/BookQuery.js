@@ -8,7 +8,9 @@ import {
     Select,
     MenuItem,
     Button,
-    Input
+    Input,
+    FormControl,
+    InputLabel
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -29,8 +31,12 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const fields = ["Mathmatics", "History", "Medical", "Computer Science", "Psycology"];
-const initBook = { Title: "", Study: "" };
+const states = ["NC", "SC", "FL", "CA", "AK", "HI"];
+const initBook = {
+    Title: "",
+    State: "",
+    City: ""
+};
 const initNotify = {
     error: false,
     success: false,
@@ -52,16 +58,21 @@ export default ({ history }) => {
     const handleClose = () => setNotify({ ...initNotify });
 
     const handleSearch = () => {
-        const { Title, Study } = book;
-        history.push(`/books/${Title}/${Study}`);
+        const { Title, State, City } = book;
+        history.push(`/books/${Title}/${State}/${City}`);
     };
 
     const preSubmit = () => {
-        if (book.Title.length <= 0) {
-            return setNotify({ ...notify, warning: true, message: "Book field is blank" });
+        switch (true) {
+            case book.Title.length <= 0:
+                return setNotify({ ...notify, warning: true, message: "Book field is blank" });
+            case !book.State:
+                return setNotify({ ...notify, warning: true, message: "You must select a state" });
+            case book.City.length <= 0:
+                return setNotify({ ...notify, warning: true, message: "City field cannot be blank" });
+            default:
+                handleSearch();
         }
-
-        handleSearch();
     };
 
     return (
@@ -71,23 +82,34 @@ export default ({ history }) => {
                 value={book.Title}
                 onChange={(e) => handleInput(e, "Title")}
                 label="Book"
+                color="secondary"
             />
 
-            <Select
+            <FormControl className={classes.inputs}>
+                <InputLabel>State</InputLabel>
+                <Select
+                    value={book.State}
+                    onChange={(e) => handleInput(e, "State")}
+                    label="Field of Study"
+                    input={<Input color="secondary" />}
+                >
+                    {states.map((item) => {
+                        return (
+                            <MenuItem value={item} key={item}>
+                                {item}
+                            </MenuItem>
+                        );
+                    })}
+                </Select>
+            </FormControl>
+
+            <TextField
                 className={classes.inputs}
-                value={book.Study}
-                onChange={(e) => handleInput(e, "Study")}
-                label="Field of Study"
-                input={<Input color="secondary" />}
-            >
-                {fields.map((item) => {
-                    return (
-                        <MenuItem value={item} key={item}>
-                            {item}
-                        </MenuItem>
-                    );
-                })}
-            </Select>
+                value={book.City}
+                onChange={(e) => handleInput(e, "City")}
+                label="City"
+                color="secondary"
+            />
 
             <Button
                 className={classes.search}

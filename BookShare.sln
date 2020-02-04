@@ -1,7 +1,11 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
+<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShare", "BookShare\BookShare.csproj", "{4083E6B1-6EA3-4B97-9481-368010ECD041}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookShare", "BookShare\BookShare.csproj", "{F24E19FD-A536-4042-9B87-A25DAB5B017C}"
+>>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,9 +13,16 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+<<<<<<< HEAD
 		{4083E6B1-6EA3-4B97-9481-368010ECD041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4083E6B1-6EA3-4B97-9481-368010ECD041}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4083E6B1-6EA3-4B97-9481-368010ECD041}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4083E6B1-6EA3-4B97-9481-368010ECD041}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{F24E19FD-A536-4042-9B87-A25DAB5B017C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F24E19FD-A536-4042-9B87-A25DAB5B017C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F24E19FD-A536-4042-9B87-A25DAB5B017C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F24E19FD-A536-4042-9B87-A25DAB5B017C}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
 	EndGlobalSection
 EndGlobal

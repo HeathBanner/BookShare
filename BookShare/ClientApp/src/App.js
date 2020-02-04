@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
+=======
+import React, { Component } from 'react';
+import { Route, Switch } from 'react-router';
+>>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
 
 import Appbar from './components/Navigation/Appbar';
 
@@ -15,6 +20,7 @@ import BookProfile from './pages/Profile/Books';
 
 import './custom.css'
 
+<<<<<<< HEAD
 export default () => {
 
     const store = useSelector(state => state);
@@ -54,6 +60,14 @@ export default () => {
 
     return (
         <>
+=======
+export default class App extends Component {
+  static displayName = App.name;
+
+  render () {
+      return (
+          <>
+>>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
             <Appbar />
             <Switch>
                 <Route exact path="/" component={Home} />
@@ -65,5 +79,10 @@ export default () => {
                 <Route exact path="/bookshelf" component={BookProfile} />
             </Switch>
         </>
+<<<<<<< HEAD
 );
+=======
+    );
+  }
+>>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
 }

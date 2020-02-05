@@ -94,7 +94,9 @@ namespace BookShare.Services
             }
             catch
             {
-                return false;
+                return new CustomCodes {
+                    statusCode = 401
+                };
             }
 
             var securityToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
@@ -103,13 +105,11 @@ namespace BookShare.Services
             var filter = Builders<Users>.Filter.Eq("Email", email);
             Users query = await _users.Find(filter).FirstOrDefaultAsync();
 
-            var result = new CustomCodes
+            return new CustomCodes
             {
                 statusCode = 200,
                 user = query
             };
-
-            return result;
         }
 
     }

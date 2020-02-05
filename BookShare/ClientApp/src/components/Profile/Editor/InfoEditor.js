@@ -1,5 +1,7 @@
 ﻿import React from 'react';
 
+import StepButtons from './StepButtons';
+
 import { makeStyles } from '@material-ui/styles';
 import {
     Modal,
@@ -34,6 +36,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // TRY AND FIGURE OUT AN ELEGANT SOLUTION TO CLEANING UP THE PROPS
+
 export default ({
     modalProps,
     handleClose,
@@ -58,6 +61,8 @@ export default ({
             <Fade in={open}>
                 <Paper className={classes.paper}>
                     <Stepper activeStep={activeStep}>
+
+
                         {steps.map((label, index) => {
                             const stepProps = {};
                             const labelProps = {};
@@ -72,37 +77,14 @@ export default ({
                         })}
                     </Stepper>
 
-                    {activeStep === steps.length ? (
-                        <div>
-                            <Typography>
-                                All steps completed
-                            </Typography>
-                            <Button>
-                                Done
-                            </Button>
-                        </div>
-                    ) : (
-                        <div>
-                            <Typography>
-                                {getStepContent(activeStep)}
-                            </Typography>
-
-                                <Button
-                                    onClick={handleBack}
-                                    disabled={activeStep === 0}
-                                >
-                                Back
-                            </Button>
-
-                                <Button
-                                    onClick={handleNext}
-                                    disabled={activeStep === steps.length - 1}
-                                >
-                                Next
-                            </Button>
-                        </div>
-                        )}
-
+                    <StepButtons
+                        switchBoard={activeStep === steps.length}
+                        activeStep={activeStep}
+                        getStepContent={getStepContent}
+                        handleBack={handleBack}
+                        handleNext={handleNext}
+                        steps={steps}
+                    />
 
                     <TextField
                         className={classes.input}

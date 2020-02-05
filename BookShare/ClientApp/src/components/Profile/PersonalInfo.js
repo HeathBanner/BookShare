@@ -1,7 +1,12 @@
 ﻿import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import InfoEditor from './InfoEditor';
+import InfoEditor from './Editor/InfoEditor';
+import {
+    initModalProps,
+    steps,
+    getStepContent
+} from './Services/InfoServices';
 
 import { makeStyles } from '@material-ui/core';
 import {
@@ -44,33 +49,6 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const initModalProps = {
-    open: false,
-    type: "",
-    email: "",
-    password: "",
-    activeStep: 0
-};
-
-const steps = [
-    "Verify Password",
-    "Change Email",
-    "Finished"
-];
-
-const getStepContent = (step) => {
-    switch (step) {
-        case 0:
-            return "Verify your password to proceed";
-        case 1:
-            return "Enter your new email";
-        case 2:
-            return "You're finished!";
-        default:
-            return "Unkown step";
-    }
-};
-
 // CLEAN UP FUNCTIONS AND CONSTS TO SERVICES
 export default () => {
 
@@ -89,7 +67,6 @@ export default () => {
                 type: type
             });
         }
-
     };
 
     const closeModal = () => setModalProps({ ...initModalProps });

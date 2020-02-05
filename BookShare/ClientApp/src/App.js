@@ -1,12 +1,8 @@
-<<<<<<< HEAD
 import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-=======
-import React, { Component } from 'react';
-import { Route, Switch } from 'react-router';
->>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
 
+import { fetchValidation } from './TokenServices';
 import Appbar from './components/Navigation/Appbar';
 
 import Home from './pages/Home/index';
@@ -20,54 +16,26 @@ import BookProfile from './pages/Profile/Books';
 
 import './custom.css'
 
-<<<<<<< HEAD
 export default () => {
 
     const store = useSelector(state => state);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (store.loggedIn) return;
+        if (store.loggedIn || !store.checking) return;
 
         const token = localStorage.getItem("token");
 
         if (token) {
-            fetchValidation(token);
+            fetchValidation(token, dispatch);
             return;
         }
 
         return console.log("No Token stored!");
     }, [store]);
 
-    const fetchValidation = async (token) => {
-        const options = {
-            method: "POST",
-            body: JSON.stringify({ access_token: token }),
-            headers: { "Content-Type": "application/json" }
-        };
-        const result = await fetch("/api/token/validate", options);
-        const json = await result.json();
-
-        console.log(json);
-
-        if (json.statusCode === 200) {
-            return dispatch({
-                type: "VALIDATED",
-                payload: json.user
-            });
-        }
-    };
-
     return (
         <>
-=======
-export default class App extends Component {
-  static displayName = App.name;
-
-  render () {
-      return (
-          <>
->>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
             <Appbar />
             <Switch>
                 <Route exact path="/" component={Home} />
@@ -79,10 +47,5 @@ export default class App extends Component {
                 <Route exact path="/bookshelf" component={BookProfile} />
             </Switch>
         </>
-<<<<<<< HEAD
-);
-=======
     );
-  }
->>>>>>> 070d917f100a4b2faa90e7f357e8165b17d6d95c
-}
+};

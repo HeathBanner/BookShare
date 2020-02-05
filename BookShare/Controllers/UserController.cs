@@ -71,6 +71,14 @@ namespace BookShare.Controllers
             return new ObjectResult(result);
         }
 
+        [Route("updatePassword")]
+        public async Task<IActionResult> UpdatePassword([FromBody] Users user)
+        {
+            var result = await _userService.UpdatePassword(user);
+
+            return new ObjectResult(result);
+        }
+
         [HttpDelete]
         [Route("id={id}&username={username}")]
         public IActionResult BookDelete(string id, string username)

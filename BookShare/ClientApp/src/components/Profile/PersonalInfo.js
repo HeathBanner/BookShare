@@ -4,10 +4,13 @@ import { useSelector } from 'react-redux';
 import InfoEditor from './Editor/InfoEditor';
 import {
     initModalProps,
-    steps,
+    emailSteps,
+    passwordSteps,
     getStepContent,
-    fetchValidatePassword
+    fetchValidatePassword,
+    fetchUpdatePassword
 } from './Services/InfoServices';
+import Notification from '../Notifications/Notify';
 
 import { makeStyles } from '@material-ui/core';
 import {
@@ -69,13 +72,24 @@ export default () => {
     };
 
     const closeModal = () => setModalProps({ ...initModalProps });
+    const closeNotify = () => {
+        if (modalProps.activeStep === 0 || modalProps.notify.warning) {
+            return setModalProps(prevState => ({
+                ...prevState,
+                notify: { ...initModalProps.notify }
+            }));
+        }
+
+        setModalProps({ ...initModalProps });
+    };
 
     const handleNext = async () => {
         let status;
+        const username = store.user.username;
 
-        if (modalProps.activeStep === 0) status = await fetchValidatePassword(modalProps, store.user.username);
+        if (modalProps.activeStep === 0) status = await fetchValidatePassword(modalProps, username);
         //if (modalProps.type === "Email")  status = await fetchUpdateEmail(modalProps);
-        //else status = await fetchUpdatePassword(modalProps);
+        else status = await fetchUpdatePassword(modalProps, username);
 
         return setModalProps({ ...status });
     };
@@ -103,8 +117,13 @@ export default () => {
                 handleChange={inputModal}
                 handleNext={handleNext}
                 handleBack={handleBack}
-                steps={steps}
+                steps={modalProps.type === "Email" ? emailSteps : passwordSteps}
                 getStepContent={getStepContent}
+            />
+
+            <Notification
+                notification={modalProps.notify}
+                handleClose={closeNotify}
             />
 
             <Typography

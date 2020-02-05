@@ -16,6 +16,34 @@ export const fetchValidatePassword = async (props, username) => {
     return statusHandler(json, props);
 };
 
+export const fetchUpdatePassword = async (props, username) => {
+    if (props.newPassword0 !== props.newPassword1) {
+        return {
+            ...props,
+            notify: {
+                ...props.notify,
+                warning: true,
+                message: "Passwords do not match"
+            }
+        };
+    }
+
+    const options = {
+        method: "POST",
+        body: JSON.stringify({
+            username: username,
+            password: props.newPassword0
+        }),
+        headers: { "Content-Type": "application/json" }
+    };
+    const result = await fetch("api/user/updatePassword", options);
+    const json = await result.json();
+
+    console.log(json);
+
+    return statusHandler(json, props);
+};
+
 const statusHandler = (json, props) => {
     switch (json.statusCode) {
         case 200:
@@ -28,6 +56,7 @@ const statusHandler = (json, props) => {
             return {
                 ...props,
                 notify: {
+                    ...props.notify,
                     error: true,
                     message: "Incorrect Password"
                 }
@@ -36,6 +65,7 @@ const statusHandler = (json, props) => {
             return {
                 ...props,
                 notify: {
+                    ...props.notify,
                     error: true,
                     message: "Something went wrong :("
                 }
@@ -59,9 +89,15 @@ export const initModalProps = {
     }
 };
 
-export const steps = [
+export const emailSteps = [
     "Verify Password",
     "Change Email",
+    "Finished"
+];
+
+export const passwordSteps = [
+    "Verify Password",
+    "Change Password",
     "Finished"
 ];
 

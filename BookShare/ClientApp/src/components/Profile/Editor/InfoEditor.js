@@ -39,7 +39,7 @@ export default ({
 }) => {
 
     const classes = useStyles();
-    const { open, type, email, password, activeStep } = modalProps;
+    const { open, activeStep } = modalProps;
 
     return (
         <Modal

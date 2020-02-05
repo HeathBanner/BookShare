@@ -95,5 +95,15 @@ namespace BookShare.Services
                 return new CustomCodes { statusCode = 401 };
             }
         }
+
+        public async Task<CustomCodes> UpdatePassword(Users user)
+        {
+            var filter = Builders<Users>.Filter.Eq("Username", user.Username);
+            var update = Builders<Users>.Update.Set("Password", user.Password);
+
+            await _users.UpdateOneAsync(filter, update);
+
+            return new CustomCodes { statusCode = 200 };
+        }
     }
 }

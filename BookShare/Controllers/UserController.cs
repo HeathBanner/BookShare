@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using BookShare.Models;
 using BookShare.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,14 @@ namespace BookShare.Controllers
                 user = response[0],
                 statusCode = 200
             });
+        }
+
+        [Route("validatePassword")]
+        public async Task<IActionResult> Password([FromBody] Users user)
+        {
+            var result = await _userService.ValidatePassword(user);
+
+            return new ObjectResult(result);
         }
 
         [HttpDelete]

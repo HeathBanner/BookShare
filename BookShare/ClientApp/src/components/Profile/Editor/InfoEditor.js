@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 
+import Inputs from './Inputs';
 import StepButtons from './StepButtons';
 
 import { makeStyles } from '@material-ui/styles';
@@ -8,12 +9,9 @@ import {
     Backdrop,
     Fade,
     Paper,
-    TextField,
-    Button,
     Stepper,
     Step,
-    StepLabel,
-    Typography
+    StepLabel
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -25,14 +23,6 @@ const useStyles = makeStyles(() => ({
         flexWrap: 'wrap',
         padding: '5%'
     },
-    input: {
-        width: '100%',
-        marginBottom: 20
-    },
-    button: {
-        width: '100%',
-        padding: 10,
-    }
 }));
 
 // TRY AND FIGURE OUT AN ELEGANT SOLUTION TO CLEANING UP THE PROPS
@@ -62,8 +52,7 @@ export default ({
                 <Paper className={classes.paper}>
                     <Stepper activeStep={activeStep}>
 
-
-                        {steps.map((label, index) => {
+                        {steps.map((label) => {
                             const stepProps = {};
                             const labelProps = {};
 
@@ -77,28 +66,20 @@ export default ({
                         })}
                     </Stepper>
 
+                    <Inputs
+                        modalProps={modalProps}
+                        handleChange={handleChange}
+                    />
+
                     <StepButtons
                         switchBoard={activeStep === steps.length}
                         activeStep={activeStep}
                         getStepContent={getStepContent}
                         handleBack={handleBack}
                         handleNext={handleNext}
+                        handleSubmit={handleSubmit}
                         steps={steps}
                     />
-
-                    <TextField
-                        className={classes.input}
-                        label={type}
-                        value={type === "Email" ? email : password}
-                        onChange={(e) => handleChange(e, type)}
-                    />
-
-                    <Button
-                        className={classes.button}
-                        onClick={handleSubmit}
-                    >
-                        Submit
-                    </Button>
                 </Paper>
             </Fade>
         </Modal>

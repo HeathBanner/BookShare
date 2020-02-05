@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using BookShare.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -78,6 +79,21 @@ namespace BookShare.Services
                 user = result,
                 statusCode = 200
             };
+        }
+
+        public async Task<CustomCodes> ValidatePassword(Users user)
+        {
+            var filter = Builders<Users>.Filter.Eq("Username", user.Username);
+            Users query = await _users.Find(filter).FirstOrDefaultAsync();
+
+            if (query.Password == user.Password)
+            {
+                return new CustomCodes { statusCode = 200 };
+            }
+            else
+            {
+                return new CustomCodes { statusCode = 401 };
+            }
         }
     }
 }

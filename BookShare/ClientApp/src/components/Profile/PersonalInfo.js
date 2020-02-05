@@ -5,7 +5,8 @@ import InfoEditor from './Editor/InfoEditor';
 import {
     initModalProps,
     steps,
-    getStepContent
+    getStepContent,
+    fetchValidatePassword
 } from './Services/InfoServices';
 
 import { makeStyles } from '@material-ui/core';
@@ -60,20 +61,25 @@ export default () => {
     const [modalProps, setModalProps] = useState({ ...initModalProps });
 
     const changeInfo = (type) => {
-        if (type === "Email") {
-            return setModalProps({
-                ...modalProps,
-                open: true,
-                type: type
-            });
-        }
+        setModalProps({
+            ...modalProps,
+            open: true,
+            type: type
+        });
     };
 
     const closeModal = () => setModalProps({ ...initModalProps });
 
-    const handleNext = () => {
-        setModalProps(prevState => ({ ...prevState, activeStep: prevState.activeStep + 1 }));
+    const handleNext = async () => {
+        let status;
+
+        if (modalProps.activeStep === 0) status = await fetchValidatePassword(modalProps, store.user.username);
+        //if (modalProps.type === "Email")  status = await fetchUpdateEmail(modalProps);
+        //else status = await fetchUpdatePassword(modalProps);
+
+        return setModalProps({ ...status });
     };
+
     const handleBack = () => {
         setModalProps(prevState => ({ ...prevState, activeStep: prevState.activeStep - 1 }));
     };
@@ -124,7 +130,9 @@ export default () => {
             </div>
 
             <div className={classes.infoContainer}>
-                <IconButton>
+                <IconButton
+                    onClick={() => changeInfo("Password")}
+                >
                     <Icon>
                         edit
                     </Icon>

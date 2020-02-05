@@ -30,6 +30,19 @@ const auth = (state, action) => {
                 ...state,
                 checking: false
             };
+        case "RELOG":
+            localStorage.removeItem("token");
+            return {
+                ...state,
+                loggedIn: false,
+                checking: true,
+                user: ""
+            };
+        case "NO_TOKEN":
+            return {
+                ...state,
+                checking: false
+            };
         default:
             return state;
     }

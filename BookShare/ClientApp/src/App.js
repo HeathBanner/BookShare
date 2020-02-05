@@ -31,7 +31,7 @@ export default () => {
             return;
         }
 
-        return console.log("No Token stored!");
+        dispatch({ type: "NO_TOKEN" });
     }, [store]);
 
     return (

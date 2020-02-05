@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import InfoEditor from './Editor/InfoEditor';
 import {
@@ -58,6 +58,7 @@ export default () => {
 
     const classes = useStyles();
     const store = useSelector(store => store);
+    const dispatch = useDispatch();
 
     const { email, username, posted } = store.user;
 
@@ -81,6 +82,7 @@ export default () => {
         }
 
         setModalProps({ ...initModalProps });
+        dispatch({ type: "RELOG" });
     };
 
     const handleNext = async () => {

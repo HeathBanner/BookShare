@@ -9,7 +9,9 @@ import {
     getStepContent,
     fetchValidatePassword,
     fetchUpdatePassword,
-    fetchUpdateEmail
+    fetchUpdateEmail,
+    buttonInfo,
+    buttonData
 } from './Services/InfoServices';
 import Notification from '../Notifications/Notify';
 
@@ -90,7 +92,6 @@ export default () => {
         let status;
         const username = store.user.username;
         const { activeStep, type } = modalProps;
-        console.log("HANDLE NEXT");
 
         if (activeStep === 0) status = await fetchValidatePassword(modalProps, username);
         if (type === "Email" && activeStep === 1) status = await fetchUpdateEmail(modalProps, username);
@@ -108,17 +109,12 @@ export default () => {
         setModalProps({ ...modalProps, [type]: value });
     };
 
-    const submitModal = () => {
-        console.log(modalProps);
-    };
-
     if (!store.user) return "";
     return (
         <Paper className={classes.paper}>
             <InfoEditor
                 modalProps={modalProps}
                 handleClose={closeModal}
-                handleSubmit={submitModal}
                 handleChange={inputModal}
                 handleNext={handleNext}
                 handleBack={handleBack}
@@ -140,43 +136,27 @@ export default () => {
 
             <Divider className={classes.divider} />
 
-            <div className={classes.infoContainer}>
-                <IconButton
-                    onClick={() => changeInfo("Email")}
-                >
-                    <Icon>edit</Icon>
-                </IconButton>
-                <Typography
-                    className={classes.email}
-                >
-                    Email: {email}
-                </Typography>
-            </div>
-
-            <div className={classes.infoContainer}>
-                <IconButton
-                    onClick={() => changeInfo("Password")}
-                >
-                    <Icon>
-                        edit
-                    </Icon>
-                </IconButton>
-                <Typography>
-                    Password:
-                </Typography>
-                <Icon>vpn_key</Icon>
-            </div>
-
-            <div className={classes.infoContainer}>
-                <IconButton>
-                    <Icon>
-                        open_in_browser
-                    </Icon>
-                </IconButton>
-                <Typography>
-                    Books posted: {posted.length}
-                </Typography>
-            </div>
+            {buttonInfo.map((button) => {
+                return (
+                    <div className={classes.infoContainer}>
+                        <IconButton
+                            onClick={button.click ? () => changeInfo("Email") : ""}
+                        >
+                            <Icon>{button.icon}</Icon>
+                        </IconButton>
+                        <Typography
+                            className={classes.email}
+                        >
+                            {button.text}
+                            {button.data === "password"
+                                ?
+                                <p style={{ background: "black", display: 'inline' }}>You Thought</p>
+                                :
+                                buttonData(button.data, store.user)}
+                        </Typography>
+                    </div>
+                );
+            })}
         </Paper>
     );
 };

@@ -128,3 +128,35 @@ export const getStepContent = (step) => {
             return "Unkown step";
     }
 };
+
+export const buttonInfo = [
+    {
+        click: true,
+        icon: "edit",
+        text: "Email: ",
+        data: "email"
+    },
+    {
+        click: true,
+        icon: "edit",
+        text: "Password: ",
+        data: "password"
+    },
+    {
+        click: false,
+        icon: "open_in_browser",
+        text: "Books Posted: ",
+        data: "posted"
+    }
+];
+
+export const buttonData = (data, props) => {
+    switch (data) {
+        case "posted":
+            return props.posted.length;
+        case "email":
+            return props.email;
+        default:
+            return "";
+    }
+};

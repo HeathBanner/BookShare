@@ -4,7 +4,23 @@ import { makeStyles } from '@material-ui/styles';
 import { Typography, Button } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-
+    stepContent: {
+        display: 'flex',
+        alignItem: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        padding: '0 5%'
+    },
+    stepText: {
+        marginBottom: 15,
+        textAlign: 'center',
+        width: '100%'
+    },
+    stepButtons: {
+        flexGrow: 1,
+        padding: 10
+    }
 }));
 
 export default ({
@@ -32,12 +48,15 @@ export default ({
     }
 
     return (
-        <div>
-            <Typography>
+        <div className={classes.stepContent}>
+            <Typography
+                className={classes.stepText}
+            >
                 {getStepContent(activeStep)}
             </Typography>
 
             <Button
+                className={classes.stepButtons}
                 onClick={handleBack}
                 disabled={activeStep === 0}
             >
@@ -45,6 +64,7 @@ export default ({
             </Button>
 
             <Button
+                className={classes.stepButtons}
                 onClick={handleNext}
                 disabled={activeStep === steps.length - 1}
             >

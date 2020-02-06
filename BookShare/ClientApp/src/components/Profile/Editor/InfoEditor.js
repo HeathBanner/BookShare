@@ -21,7 +21,12 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        padding: '5%'
+        position: 'fixed',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        padding: '5%',
+        width: '80%'
     },
 }));
 
@@ -50,7 +55,10 @@ export default ({
         >
             <Fade in={open}>
                 <Paper className={classes.paper}>
-                    <Stepper activeStep={activeStep}>
+                    <Stepper
+                        style={{ padding: 0, marginBottom: 20 }}
+                        activeStep={activeStep}
+                    >
 
                         {steps.map((label) => {
                             const stepProps = {};

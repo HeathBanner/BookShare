@@ -38,12 +38,12 @@ const useStyles = makeStyles(() => ({
 
 const buttons = [
     {
-        text: "Your profile",
+        text: "Profile",
         url: "/profile",
         func: false
     },
     {
-        text: "Your books",
+        text: "Books",
         url: "/bookshelf",
         func: false
     },
@@ -53,7 +53,7 @@ const buttons = [
         func: false
     },
     {
-        text: "Sign out",
+        text: "Signout",
         func: true
     }
 ];
@@ -80,9 +80,7 @@ const User = ({ user, history }) => {
     const open = Boolean(anchorEl);
     const id = open ? 'transition-popper' : undefined;
 
-    const handleHistory = (url) => {
-        history.push(url);
-    };
+    const handleHistory = (url) => history.push(url);
 
     return (
         <>
@@ -103,7 +101,7 @@ const User = ({ user, history }) => {
                 transition
             >
                 {({ TransitionProps }) => (
-                    <Fade {...TransitionProps} timeout={350}>
+                    <Fade {...TransitionProps} timeout={50}>
                         <Paper className={classes.paper}>
                             {buttons.map((item) => {
                                 return (

@@ -22,18 +22,18 @@ const useStyles = makeStyles(() => ({
     title: {
         textAlign: 'center',
         width: '100%',
-        color: '#E98074',
+        color: 'white',
     },
     introBody: {
         marginTop: 40,
-        color: '#8E8D8A',
+        color: 'white',
         textAlign: 'center'
     },
     divider: {
         marginBlockStart: '0.5em',
         marginBottom: 20,
         width: '60%',
-        backgroundColor: 'rgb(0, 0, 0, 0.4)'
+        backgroundColor: 'rgb(255, 255, 255, 0.4)'
     }
 }));
 
@@ -42,7 +42,6 @@ export default () => {
     const classes = useStyles();
 
     const store = useSelector(state => state);
-    console.log(store);
 
     return (
         <Grid item xs={12} className={classes.container}>

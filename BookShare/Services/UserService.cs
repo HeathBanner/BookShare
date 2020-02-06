@@ -105,5 +105,15 @@ namespace BookShare.Services
 
             return new CustomCodes { statusCode = 200 };
         }
+
+        public async Task<bool> UpdateEmail(Users user)
+        {
+            var filter = Builders<Users>.Filter.Eq("Username", user.Username);
+            var update = Builders<Users>.Update.Set("Email", user.Email);
+
+            await _users.UpdateOneAsync(filter, update);
+
+            return true;
+        }
     }
 }

@@ -8,7 +8,8 @@ import {
     passwordSteps,
     getStepContent,
     fetchValidatePassword,
-    fetchUpdatePassword
+    fetchUpdatePassword,
+    fetchUpdateEmail
 } from './Services/InfoServices';
 import Notification from '../Notifications/Notify';
 
@@ -88,10 +89,12 @@ export default () => {
     const handleNext = async () => {
         let status;
         const username = store.user.username;
+        const { activeStep, type } = modalProps;
+        console.log("HANDLE NEXT");
 
-        if (modalProps.activeStep === 0) status = await fetchValidatePassword(modalProps, username);
-        //if (modalProps.type === "Email")  status = await fetchUpdateEmail(modalProps);
-        else status = await fetchUpdatePassword(modalProps, username);
+        if (activeStep === 0) status = await fetchValidatePassword(modalProps, username);
+        if (type === "Email" && activeStep === 1) status = await fetchUpdateEmail(modalProps, username);
+        if (type === "Password" && activeStep === 1) status = await fetchUpdatePassword(modalProps, username);
 
         return setModalProps({ ...status });
     };

@@ -39,6 +39,21 @@ export const fetchUpdatePassword = async (props, username) => {
     const result = await fetch("api/user/updatePassword", options);
     const json = await result.json();
 
+    return statusHandler(json, props);
+};
+
+export const fetchUpdateEmail = async (props, username) => {
+    const options = {
+        method: "POST",
+        body: JSON.stringify({
+            email: props.email,
+            username: username
+        }),
+        headers: { "Content-Type": "application/json" }
+    };
+    const result = await fetch("api/user/updateEmail", options);
+    const json = await result.json();
+
     console.log(json);
 
     return statusHandler(json, props);

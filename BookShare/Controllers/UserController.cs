@@ -12,10 +12,12 @@ namespace BookShare.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly TokenService _tokenService;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, TokenService tokenService)
         {
             _userService = userService;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -77,6 +79,23 @@ namespace BookShare.Controllers
             var result = await _userService.UpdatePassword(user);
 
             return new ObjectResult(result);
+        }
+
+        [Route("updateEmail")]
+        public async Task<IActionResult> UpdateEmail([FromBody] Users user)
+        {
+            if (await _userService.UpdateEmail(user))
+            {
+                CustomCodes result = await _tokenService.GenerateToken(user.Email);
+                return new ObjectResult(result);
+            }
+            else
+            {
+                return new ObjectResult(new CustomCodes
+                {
+                    statusCode = 500
+                });
+            }
         }
 
         [HttpDelete]

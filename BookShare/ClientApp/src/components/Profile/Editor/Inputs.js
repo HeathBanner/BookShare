@@ -45,7 +45,7 @@ export default ({ modalProps, handleChange }) => {
                 className={classes.input}
                 label={type}
                 value={email}
-                onChange={(e) => handleChange(e, type)}
+                onChange={(e) => handleChange(e, "email")}
             />
         );
     };

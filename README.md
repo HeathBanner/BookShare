@@ -32,8 +32,8 @@
 
 ## This application is still under construction
 
-We hope to be able to finish this by the end of February so we may beta testing.
+We hope to be able to finish this by the end of February so we may begin beta testing.
 
 ## Contact
 
-If you wish to contact us, you may email me at heathbanner@outlook.com
+If you wish to contact us, you may email us at heathbanner@outlook.com

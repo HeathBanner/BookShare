@@ -32,7 +32,7 @@
 
 ## This application is still under construction
 
-We how to be able to finish this by the end of February so we may beta testing.
+We hope to be able to finish this by the end of February so we may beta testing.
 
 ## Contact
 

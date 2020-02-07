@@ -1,8 +1,8 @@
-﻿export const fetchPost =  async (book) => {
+﻿export const fetchPost =  async (book, username) => {
     console.log(book);
     const options = {
         method: 'POST',
-        body: JSON.stringify({ ...book, Owner: "Heath" }),
+        body: JSON.stringify({ ...book, Owner: username }),
         headers: { "Content-Type": "application/json" }
     };
 
@@ -65,3 +65,56 @@ export const initNotify = {
 
 export const conditions = ["Mint", "Good", "Fair", "Rough"];
 export const studies = ["Mathmatics", "History", "Medical", "Computer Science", "Psycology"];
+export const states = [
+"AL",
+"AK",
+"AZ",
+"AR",
+"CA",
+"CO",
+"CT",
+"DE",
+"DC",
+"FL",
+"GA",
+"HI",
+"ID",
+"IL",
+"IN",
+"IA",
+"KS",
+"KY",
+"LA",
+"ME",
+"MT",
+"NE",
+"NV",
+"NH",
+"NJ",
+"NM",
+"NY",
+"NC",
+"ND",
+"OH",
+"OK",
+"OR",
+"MD",
+"MA",
+"MI",
+"MN",
+"MS",
+"MO",
+"PA",
+"RI",
+"SC",
+"SD",
+"TN",
+"TX",
+"UT",
+"VT",
+"VA",
+"WA",
+"WV",
+"WI",
+"WY"
+];

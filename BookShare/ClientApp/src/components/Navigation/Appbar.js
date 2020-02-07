@@ -36,7 +36,8 @@ const useStyles = makeStyles(() => ({
         right: 16,
         top: '50%',
         transform: 'translate(0%, -50%)',
-        padding: 12
+        padding: 12,
+        color: 'white'
     },
     progress: {
         position: 'absolute',

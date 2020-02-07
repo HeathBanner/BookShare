@@ -5,24 +5,26 @@ import Notify from '../Notifications/Notify';
 import { makeStyles } from '@material-ui/styles';
 import {
     TextField,
-    Typography,
-    Button,
     Paper,
+    Button,
     Select,
     MenuItem,
     Input
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-    container: {
+    inputContainer: {
         display: 'flex',
         alignContent: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
         padding: '10%',
-        backgroundColor: '#8860D0',
-        height: '100vh'
+        width:'70%'
     },
     header: {
         width: '100%',
@@ -110,7 +112,7 @@ export default ({ history }) => {
     };
 
     return (
-        <>
+        <Paper className={classes.inputContainer}>
             <TextField
                 className={classes.input}
                 value={info.city}
@@ -154,6 +156,6 @@ export default ({ history }) => {
                 handleClose={handleClose}
                 notification={notify}
             />
-        </>
+        </Paper>
     );
 };

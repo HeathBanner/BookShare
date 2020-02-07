@@ -14,26 +14,24 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '10%',
-        backgroundImage: `url(${Img})`,
-        backgroundSize: 'cover',
-        //backgroundColor: '#EAE7DC',
+        backgroundColor: '#EAE7DC',
         height: '100vh'
     },
     title: {
         textAlign: 'center',
         width: '100%',
-        color: 'white',
+        color: '#E98074',
     },
     introBody: {
         marginTop: 40,
-        color: 'white',
+        color: '#8E8D8A',
         textAlign: 'center'
     },
     divider: {
         marginBlockStart: '0.5em',
         marginBottom: 20,
         width: '60%',
-        backgroundColor: 'rgb(255, 255, 255, 0.4)'
+        backgroundColor: 'rgb(255, 255, 255, 1)'
     }
 }));
 

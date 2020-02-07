@@ -8,6 +8,7 @@ import {
     Popper,
     Fade,
     Paper,
+    Typography
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -32,7 +33,8 @@ const useStyles = makeStyles(() => ({
     },
     buttons: {
         width: '100%',
-        padding: 10
+        padding: 10,
+        whiteSpace: 'nowrap'
     }
 }));
 
@@ -43,7 +45,7 @@ const buttons = [
         func: false
     },
     {
-        text: "Books",
+        text: "My Books",
         url: "/bookshelf",
         func: false
     },
@@ -112,7 +114,9 @@ const User = ({ user, history }) => {
                                         className={classes.buttons}
                                         onClick={() => item.func ? "" : handleHistory(item.url)}
                                     >
-                                        {item.text}
+                                        <Typography variant="body2">
+                                            {item.text}
+                                        </Typography>
                                     </Button>
                                 );
                             })}

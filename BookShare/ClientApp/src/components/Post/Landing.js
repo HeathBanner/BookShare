@@ -10,7 +10,8 @@ import {
     initBook,
     initNotify,
     conditions,
-    studies
+    studies,
+    states
 } from './Services/PostServices';
 
 import { makeStyles } from '@material-ui/styles';
@@ -91,7 +92,7 @@ export default () => {
 
         if (flag.warning) return setNotify(flag);
 
-        const result = await fetchPost(book);
+        const result = await fetchPost(book, store.user.username);
         setNotify({ ...notify, ...result.notify });
         dispatch({ type: "UPDATE", payload: result.user });
     };
@@ -144,13 +145,26 @@ export default () => {
                     color="secondary"
                 />
 
-                <TextField
-                    className={classes.inputs}
-                    value={book.State}
-                    onChange={(e) => handleInput("State", e)}
-                    label="State"
-                    color="secondary"
-                />
+                <FormControl style={{ flexGrow: 1 }}>
+                    <InputLabel
+                        id="condition-label"
+                        color="secondary"
+                    >
+                        State
+                        </InputLabel>
+                    <Select
+                        value={book.State}
+                        onChange={(e) => handleInput("State", e)}
+                        labelId="condition-label"
+                        input={<Input color="secondary" />}
+                    >
+                        {states.map((item) => {
+                            return <MenuItem value={item} key={item}>
+                                {item}
+                            </MenuItem>;
+                        })}
+                    </Select>
+                </FormControl>
 
                 <TextField
                     className={classes.inputs}

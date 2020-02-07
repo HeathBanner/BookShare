@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
         alignContent: 'center',
         flexWrap: 'wrap',
         padding: '10%',
-        width: '90%'
+        width: '70%'
     },
     header: {
         width: '100%',

@@ -36,23 +36,45 @@ const useStyles = makeStyles(() => ({
         marginTop: 20
     },
     infoContainer: {
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
         marginBottom: 20,
         width: '100%'
     },
     username: {
         width: '100%',
-        textAlign: 'center'
+        textAlign: 'center',
+        color: '#E98074'
     },
-    divider: {
+    dividers: {
         marginBottom: 20,
         marginBlockStart: '0.5em',
         width: '60%',
         backgroundColor: 'rgb(0, 0, 0, 0.2)'
     },
-    email: {
+    infoTitle: {
+        textAlign: 'center',
+        width: '100%',
+        paddingTop: 12
+    },
+    info: {
+        width: '100%',
+        textAlign: 'center',
+        color: '#8E8D8A'
+    },
+    secure: {
+        background: 'black',
+        color: 'black',
+        display: 'inline',
+
+    },
+    buttons: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
     }
 }));
 
@@ -134,23 +156,31 @@ export default () => {
                 Hello, {username}
             </Typography>
 
-            <Divider className={classes.divider} />
+            <Divider className={classes.dividers} />
 
             {buttonInfo.map((button) => {
                 return (
                     <div className={classes.infoContainer}>
                         <IconButton
+                            className={classes.buttons}
                             onClick={button.click ? () => changeInfo("Email") : ""}
                         >
                             <Icon>{button.icon}</Icon>
                         </IconButton>
                         <Typography
-                            className={classes.email}
+                            className={classes.infoTitle}
                         >
                             {button.text}
+                        </Typography>
+
+                        <Divider className={classes.dividers} />
+
+                        <Typography
+                            className={classes.info}
+                        >
                             {button.data === "password"
                                 ?
-                                <p style={{ background: "black", display: 'inline' }}>You Thought</p>
+                                <p className={classes.secure}>You Thought</p>
                                 :
                                 buttonData(button.data, store.user)}
                         </Typography>

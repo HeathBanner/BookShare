@@ -80,7 +80,10 @@ const User = ({ user, history }) => {
     const open = Boolean(anchorEl);
     const id = open ? 'transition-popper' : undefined;
 
-    const handleHistory = (url) => history.push(url);
+    const handleHistory = (url) => {
+        history.push(url);
+        setAnchorEl(null);
+    };
 
     return (
         <>

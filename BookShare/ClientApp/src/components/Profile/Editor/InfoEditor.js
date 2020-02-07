@@ -72,6 +72,7 @@ export default ({
                                 </Step>
                             );
                         })}
+
                     </Stepper>
 
                     <Inputs

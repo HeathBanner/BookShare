@@ -133,13 +133,13 @@ export const buttonInfo = [
     {
         click: true,
         icon: "edit",
-        text: "Email: ",
+        text: "Email",
         data: "email"
     },
     {
         click: true,
         icon: "edit",
-        text: "Password: ",
+        text: "Password",
         data: "password"
     },
     {

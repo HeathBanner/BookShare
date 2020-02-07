@@ -11,21 +11,9 @@ const useStyles = makeStyles(() => ({
         alignContent: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '5%'
+        padding: '5%',
     },
 }));
-
-const posted = [
-    {
-        text: 'Book1'
-    },
-    {
-        text: 'Book2'
-    },
-    {
-        text: 'Book3'
-    }
-];
 
 export default () => {
 
@@ -38,7 +26,6 @@ export default () => {
                 <PersonalInfo
                     email="Test"
                     username="Heath"
-                    posted={posted}
                 />
 
 

@@ -48,6 +48,7 @@ export const initBook = {
     Title: "",
     Description: "",
     Condition: "",
+    LFBooks: [],
     EMedia: "",
     State: "",
     City: "",

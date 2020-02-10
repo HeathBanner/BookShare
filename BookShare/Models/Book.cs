@@ -14,5 +14,6 @@ namespace BookShare.Models
         public string EMedia { get; set; }
         public string ISBN { get; set; }
         public string CourseId { get; set; }
+        public string[] LFBooks { get; set; }
     }
 }

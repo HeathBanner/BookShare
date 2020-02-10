@@ -2,6 +2,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import Image from './Image';
+import LFBook from './LFBook';
 import ValidationScreen from '../ScreenCatchers/ValidationScreen';
 import Notify from '../Notifications/Notify';
 import {
@@ -107,6 +108,20 @@ export default () => {
         setBook({ ...initBook });
     };
 
+    const addBook = (title) => {
+        let newList = book.LFBooks;
+        newList.push(title);
+
+        setBook({ ...book, LFBooks: newList });
+    };
+    const removeBook = (index) => {
+        let newList = book.LFBooks;
+        newList.splice(index, 1);
+
+        setBook({ ...book, LFBooks: newList });
+    };
+    const notifyBook = (notification) => setNotify({ ...notify, ...notification });
+
     if (!store.loggedIn) return <ValidationScreen />;
     return (
         <Grid className={classes.container} item xs={12}>
@@ -151,7 +166,7 @@ export default () => {
                         color="secondary"
                     >
                         State
-                        </InputLabel>
+                    </InputLabel>
                     <Select
                         value={book.State}
                         onChange={(e) => handleInput("State", e)}
@@ -159,9 +174,11 @@ export default () => {
                         input={<Input color="secondary" />}
                     >
                         {states.map((item) => {
-                            return <MenuItem value={item} key={item}>
-                                {item}
-                            </MenuItem>;
+                            return (
+                                <MenuItem value={item} key={item}>
+                                    {item}
+                                </MenuItem>
+                            );
                         })}
                     </Select>
                 </FormControl>
@@ -280,6 +297,13 @@ export default () => {
                         color="secondary"
                     />
                 </div>
+
+                <LFBook
+                    addBook={addBook}
+                    removeBook={removeBook}
+                    notifyBook={notifyBook}
+                    list={book.LFBooks}
+                />
 
                 <Button
                     className={classes.button}

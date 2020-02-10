@@ -8,7 +8,12 @@ import {
     Button,
     Divider,
     CircularProgress,
-    Icon
+    Icon,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemIcon,
+    Collapse
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -44,7 +49,8 @@ const useStyles = makeStyles(() => ({
     },
     body: {
         width: '100%',
-        marginBottom: 30
+        marginBottom: 30,
+        textAlign: 'center'
     },
     infoContainer: {
         display: 'flex',
@@ -58,6 +64,18 @@ const useStyles = makeStyles(() => ({
     },
     buttons: {
         marginTop: 20,
+    },
+    listHeader: {
+        width: '100%',
+        marginTop: 10
+    },
+    listDivider: {
+        marginBlockStart: '0.5em',
+        width: '100%',
+        backgroundColor: 'rgb(0, 0, 0, 0.2)'
+    },
+    list: {
+        width: '100%',
     }
 }));
 
@@ -66,6 +84,7 @@ export default ({ params }) => {
     const classes = useStyles();
 
     const [book, setBook] = useState({ info: null, loaded: false });
+    const [open, setOpen] = useState(true);
 
     useEffect(() => {
         if (book.loaded) return;
@@ -83,7 +102,7 @@ export default ({ params }) => {
 
     if (!book.loaded) return <CircularProgress />;
 
-    const { image, title, description, condition, eMedia, city, state } = book.info;
+    const { image, title, description, condition, eMedia, city, state, lfBooks } = book.info;
 
     const renderCondition = () => {
         switch (condition) {
@@ -97,6 +116,8 @@ export default ({ params }) => {
                 return "sentiment_very_dissatisfied";
         }
     };
+
+    const handleOpen = () => setOpen(!open);
 
     return (
         <Grid className={classes.container} item xs={12}>
@@ -162,6 +183,26 @@ export default ({ params }) => {
                     </Typography>
                 </div>
 
+                <List className={classes.list}>
+                    <ListItem button onClick={handleOpen}>
+                        <ListItemIcon>
+                            <Icon>{open ? "expand_less" : "expand_more"}</Icon>
+                        </ListItemIcon>
+                        <ListItemText primary="Tradeable Books"/>
+                    </ListItem>
+
+                    <Divider className={classes.listDivider} />
+
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                        {lfBooks.map((item) => {
+                            return (
+                                <ListItem>
+                                    <ListItemText primary={item} />
+                                </ListItem>
+                            );
+                        })}
+                    </Collapse>
+                </List>
 
                 <Button
                     className={classes.buttons}

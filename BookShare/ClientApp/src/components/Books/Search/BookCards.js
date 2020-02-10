@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 import { withRouter } from 'react-router';
 
 import { makeStyles } from '@material-ui/styles';
@@ -9,7 +9,11 @@ import {
     CardActionArea,
     CardActions,
     CardContent,
-    CardMedia
+    CardMedia,
+    Divider,
+    List,
+    ListItem,
+    ListItemText
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -44,6 +48,18 @@ const useStyles = makeStyles(() => ({
     info: {
         width: '100%',
         marginTop: 15,
+    },
+    listHeader: {
+        width: '100%',
+        marginTop: 10
+    },
+    divider: {
+        marginBlockStart: '0.5em',
+        width: '100%',
+        backgroundColor: 'rgb(0, 0, 0, 0.2)'
+    },
+    list: {
+        width: '100%',
     }
 }));
 
@@ -51,9 +67,13 @@ const BookCards = ({ book, id, history }) => {
 
     const classes = useStyles();
 
+    const [open, setOpen] = useState(true);
+
+    const handleOpen = () => setOpen(!open);
+        
     const handleClick = () => history.push(`/books/${id}`);
 
-    const { image, title, description, condition, eMedia, state, city } = book;
+    const { image, title, description, condition, eMedia, state, city, lfBooks } = book;
 
     return (
         <Card className={classes.card}>
@@ -97,6 +117,25 @@ const BookCards = ({ book, id, history }) => {
                     >
                         External Media: {eMedia ? eMedia : "None"}
                     </Typography>
+
+                    <Typography
+                        className={classes.listHeader}
+                        color="textSecondary"
+                    >
+                        Tradeable Books
+                    </Typography>
+
+                    <Divider className={classes.divider} />
+
+                    <List className={classes.list}>
+                        {lfBooks.map((item) => {
+                            return (
+                                <ListItem>
+                                    <ListItemText primary={item} />
+                                </ListItem>
+                            );
+                        })}
+                    </List>
                 </CardContent>
             </CardActionArea>
             <CardActions className={classes.content}>

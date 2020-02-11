@@ -1,5 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react';
 
+import LFBooks from '../LFBooks';
+
 import { makeStyles } from '@material-ui/styles';
 import {
     Grid,
@@ -8,12 +10,7 @@ import {
     Button,
     Divider,
     CircularProgress,
-    Icon,
-    List,
-    ListItem,
-    ListItemText,
-    ListItemIcon,
-    Collapse
+    Icon
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -84,7 +81,6 @@ export default ({ params }) => {
     const classes = useStyles();
 
     const [book, setBook] = useState({ info: null, loaded: false });
-    const [open, setOpen] = useState(true);
 
     useEffect(() => {
         if (book.loaded) return;
@@ -116,8 +112,6 @@ export default ({ params }) => {
                 return "sentiment_very_dissatisfied";
         }
     };
-
-    const handleOpen = () => setOpen(!open);
 
     return (
         <Grid className={classes.container} item xs={12}>
@@ -183,26 +177,7 @@ export default ({ params }) => {
                     </Typography>
                 </div>
 
-                <List className={classes.list}>
-                    <ListItem button onClick={handleOpen}>
-                        <ListItemIcon>
-                            <Icon>{open ? "expand_less" : "expand_more"}</Icon>
-                        </ListItemIcon>
-                        <ListItemText primary="Tradeable Books"/>
-                    </ListItem>
-
-                    <Divider className={classes.listDivider} />
-
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        {lfBooks.map((item) => {
-                            return (
-                                <ListItem>
-                                    <ListItemText primary={item} />
-                                </ListItem>
-                            );
-                        })}
-                    </Collapse>
-                </List>
+                <LFBooks lfBooks={lfBooks} />
 
                 <Button
                     className={classes.buttons}

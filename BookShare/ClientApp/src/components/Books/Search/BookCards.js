@@ -1,5 +1,7 @@
-﻿import React, { useState } from 'react';
+﻿import React from 'react';
 import { withRouter } from 'react-router';
+
+import LFBooks from '../LFBooks';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -66,10 +68,6 @@ const useStyles = makeStyles(() => ({
 const BookCards = ({ book, id, history }) => {
 
     const classes = useStyles();
-
-    const [open, setOpen] = useState(true);
-
-    const handleOpen = () => setOpen(!open);
         
     const handleClick = () => history.push(`/books/${id}`);
 
@@ -118,24 +116,8 @@ const BookCards = ({ book, id, history }) => {
                         External Media: {eMedia ? eMedia : "None"}
                     </Typography>
 
-                    <Typography
-                        className={classes.listHeader}
-                        color="textSecondary"
-                    >
-                        Tradeable Books
-                    </Typography>
+                    <LFBooks lfBooks={lfBooks} />
 
-                    <Divider className={classes.divider} />
-
-                    <List className={classes.list}>
-                        {lfBooks.map((item) => {
-                            return (
-                                <ListItem>
-                                    <ListItemText primary={item} />
-                                </ListItem>
-                            );
-                        })}
-                    </List>
                 </CardContent>
             </CardActionArea>
             <CardActions className={classes.content}>

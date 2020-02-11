@@ -31,6 +31,14 @@ namespace BookShare.Controllers
             return document;
         }
 
+        [Route("getById/id={id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            CustomCodes result = await _bookService.GetById(id);
+
+            return new ObjectResult(result);
+        }
+
         [Route("id={id}")]
         public ActionResult<List<Region>> Get(string id)
         {

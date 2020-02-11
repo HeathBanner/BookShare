@@ -8,6 +8,7 @@ import Appbar from './components/Navigation/Appbar';
 import Home from './pages/Home/index';
 
 import Books from './pages/Books/Index';
+import EditBook from './pages/Profile/EditBook';
 import Search from './pages/Books/Search/Index';
 import BookView from './pages/Books/BookView/BookView';
 import Post from './pages/Post';
@@ -40,6 +41,7 @@ export default () => {
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/books/:title/:state/:city" component={Search} />
+                <Route path="/books/edit/:id" component={EditBook} />
                 <Route path="/books/:id" component={BookView} />
                 <Route exact path="/books" component={Books} />
                 <Route exact path="/post" component={Post} />

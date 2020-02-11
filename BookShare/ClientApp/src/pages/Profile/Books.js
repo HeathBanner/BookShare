@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import BookInfo from '../../components/Profile/BookInfo';
 import EditBook from '../../components/Profile/Books/EditBook';
@@ -8,7 +9,7 @@ import { fetchDelete, initModal, initNotify } from '../../components/Profile/Ser
 
 import { Grid } from '@material-ui/core';
 
-export default () => {
+const Books = ({ history }) => {
 
     const store = useSelector(store => store);
     const dispatch = useDispatch();
@@ -23,7 +24,7 @@ export default () => {
         const { username } = store.user;
 
         let result;
-        if (type === "edit") return console.log("EDIT");
+        if (type === "edit") return history.push(`books/edit/${id}`);
         if (type === "delete") result = await fetchDelete(id, username);
         
         setNotify({ ...notify, ...result.notify });
@@ -64,3 +65,5 @@ export default () => {
         </Grid>
     );
 };
+
+export default withRouter(Books);

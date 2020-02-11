@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using BookShare.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -27,8 +28,6 @@ namespace BookShare.Services
 
         public HttpResponseMessage Create(Users user)
         {
-            Console.WriteLine("\n\n\n {0} \n\n\n", user.Posted[0]);
-
             var filter = Builders<Users>.Filter.Eq("Username", "Heath");
             var update = Builders<Users>.Update
                 .Set("Email", "Test")
@@ -37,6 +36,18 @@ namespace BookShare.Services
             _users.UpdateOne(filter, update);
 
             return new HttpResponseMessage(HttpStatusCode.Created);
+        }
+
+        public async Task<CustomCodes> GetById(string id)
+        {
+            var filter = Builders<Region>.Filter.Eq("Id", new Guid(id));
+            var result = await _books.Find(filter).FirstOrDefaultAsync();
+
+            return new CustomCodes
+            {
+                statusCode = 200,
+                book = result
+            };
         }
 
         public List<Region> GetBooks(string title, string state, string city, out List<Region> document)

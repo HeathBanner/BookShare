@@ -8,6 +8,7 @@ import ValidationScreen from '../ScreenCatchers/ValidationScreen';
 import Notify from '../Notifications/Notify';
 import {
     fetchPost,
+    fetchById,
     preSubmit,
     initBook,
     initNotify,
@@ -76,7 +77,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export default () => {
+export default ({ editId }) => {
 
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -89,6 +90,19 @@ export default () => {
     useEffect(() => {
         console.log(book);
     }, [book]);
+    useEffect(() => {
+        if (!editId) return;
+
+        handleBook(editId);
+    }, []);
+
+    const handleBook = async () => {
+        const result = await fetchById(editId);
+
+        if (result.warning) return console.log("WARNING");
+
+        setBook(result.book);
+    };
 
     const handleInput = (type, event) => {
         setBook({ ...book, [type]: { error: false, value: event.target.value } });
@@ -119,16 +133,16 @@ export default () => {
     };
 
     const addBook = (title) => {
-        let newList = book.LFBooks;
+        let newList = book.lfBooks;
         newList.push(title);
 
-        setBook({ ...book, LFBooks: newList });
+        setBook({ ...book, lfBooks: newList });
     };
     const removeBook = (index) => {
-        let newList = book.LFBooks;
+        let newList = book.lfBooks;
         newList.splice(index, 1);
 
-        setBook({ ...book, LFBooks: newList });
+        setBook({ ...book, lfBooks: newList });
     };
     const notifyBook = (notification) => setNotify({ ...notify, ...notification });
 
@@ -138,7 +152,7 @@ export default () => {
             <Paper className={classes.paper}>
 
                 <img
-                    src={book.Image.value ? book.Image.value : ImagePlaceholder}
+                    src={book.image.value ? book.image.value : ImagePlaceholder}
                     alt="Book Field"
                     onClick={handleImage}
                     style={{ marginBottom: 20 }}
@@ -152,26 +166,26 @@ export default () => {
 
                 <TextField
                     className={classes.inputs}
-                    value={book.Title.value}
-                    onChange={(e) => handleInput("Title", e)}
+                    value={book.title.value}
+                    onChange={(e) => handleInput("title", e)}
                     placeholder="Book Name"
                     inputProps={{
                         style: { fontSize: "1.5rem", textAlign: 'center' }
                     }}
                     color="secondary"
                     helperText="required"
-                    error={book.Title.error}
+                    error={book.title.error}
                 />
 
                 <TextField
                     className={classes.inputs}
-                    value={book.Description.value}
-                    onChange={(e) => handleInput("Description", e)}
+                    value={book.description.value}
+                    onChange={(e) => handleInput("description", e)}
                     placeholder="Description"
                     multiline={true}
                     color="secondary"
                     helperText="required"
-                    error={book.Description.error}
+                    error={book.description.error}
                 />
 
                 <FormControl style={{ flexGrow: 1 }}>
@@ -182,13 +196,13 @@ export default () => {
                         State
                     </InputLabel>
                     <Select
-                        value={book.State.value}
-                        onChange={(e) => handleInput("State", e)}
+                        value={book.state.value}
+                        onChange={(e) => handleInput("state", e)}
                         labelId="condition-label"
                         input={<Input
                             color="secondary"
                             helperText="required"
-                            error={book.State.error}
+                            error={book.state.error}
                         />}
                     >
                         {states.map((item) => {
@@ -204,12 +218,12 @@ export default () => {
 
                 <TextField
                     className={classes.inputs}
-                    value={book.City.value}
-                    onChange={(e) => handleInput("City", e)}
+                    value={book.city.value}
+                    onChange={(e) => handleInput("city", e)}
                     label="City"
                     color="secondary"
                     helperText="required"
-                    error={book.City.error}
+                    error={book.city.error}
                 />
 
                 <div className={classes.inputContainers}>
@@ -227,13 +241,13 @@ export default () => {
                             Study
                         </InputLabel>
                         <Select
-                            value={book.Study.value}
-                            onChange={(e) => handleInput("Study", e)}
+                            value={book.study.value}
+                            onChange={(e) => handleInput("study", e)}
                             labelId="condition-label"
                             input={<Input
                                 color="secondary"
                                 helperText="required"
-                                error={book.Study.error}
+                                error={book.study.error}
                             />}
                         >
                             {studies.map((item) => {
@@ -262,12 +276,12 @@ export default () => {
                             Condition
                         </InputLabel>
                         <Select
-                            value={book.Condition.value}
-                            onChange={(e) => handleInput("Condition", e)}
+                            value={book.condition.value}
+                            onChange={(e) => handleInput("condition", e)}
                             labelId="condition-label"
                             input={<Input
                                 color="secondary"
-                                error={book.Condition.error}
+                                error={book.condition.error}
                             />}
                         >
                             {conditions.map((item) => {
@@ -289,11 +303,11 @@ export default () => {
 
                     <TextField
                         style={{ flexGrow: 1 }}
-                        value={book.EMedia.value}
-                        onChange={(e) => handleInput("EMedia", e)}
+                        value={book.eMedia.value}
+                        onChange={(e) => handleInput("eMedia", e)}
                         placeholder="External Media"
                         color="secondary"
-                        error={book.EMedia.error}
+                        error={book.eMedia.error}
                     />
                 </div>
 
@@ -306,11 +320,11 @@ export default () => {
 
                     <TextField
                         style={{ flexGrow: 1 }}
-                        value={book.ISBN.value}
-                        onChange={(e) => handleInput("ISBN", e)}
+                        value={book.isbn.value}
+                        onChange={(e) => handleInput("isbn", e)}
                         placeholder="1111-2222-33333"
                         color="secondary"
-                        error={book.ISBN.error}
+                        error={book.isbn.error}
                     />
                 </div>
 
@@ -323,11 +337,11 @@ export default () => {
 
                     <TextField
                         style={{ flexGrow: 1 }}
-                        value={book.CourseId.value}
-                        onChange={(e) => handleInput("CourseId", e)}
+                        value={book.courseId.value}
+                        onChange={(e) => handleInput("courseId", e)}
                         placeholder="1111-2222-33333"
                         color="secondary"
-                        error={book.CourseId.error}
+                        error={book.courseId.error}
                     />
                 </div>
 
@@ -335,7 +349,7 @@ export default () => {
                     addBook={addBook}
                     removeBook={removeBook}
                     notifyBook={notifyBook}
-                    list={book.LFBooks}
+                    list={book.lfBooks}
                 />
 
                 <Button

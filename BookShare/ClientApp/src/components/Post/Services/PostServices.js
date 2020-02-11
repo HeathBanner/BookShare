@@ -22,42 +22,62 @@
     };
 };
 
+export const fetchById = async (id) => {
+    const result = await fetch(`api/book/getById/id=${id}`);
+    const json = await result.json();
+
+    console.log(json);
+    const reObj = assignValue(json.book);
+    return { book: reObj };
+};
+
+const assignValue = (book) => {
+    let newObj = initBook;
+    Object.entries(book).forEach(([key, value]) => {
+        if (key === "lfBooks") newObj[key] = value;
+        else newObj[key] = { error: false, value: value };
+    });
+
+    console.log(newObj);
+    return newObj;
+};
+
 export const preSubmit = (book, notify) => {
     switch (true) {
-        case !book.Image.value:
+        case !book.image.value:
             return {
                 notify: { ...notify, warning: true, message: "Image of book is required" },
-                book: { ...book, Image: { ...book.Image, error: true } }
+                book: { ...book, image: { ...book.image, error: true } }
             };
-        case !book.Title.value:
+        case !book.title.value:
             return {
                 notify: { ...notify, warning: true, message: "Title is required" },
-                book: { ...book, Title: { ...book.Title, error: true } }
+                book: { ...book, title: { ...book.title, error: true } }
             };
-        case !book.Description.value:
+        case !book.description.value:
             return {
                 notify: { ...notify, warning: true, message: "Description is required" },
-                book: { ...book, Description: { ...book.Description, error: true } }
+                book: { ...book, description: { ...book.description, error: true } }
             };
-        case !book.Condition.value:
+        case !book.condition.value:
             return {
                 notify: { ...notify, warning: true, message: "Condition is required" },
-                book: { ...book, Condition: { ...book.Condition, error: true } }
+                book: { ...book, condition: { ...book.condition, error: true } }
             };
-        case !book.State.value:
+        case !book.state.value:
             return {
                 notify: { ...notify, warning: true, message: "State field is required" },
-                book: { ...book, State: { ...book.State, error: true } }
+                book: { ...book, state: { ...book.state, error: true } }
             };
-        case !book.City.value:
+        case !book.city.value:
             return {
                 notify: { ...notify, warning: true, message: "City field is required" },
-                book: { ...book, City: { ...book.City, error: true } }
+                book: { ...book, city: { ...book.city, error: true } }
             };
-        case !book.Study.value:
+        case !book.study.value:
             return {
                 notify: { ...notify, warning: true, message: "Study field is required" },
-                book: { ...book, Study: { ...book.Study, error: true } }
+                book: { ...book, study: { ...book.study, error: true } }
             };
         default:
             return {
@@ -69,17 +89,17 @@ export const preSubmit = (book, notify) => {
 const initValues = { error: false, value: "" };
 
 export const initBook = {
-    Image: initValues,
-    Title: initValues,
-    Description: initValues,
-    Condition: initValues,
-    LFBooks: [],
-    EMedia: initValues,
-    State: initValues,
-    City: initValues,
-    Study: initValues,
-    ISBN: initValues,
-    CourseId: initValues,
+    image: initValues,
+    title: initValues,
+    description: initValues,
+    condition: initValues,
+    lfBooks: [],
+    eMedia: initValues,
+    state: initValues,
+    city: initValues,
+    study: initValues,
+    isbn: initValues,
+    courseId: initValues,
 };
 
 export const initNotify = {

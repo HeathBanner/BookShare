@@ -11,11 +11,7 @@ import {
     CardActionArea,
     CardActions,
     CardContent,
-    CardMedia,
-    Divider,
-    List,
-    ListItem,
-    ListItemText
+    CardMedia
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -75,54 +71,52 @@ const BookCards = ({ book, id, history }) => {
 
     return (
         <Card className={classes.card}>
-            <CardActionArea
-                onClick={handleClick}
-            >
-                <CardMedia
-                    className={classes.media}
-                    image={image}
-                    title={title}
-                />
-                <CardContent className={classes.content}>
-                    <Typography
-                        className={classes.title}
-                        variant="h5"
-                    >
-                        {title}
-                    </Typography>
+            <CardMedia
+                className={classes.media}
+                image={image}
+                title={title}
+            />
+            <CardContent className={classes.content}>
+                <Typography
+                    className={classes.title}
+                    variant="h5"
+                >
+                    {title}
+                </Typography>
 
-                    <Typography className={classes.description}>
-                        {description}
-                    </Typography>
+                <Typography className={classes.description}>
+                    {description}
+                </Typography>
 
-                    <Typography
-                        className={classes.info}
-                        color="textSecondary"
-                    >
-                        Location: {city}, {state}
-                    </Typography>
+                <Typography
+                    className={classes.info}
+                    color="textSecondary"
+                >
+                    Location: {city}, {state}
+                </Typography>
 
-                    <Typography
-                        className={classes.info}
-                        color="textSecondary"
-                    >
-                        Condition: {condition}
-                    </Typography>
+                <Typography
+                    className={classes.info}
+                    color="textSecondary"
+                >
+                    Condition: {condition}
+                </Typography>
 
-                    <Typography
-                        className={classes.info}
-                        color="textSecondary"
-                    >
-                        External Media: {eMedia ? eMedia : "None"}
-                    </Typography>
+                <Typography
+                    className={classes.info}
+                    color="textSecondary"
+                >
+                    External Media: {eMedia ? eMedia : "None"}
+                </Typography>
 
-                    <LFBooks lfBooks={lfBooks} />
+                <LFBooks lfBooks={lfBooks} />
 
-                </CardContent>
-            </CardActionArea>
+            </CardContent>
             <CardActions className={classes.content}>
-                <Button>
-                    Track
+                <Button
+                    onClick={handleClick}
+                >
+                    View
                 </Button>
                 <Button>
                     Request

@@ -24,37 +24,62 @@
 
 export const preSubmit = (book, notify) => {
     switch (true) {
-        case !book.Image:
-            return { ...notify, warning: true, message: "Image of book is required" };
-        case !book.Title:
-            return { ...notify, warning: true, message: "Title is required" };
-        case !book.Description:
-            return { ...notify, warning: true, messsage: "Description is required" };
-        case !book.Condition:
-            return { ...notify, warning: true, message: "Condition is required" };
-        case !book.State:
-            return { ...notify, warning: true, message: "State field is required" };
-        case !book.City:
-            return { ...notify, warning: true, message: "City field is required" };
-        case !book.Study:
-            return { ...notify, warning: true, message: "Study field is required" };
+        case !book.Image.value:
+            return {
+                notify: { ...notify, warning: true, message: "Image of book is required" },
+                book: { ...book, Image: { ...book.Image, error: true } }
+            };
+        case !book.Title.value:
+            return {
+                notify: { ...notify, warning: true, message: "Title is required" },
+                book: { ...book, Title: { ...book.Title, error: true } }
+            };
+        case !book.Description.value:
+            return {
+                notify: { ...notify, warning: true, message: "Description is required" },
+                book: { ...book, Description: { ...book.Description, error: true } }
+            };
+        case !book.Condition.value:
+            return {
+                notify: { ...notify, warning: true, message: "Condition is required" },
+                book: { ...book, Condition: { ...book.Condition, error: true } }
+            };
+        case !book.State.value:
+            return {
+                notify: { ...notify, warning: true, message: "State field is required" },
+                book: { ...book, State: { ...book.State, error: true } }
+            };
+        case !book.City.value:
+            return {
+                notify: { ...notify, warning: true, message: "City field is required" },
+                book: { ...book, City: { ...book.City, error: true } }
+            };
+        case !book.Study.value:
+            return {
+                notify: { ...notify, warning: true, message: "Study field is required" },
+                book: { ...book, Study: { ...book.Study, error: true } }
+            };
         default:
-            return { error: false };
+            return {
+                notify: { warning: false }
+            };
     }
 };
 
+const initValues = { error: false, value: "" };
+
 export const initBook = {
-    Image: "",
-    Title: "",
-    Description: "",
-    Condition: "",
+    Image: initValues,
+    Title: initValues,
+    Description: initValues,
+    Condition: initValues,
     LFBooks: [],
-    EMedia: "",
-    State: "",
-    City: "",
-    Study: "",
-    ISBN: "",
-    CourseId: ""
+    EMedia: initValues,
+    State: initValues,
+    City: initValues,
+    Study: initValues,
+    ISBN: initValues,
+    CourseId: initValues,
 };
 
 export const initNotify = {

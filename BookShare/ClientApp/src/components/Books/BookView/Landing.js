@@ -182,12 +182,6 @@ export default ({ params }) => {
                 <Button
                     className={classes.buttons}
                 >
-                    Track
-                </Button>
-
-                <Button
-                    className={classes.buttons}
-                >
                     Request
                 </Button>
             </Paper>

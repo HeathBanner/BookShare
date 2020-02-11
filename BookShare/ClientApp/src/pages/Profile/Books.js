@@ -34,13 +34,22 @@ export default () => {
 
     if (!store.user) return "";
     return (
-        <Grid container>
+        <Grid
+            style={{
+                display: 'flex',
+                alignContent: 'center',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexWrap: 'wrap'
+            }}
+            container
+        >
             {!store.user.posted
                 ?
                 ""
                 :
                 store.user.posted.map((item) =>
-                <BookInfo book={item} handleOpen={handleOpen} />)}
+                    <BookInfo key={item.id} book={item} handleOpen={handleOpen} />)}
 
             <EditBook
                 modal={modal}

@@ -14,6 +14,7 @@ import {
 const useStyles = makeStyles(() => ({
     card: {
         marginTop: 30,
+        width: '90%'
     },
     media: {
         height: 140

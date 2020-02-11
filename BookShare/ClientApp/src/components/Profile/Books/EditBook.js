@@ -14,12 +14,23 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
         padding: '5%',
+        width: '80%'
     },
     buttons: {
         width: '100%',
         padding: 10,
-        marginBottom: 20
+        color: 'white',
+        backgroundColor: '#E85A4F',
+        transition: 'background-color 0.4s ease',
+        '&:hover': {
+            backgroundColor: '#E98074',
+            color: 'white'
+        }
     }
 }));
 
@@ -36,6 +47,7 @@ export default ({ modal, handleClose, handleService }) => {
                 <Button
                     className={classes.buttons}
                     onClick={() => handleService("edit", modal.id)}
+                    style={{ marginBottom: 20 }}
                 >
                     Edit
                 </Button>

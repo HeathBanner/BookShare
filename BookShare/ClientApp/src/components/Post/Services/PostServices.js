@@ -1,5 +1,4 @@
 ﻿export const fetchPost =  async (book, username) => {
-    console.log(book);
     const options = {
         method: 'POST',
         body: JSON.stringify({ ...book, Owner: username }),
@@ -10,6 +9,30 @@
     const json = await res.json();
 
     if (json.statusCode !== 201) {
+        return {
+            notify: { error: true, message: "Something went wrong :(" },
+            user: null
+        };
+    }
+
+    return {
+        notify: { success: true, message: "Book has been posted!" },
+        user: json.user
+    };
+};
+
+export const fetchEdit = async (book, username, id) => {
+    const newBook = ExtractValues(book);
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({ ...newBook, Owner: username, Id: id }),
+        headers: { "Content-Type": "application/json" }
+    };
+
+    const res = await fetch("api/book/editBook", options);
+    const json = await res.json();
+
+    if (json.statusCode !== 200) {
         return {
             notify: { error: true, message: "Something went wrong :(" },
             user: null
@@ -38,7 +61,16 @@ const assignValue = (book) => {
         else newObj[key] = { error: false, value: value };
     });
 
-    console.log(newObj);
+    return newObj;
+};
+
+const ExtractValues = (book) => {
+    let newObj = {};
+    Object.entries(book).forEach(([key, value]) => {
+        if (key === "lfBooks") newObj[key] = value;
+        else newObj[key] = value.value;
+    });
+
     return newObj;
 };
 

@@ -97,5 +97,26 @@ namespace BookShare.Services
                 user = result
             };
         }
+
+        public async Task<CustomCodes> EditBook(Region book)
+        {
+            var builders = Builders<Users>.Filter;
+
+            var bFilter = Builders<Region>.Filter.Eq("Id", book.Id);
+            var bResult = await _books.FindOneAndReplaceAsync(bFilter, book);
+
+            var uFilter = builders.And(
+                builders.Eq(x => x.Username, book.Owner),
+                builders.ElemMatch(x => x.Posted, y => y.Id == book.Id));
+            var uOptions = new FindOneAndUpdateOptions<Users>() { ReturnDocument = ReturnDocument.After };
+            var uUpdate = Builders<Users>.Update.Set(x => x.Posted[-1], book);
+            var uResult = await _users.FindOneAndUpdateAsync(uFilter, uUpdate, uOptions);
+
+            return new CustomCodes
+            {
+                statusCode = 200,
+                user = uResult
+            };
+        }
     }
 }

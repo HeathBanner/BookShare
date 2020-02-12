@@ -69,5 +69,13 @@ namespace BookShare.Controllers
 
             return StatusCode(201, response);
         }
+
+        [Route("editBook")]
+        public async Task<IActionResult> EditBook([FromBody] Region book)
+        {
+            var result = await _bookService.EditBook(book);
+
+            return new ObjectResult(result);
+        }
     }
 }

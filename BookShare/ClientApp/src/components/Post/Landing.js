@@ -8,6 +8,7 @@ import ValidationScreen from '../ScreenCatchers/ValidationScreen';
 import Notify from '../Notifications/Notify';
 import {
     fetchPost,
+    fetchEdit,
     fetchById,
     preSubmit,
     initBook,
@@ -109,15 +110,17 @@ export default ({ editId }) => {
     };
 
     const handleSubmit = async () => {
+        let result;
+        const username = store.user.username;
         const flag = preSubmit(book, notify);
 
         if (flag.notify.warning) {
-            console.log(flag);
             setBook(flag.book);
             return setNotify(flag.notify);
         }
+        if (editId) result = await fetchEdit(book, username, editId);
+        else result = await fetchPost(book, username);
 
-        const result = await fetchPost(book, store.user.username);
         setNotify({ ...notify, ...result.notify });
         dispatch({ type: "UPDATE", payload: result.user });
     };

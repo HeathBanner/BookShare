@@ -8,13 +8,31 @@
     return { list: json, loaded: true };
 };
 
-export const fetchByBook = async (params) => {
+export const fetchByBook = async (params, lfBooks) => {
     const { title, state, city } = params;
+    console.log({
+        title: title,
+        state: state,
+        city: city,
+        lfBooks: lfBooks
+    });
+    const options = {
+        method: "POST",
+        body: JSON.stringify({
+            title: title,
+            state: state,
+            city: city,
+            lfBooks: lfBooks
+        }),
+        headers: { "Content-Type": "application/json" }
+    };
 
-    const result = await fetch(`api/book/title=${title}&state=${state}&city=${city}`);
+    const result = await fetch(`api/book/fetchBooks`, options);
     const json = await result.json();
 
-    return { list: json, loaded: true };
+    console.log(json);
+
+    return { list: json.books, loaded: true };
 };
 
 export const genFilter = async (checked, params) => {

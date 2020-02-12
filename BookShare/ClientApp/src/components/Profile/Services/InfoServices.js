@@ -191,7 +191,7 @@ export const buttonData = (data, props) => {
         case "email":
             return props.email;
         case "lfBooks":
-            return !props.lfBooks ? "Click the Edit button to add some!" : props.lfBooks;
+            return props.lfBooks.length === 0 ? "Click the Edit button to add some!" : props.lfBooks;
         default:
             return "";
     }

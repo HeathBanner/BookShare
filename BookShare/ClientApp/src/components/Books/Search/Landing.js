@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import RegionQuery from '../RegionQuery';
@@ -55,13 +56,16 @@ const useStyles = makeStyles(() => ({
 const Landing = ({ params }) => {
 
     const classes = useStyles();
+    const store = useSelector(state => state);
 
     const [page, setPage] = useState(0);
     const [modal, setModal] = useState({ ...initModal });
     const [books, setBooks] = useState({ list: null, loaded: false });
     const [checked, setChecked] = useState({ ...initFilter });
 
-    useEffect(() => { if (!books.loaded) fetchSwitch(); }, []);
+    useEffect(() => {
+        if (!books.loaded && store.user) fetchSwitch();
+    }, [store]);
 
     const handleOpen = (type) => event => {
         setModal({ ...modal, [type]: true });
@@ -88,7 +92,7 @@ const Landing = ({ params }) => {
 
     const fetchSwitch = async () => {
         let result;
-        if (params.title) result = await fetchByBook(params);
+        if (params.title) result = await fetchByBook(params, store.user.lfBooks);
 
         setBooks({ ...result });
     };

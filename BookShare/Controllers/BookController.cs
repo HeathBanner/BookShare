@@ -21,20 +21,18 @@ namespace BookShare.Controllers
         }
 
         [HttpGet]
-        [Route("Title={Title}&State={State}&City={City}")]
-        public ActionResult<List<Region>> Get(string Title, string State, string City)
-        {
-            List<Region> document;
-
-            _bookService.GetBooks(Title, State, City, out document);
-
-            return document;
-        }
-
         [Route("getById/id={id}")]
         public async Task<IActionResult> GetById(string id)
         {
             CustomCodes result = await _bookService.GetById(id);
+
+            return new ObjectResult(result);
+        }
+
+        [Route("fetchBooks")]
+        public async Task<IActionResult> GetBooks([FromBody] Region book)
+        {
+            var result = await _bookService.GetBooks(book);
 
             return new ObjectResult(result);
         }

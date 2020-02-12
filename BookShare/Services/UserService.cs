@@ -115,5 +115,23 @@ namespace BookShare.Services
 
             return true;
         }
+
+        public async Task<CustomCodes> UpdateLF(Users user)
+        {
+            var filter = Builders<Users>.Filter.Eq("Username", user.Username);
+            var update = Builders<Users>.Update.Set("LFBooks", user.LFBooks);
+            var options = new FindOneAndUpdateOptions<Users>()
+            {
+                ReturnDocument = ReturnDocument.After
+            };
+
+            var result = await _users.FindOneAndUpdateAsync(filter, update, options);
+
+            return new CustomCodes
+            {
+                statusCode = 200,
+                user = result
+            };
+        }
     }
 }

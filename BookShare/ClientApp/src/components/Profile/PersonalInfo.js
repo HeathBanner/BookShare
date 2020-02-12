@@ -2,14 +2,17 @@
 import { useSelector, useDispatch } from 'react-redux';
 
 import InfoEditor from './Editor/InfoEditor';
+import LFBooksEditor from '../../components/Post/LFBook';
 import {
     initModalProps,
+    initLFBooks,
     emailSteps,
     passwordSteps,
     getStepContent,
     fetchValidatePassword,
     fetchUpdatePassword,
     fetchUpdateEmail,
+    fetchUpdateLF,
     buttonInfo,
     buttonData
 } from './Services/InfoServices';
@@ -21,7 +24,8 @@ import {
     Typography,
     Divider,
     IconButton,
-    Icon
+    Icon,
+    Modal
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -85,9 +89,10 @@ export default () => {
     const store = useSelector(store => store);
     const dispatch = useDispatch();
 
-    const { email, username, posted } = store.user;
+    const { username } = store.user;
 
     const [modalProps, setModalProps] = useState({ ...initModalProps });
+    const [lfBooks, setLFBooks] = useState({ ...initLFBooks });
 
     const changeInfo = (type) => {
         setModalProps({
@@ -95,6 +100,48 @@ export default () => {
             open: true,
             type: type
         });
+    };
+
+    const handleLFBooks = () => setLFBooks({ ...lfBooks, open: true });
+    const closeLFBooks = () => setLFBooks({ ...lfBooks, open: false });
+    const handleList = () => setLFBooks({ ...lfBooks, openList: !lfBooks.openList });
+
+    const lfBooksInput = (event) => {
+        setLFBooks({ ...lfBooks, value: event.target.value });
+    };
+
+    const addBook = () => {
+        let newList = lfBooks.list;
+        newList.push(lfBooks.value);
+
+        setLFBooks({ ...lfBooks, list: newList, value: "" });
+    };
+    const removeBook = (index) => {
+        let newList = lfBooks.list;
+        newList.splice(index, 1);
+
+        setLFBooks({ ...lfBooks, list: newList });
+    };
+
+    const handleSave = async () => {
+        const result = await fetchUpdateLF(lfBooks.list, username);
+
+        setLFBooks({ ...initLFBooks });
+        dispatch({ type: "UPDATE", payload: result });
+    };
+
+    const handleType = (type) => {
+        switch (type) {
+            case "email":
+            case "password":
+                changeInfo(type);
+                break;
+            case "lfBooks":
+                handleLFBooks();
+                break;
+            default:
+                break;
+        }
     };
 
     const closeModal = () => setModalProps({ ...initModalProps });
@@ -112,16 +159,14 @@ export default () => {
 
     const handleNext = async () => {
         let status;
-        const username = store.user.username;
         const { activeStep, type } = modalProps;
 
         if (activeStep === 0) status = await fetchValidatePassword(modalProps, username);
-        if (type === "Email" && activeStep === 1) status = await fetchUpdateEmail(modalProps, username);
-        if (type === "Password" && activeStep === 1) status = await fetchUpdatePassword(modalProps, username);
+        if (type === "email" && activeStep === 1) status = await fetchUpdateEmail(modalProps, username);
+        if (type === "password" && activeStep === 1) status = await fetchUpdatePassword(modalProps, username);
 
         return setModalProps({ ...status });
     };
-
     const handleBack = () => {
         setModalProps(prevState => ({ ...prevState, activeStep: prevState.activeStep - 1 }));
     };
@@ -140,12 +185,30 @@ export default () => {
                 handleChange={inputModal}
                 handleNext={handleNext}
                 handleBack={handleBack}
-                steps={modalProps.type === "Email" ? emailSteps : passwordSteps}
+                steps={modalProps.type === "email" ? emailSteps : passwordSteps}
                 getStepContent={getStepContent}
             />
+            
+            <Modal
+                open={lfBooks.open}
+                onClose={closeLFBooks}
+                timeout="auto"
+                unmountOnExit
+            >
+                <LFBooksEditor
+                    lfBooks={lfBooks}
+                    handleClose={closeLFBooks}
+                    handleChange={lfBooksInput}
+                    addBook={addBook}
+                    removeBook={removeBook}
+                    handleList={handleList}
+                    handleSave={handleSave}
+                    isModal={true}
+                />
+            </Modal>
 
             <Notification
-                notification={modalProps.notify}
+                notification={modalProps.open ? modalProps.notify : lfBooks.notify}
                 handleClose={closeNotify}
             />
 
@@ -163,7 +226,7 @@ export default () => {
                     <div className={classes.infoContainer}>
                         <IconButton
                             className={classes.buttons}
-                            onClick={button.click ? () => changeInfo("Email") : ""}
+                            onClick={() => handleType(button.data)}
                         >
                             <Icon>{button.icon}</Icon>
                         </IconButton>

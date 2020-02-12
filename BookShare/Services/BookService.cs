@@ -86,7 +86,7 @@ namespace BookShare.Services
         {
             _books.InsertOne(book);
 
-            var filter = Builders<Users>.Filter.Eq(x => x.Username, "Heath");
+            var filter = Builders<Users>.Filter.Eq(x => x.Username, book.Owner);
             var options = new FindOneAndUpdateOptions<Users>() { ReturnDocument = ReturnDocument.After };
             var update = Builders<Users>.Update.Push(x => x.Posted, book);
 

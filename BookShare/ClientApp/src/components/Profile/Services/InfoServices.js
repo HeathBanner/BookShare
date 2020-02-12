@@ -59,6 +59,21 @@ export const fetchUpdateEmail = async (props, username) => {
     return statusHandler(json, props);
 };
 
+export const fetchUpdateLF = async (list, username) => {
+    const options = {
+        method: "POST",
+        body: JSON.stringify({ lfBooks: list, username: username }),
+        headers: { "Content-Type": "application/json" }
+    };
+
+    const result = await fetch("api/user/updateLF", options);
+    const json = await result.json();
+
+    console.log(json);
+
+    return json.user;
+};
+
 const statusHandler = (json, props) => {
     switch (json.statusCode) {
         case 200:
@@ -96,6 +111,19 @@ export const initModalProps = {
     newPassword0: "",
     newPassword1: "",
     activeStep: 0,
+    notify: {
+        error: false,
+        warning: false,
+        success: false,
+        message: ""
+    }
+};
+
+export const initLFBooks = {
+    open: false,
+    value: "",
+    list: [],
+    openList: true,
     notify: {
         error: false,
         warning: false,
@@ -147,6 +175,12 @@ export const buttonInfo = [
         icon: "open_in_browser",
         text: "Books Posted: ",
         data: "posted"
+    },
+    {
+        click: true,
+        icon: "edit",
+        text: "Books of Interest",
+        data: "lfBooks"
     }
 ];
 
@@ -156,6 +190,8 @@ export const buttonData = (data, props) => {
             return props.posted.length;
         case "email":
             return props.email;
+        case "lfBooks":
+            return !props.lfBooks ? "Click the Edit button to add some!" : props.lfBooks;
         default:
             return "";
     }

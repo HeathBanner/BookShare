@@ -23,12 +23,7 @@ export default () => {
         <Grid container>
             <Grid className={classes.container} item xs={12}>
 
-                <PersonalInfo
-                    email="Test"
-                    username="Heath"
-                />
-
-
+                <PersonalInfo />
 
             </Grid>
         </Grid>

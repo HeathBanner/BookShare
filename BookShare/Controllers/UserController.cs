@@ -98,6 +98,14 @@ namespace BookShare.Controllers
             }
         }
 
+        [Route("updateLF")]
+        public async Task<IActionResult> UpdateLF([FromBody] Users user)
+        {
+            var result = await _userService.UpdateLF(user);
+
+            return new ObjectResult(result);
+        }
+
         [HttpDelete]
         [Route("id={id}&username={username}")]
         public IActionResult BookDelete(string id, string username)

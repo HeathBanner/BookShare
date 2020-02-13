@@ -27,6 +27,7 @@
     <Folder Include="ClientApp\src\components\ScreenCatchers\" />
     <Folder Include="ClientApp\src\components\Profile\Editor\" />
     <Folder Include="ClientApp\src\components\Profile\LFBooks\" />
+    <Folder Include="ClientApp\src\components\Profile\Location\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Models\EmptyClass.cs" />

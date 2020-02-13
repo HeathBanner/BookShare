@@ -106,6 +106,14 @@ namespace BookShare.Controllers
             return new ObjectResult(result);
         }
 
+        [Route("updateLocation")]
+        public async Task<IActionResult> updateLocation([FromBody] Users user)
+        {
+            var result = await _userService.updateLocation(user);
+
+            return new ObjectResult(result);
+        }
+
         [HttpDelete]
         [Route("id={id}&username={username}")]
         public IActionResult BookDelete(string id, string username)

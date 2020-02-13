@@ -1,11 +1,13 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import InfoEditor from './Editor/InfoEditor';
 import LFBooksEditor from '../../components/Post/LFBook';
+import LocationEditor from './Location/LocationEditor';
 import {
     initModalProps,
     initLFBooks,
+    initLocation,
     emailSteps,
     passwordSteps,
     getStepContent,
@@ -13,6 +15,7 @@ import {
     fetchUpdatePassword,
     fetchUpdateEmail,
     fetchUpdateLF,
+    fetchUpdateLocation,
     buttonInfo,
     buttonData
 } from './Services/InfoServices';
@@ -93,18 +96,29 @@ export default () => {
 
     const [modalProps, setModalProps] = useState({ ...initModalProps });
     const [lfBooks, setLFBooks] = useState({ ...initLFBooks });
+    const [location, setLocation] = useState({ ...initLocation });
 
-    const changeInfo = (type) => {
-        setModalProps({
-            ...modalProps,
-            open: true,
-            type: type
-        });
-    };
+    //useEffect(() => {
+    //    if (store)
+    //}, [store]);
 
-    const handleLFBooks = () => setLFBooks({ ...lfBooks, open: true });
+    const closeLocation = () => setLocation({ ...location, open: false });
     const closeLFBooks = () => setLFBooks({ ...lfBooks, open: false });
     const handleList = () => setLFBooks({ ...lfBooks, openList: !lfBooks.openList });
+
+    const handleInput = (event, type, key) => {
+        const newValue = event.target.value;
+        switch (type) {
+            case "lfBooks":
+                setLFBooks({ ...lfBooks, value: newValue });
+                break;
+            case "location":
+                setLocation({ ...location, [key]: newValue });
+                break;
+            default:
+                break;
+        }
+    };
 
     const lfBooksInput = (event) => {
         setLFBooks({ ...lfBooks, value: event.target.value });
@@ -123,26 +137,45 @@ export default () => {
         setLFBooks({ ...lfBooks, list: newList });
     };
 
-    const handleSave = async () => {
-        const result = await fetchUpdateLF(lfBooks.list, username);
-
-        setLFBooks({ ...initLFBooks });
-        dispatch({ type: "UPDATE", payload: result });
-    };
-
     const handleType = (type) => {
         switch (type) {
             case "email":
             case "password":
-                changeInfo(type);
+                setModalProps({
+                    ...modalProps,
+                    open: true,
+                    type: type
+                });
                 break;
             case "lfBooks":
-                handleLFBooks();
+                setLFBooks({ ...lfBooks, open: true });
+                break;
+            case "location":
+                setLocation({ ...location, open: true });
                 break;
             default:
                 break;
         }
     };
+
+    const handleSave = async (type) => {
+        let result;
+
+        switch (type) {
+            case "lfBooks":
+                result = await fetchUpdateLF(lfBooks.list, username);
+                setLFBooks({ ...initLFBooks });
+                dispatch({ type: "UPDATE", payload: result });
+                break;
+            case "location":
+                result = await fetchUpdateLocation(location, username);
+                setLocation({ ...initLocation });
+                dispatch({ type: "UPDATE", payload: result });
+                break;
+            default:
+                break;
+        }
+    }
 
     const closeModal = () => setModalProps({ ...initModalProps });
     const closeNotify = () => {
@@ -190,21 +223,29 @@ export default () => {
             />
             
             <Modal
-                open={lfBooks.open}
-                onClose={closeLFBooks}
+                open={lfBooks.open || location.open}
+                onClose={lfBooks.open ? closeLFBooks : closeLocation}
                 timeout="auto"
                 unmountOnExit
             >
-                <LFBooksEditor
-                    lfBooks={lfBooks}
-                    handleClose={closeLFBooks}
-                    handleChange={lfBooksInput}
-                    addBook={addBook}
-                    removeBook={removeBook}
-                    handleList={handleList}
-                    handleSave={handleSave}
-                    isModal={true}
-                />
+                {lfBooks.open ? (
+                    <LFBooksEditor
+                        lfBooks={lfBooks}
+                        handleClose={closeLFBooks}
+                        handleChange={lfBooksInput}
+                        addBook={addBook}
+                        removeBook={removeBook}
+                        handleList={handleList}
+                        handleSave={handleSave}
+                        isModal={true}
+                    />
+                ) : (
+                        <LocationEditor
+                            location={location}
+                            handleChange={handleInput}
+                            handleSave={handleSave}
+                        />
+                )}
             </Modal>
 
             <Notification

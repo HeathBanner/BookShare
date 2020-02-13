@@ -122,7 +122,7 @@ export default ({ lfBooks, addBook, removeBook, handleChange, handleList, handle
             {isModal ? (
                 <Button
                     className={classes.saveButton}
-                    onClick={handleSave}
+                    onClick={() => handleSave("lfBooks")}
                 >
                     Save
                 </Button>

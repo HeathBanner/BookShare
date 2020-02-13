@@ -12,5 +12,7 @@ namespace BookShare.Models
         public string Password { get; set; }
         public Region[] Posted { get; set; }
         public string[] LFBooks { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
     }
 }

@@ -133,5 +133,25 @@ namespace BookShare.Services
                 user = result
             };
         }
+
+        public async Task<CustomCodes> updateLocation(Users user)
+        {
+            var filter = Builders<Users>.Filter.Eq("Username", user.Username);
+            var update = Builders<Users>.Update
+                .Set("City", user.City)
+                .Set("State", user.State);
+            var options = new FindOneAndUpdateOptions<Users>()
+            {
+                ReturnDocument = ReturnDocument.After
+            };
+
+            var result = await _users.FindOneAndUpdateAsync(filter, update, options);
+
+            return new CustomCodes
+            {
+                statusCode = 200,
+                user = result
+            };
+        }
     }
 }

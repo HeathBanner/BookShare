@@ -74,6 +74,25 @@ export const fetchUpdateLF = async (list, username) => {
     return json.user;
 };
 
+export const fetchUpdateLocation = async (location, username) => {
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({
+            username: username,
+            city: location.city,
+            state: location.state
+        }),
+        headers: { "Content-Type": "application/json" }
+    };
+
+    const result = await fetch("api/user/updateLocation", options);
+    const json = await result.json();
+
+    console.log(json);
+
+    return json.user;
+};
+
 const statusHandler = (json, props) => {
     switch (json.statusCode) {
         case 200:
@@ -132,6 +151,18 @@ export const initLFBooks = {
     }
 };
 
+export const initLocation = {
+    open: false,
+    city: "",
+    state: "",
+    notify: {
+        error: false,
+        warning: false,
+        success: false,
+        message: ""
+    }
+};
+
 export const emailSteps = [
     "Verify Password",
     "Change Email",
@@ -181,17 +212,25 @@ export const buttonInfo = [
         icon: "edit",
         text: "Books of Interest",
         data: "lfBooks"
+    },
+    {
+        click: true,
+        icon: "edit",
+        text: "Location",
+        data: "location"
     }
 ];
 
-export const buttonData = (data, props) => {
+export const buttonData = (data, store) => {
     switch (data) {
         case "posted":
-            return props.posted.length;
+            return store.posted.length;
         case "email":
-            return props.email;
+            return store.email;
         case "lfBooks":
-            return props.lfBooks.length === 0 ? "Click the Edit button to add some!" : props.lfBooks;
+            return store.lfBooks.length === 0 ? "Click the Edit button to add some!" : store.lfBooks;
+        case "location":
+            return `${store.city}, ${store.state}`;
         default:
             return "";
     }

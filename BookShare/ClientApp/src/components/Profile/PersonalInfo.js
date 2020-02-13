@@ -240,11 +240,11 @@ export default () => {
                         isModal={true}
                     />
                 ) : (
-                        <LocationEditor
-                            location={location}
-                            handleChange={handleInput}
-                            handleSave={handleSave}
-                        />
+                    <LocationEditor
+                        location={location}
+                        handleChange={handleInput}
+                        handleSave={handleSave}
+                    />
                 )}
             </Modal>
 

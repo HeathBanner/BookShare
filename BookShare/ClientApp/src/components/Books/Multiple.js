@@ -1,17 +1,17 @@
 ﻿import React, { useState, useEffect } from 'react';
 
-import Notify from '../Notifications/Notify';
-
 import { makeStyles } from '@material-ui/styles';
 import {
-    TextField,
-    Select,
-    MenuItem,
-    Button,
-    Input,
+    List,
+    ListItem,
+    ListItemText,
     FormControl,
     InputLabel,
-    Checkbox
+    Select,
+    MenuItem,
+    Input,
+    TextField,
+    Button
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -90,43 +90,17 @@ export default ({ history, store }) => {
         }
     };
 
-    const renderInput = () => {
-        if (store.user.lfBooks.length > 0) {
-            return (
-                <FormControl className={classes.inputs}>
-                    <InputLabel>Book</InputLabel>
-                    <Select
-                        value={book.Title}
-                        onChange={(e) => handleInput(e, "Title")}
-                        label="Title"
-                        input={<Input color="secondary" />}
-                    >
-                        {store.user.lfBooks.map((item) => {
-                            return (
-                                <MenuItem value={item} key={item}>
-                                    {item}
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-            );
-        } else {
-            return (
-                <TextField
-                    className={classes.inputs}
-                    value={book.Title}
-                    onChange={(e) => handleInput(e, "Title")}
-                    label="Book"
-                    color="secondary"
-                />
-            );
-        }
-    };
-
     return (
         <>
-            {store.user ? renderInput() : ""}
+            <List>
+                {store.user.lfBooks.map((item) => {
+                    return (
+                        <ListItem key={item}>
+                            <ListItemText primary={item} />
+                        </ListItem>
+                    );
+                })}
+            </List>
 
             <FormControl className={classes.inputs}>
                 <InputLabel>State</InputLabel>
@@ -160,11 +134,6 @@ export default ({ history, store }) => {
             >
                 Search
             </Button>
-
-            <Notify
-                handleClose={handleClose}
-                notification={notify}
-            />
         </>
     );
 };

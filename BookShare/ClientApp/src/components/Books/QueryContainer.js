@@ -1,7 +1,9 @@
 ﻿import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import BookQuery from './BookQuery';
+import Multiple from './Multiple';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -38,13 +40,15 @@ const useStyles = makeStyles(() => ({
 const QueryContainer = ({ isModal, history }) => {
 
     const classes = useStyles();
+    const store = useSelector(state => state);
 
     const [query, setQuery] = useState(0);
 
     const handleChange = (event, value) => setQuery(value);
 
     const renderSearch = () => {
-        if (query === 0) return <BookQuery history={history} />
+        if (query === 0) return <BookQuery history={history} store={store} />;
+        if (query === 1) return <Multiple history={history} store={store} />;
 
         return "";
     };
@@ -55,8 +59,9 @@ const QueryContainer = ({ isModal, history }) => {
                 value={query}
                 onChange={handleChange}
             >
-                <Tab label="Query" />
-                <Tab label="Advanced" />
+                <Tab label="Single" />
+                <Tab label="Multiple" />
+                <Tab label="Manual" />
             </Tabs>
 
             { renderSearch() }

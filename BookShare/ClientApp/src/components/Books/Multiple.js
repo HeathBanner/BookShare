@@ -43,7 +43,8 @@ const useStyles = makeStyles(() => ({
 
 const states = ["NC", "SC", "FL", "CA", "AK", "HI"];
 const initBook = {
-    lfBooks: "",
+    lfBooks: [],
+    trash: [],
     Title: "",
     State: "",
     City: "",
@@ -65,9 +66,20 @@ export default ({ history, store }) => {
 
     useEffect(() => {
         if (!book.imported && store.user) {
+
+            let lfBooks = [];
+            if (store.user.lfBooks.length > 0) {
+                store.user.lfBooks.forEach((item, index) => {
+                    lfBooks.push({
+                        index: index,
+                        value: item,
+                        deleted: false
+                    });
+                })
+            }
             setBook({
                 ...book,
-                lfBooks: store.user.lfBooks.length > 0 ? store.user.lfBooks : [],
+                lfBooks: store.user.lfBooks.length > 0 ? lfBooks : [],
                 City: store.user.city ? store.user.city : "",
                 State: store.user.state ? store.user.state : "",
                 Imported: true
@@ -75,15 +87,37 @@ export default ({ history, store }) => {
         }
     }, [store]);
 
+    useEffect(() => {
+        console.log(book);
+    }, [book]);
+
     const handleInput = (event, type) => {
         setBook({ ...book, [type]: event.target.value });
     };
 
-    const removeBook = (index) => {
+    const removeBook = (item) => {
         let newList = book.lfBooks;
-        newList.splice(index, 1);
+        let newTrash = book.trash;
 
-        setBook({ ...book, lfBooks: newList });
+        newTrash.push({
+            index: item.index,
+            value: item.value,
+        });
+        newList[item.index].deleted = true;
+
+        setBook({ ...book, lfBooks: newList, trash: newTrash });
+    };
+
+    const undoBook = () => {
+        const len = book.trash.length - 1;
+        const newTrash = book.trash;
+        const marker = newTrash[len].index;
+        const newList = book.lfBooks;
+
+        newList[marker].deleted = false;
+        newTrash.splice(len, 1);
+
+        setBook({ ...book, lfBooks: newList, trash: newTrash });
     };
 
     const handleClose = () => setNotify({ ...initNotify });
@@ -92,10 +126,10 @@ export default ({ history, store }) => {
         const { lfBooks, State, City } = book;
         let list;
         lfBooks.forEach((item, index) => {
-            if (!list) return list = item;
-            if (index === list.length - 1) return list = list + item;
+            if (!list) return list = item.value;
+            if (index === list.length - 1) return list = list + item.value;
 
-            list = `${list}&${item}`;
+            list = `${list}&${item.value}`;
         });
 
         console.log(list);
@@ -119,22 +153,31 @@ export default ({ history, store }) => {
                 Book List
             </Typography>
 
-            <List className={classes.list}>
-                {store.user.lfBooks.map((item, index) => {
-                    return (
-                        <ListItem key={item}>
-                            <ListItemSecondaryAction>
-                                <IconButton
-                                    onClick={() => removeBook(item, index)}
-                                    disabled={book.lfBooks.length === 1}
-                                >
-                                    <Icon>clear</Icon>
-                                </IconButton>
-                            </ListItemSecondaryAction>
+            <IconButton
+                onClick={undoBook}
+                disabled={book.trash.length === 0}
+            >
+                <Icon>undo</Icon>
+            </IconButton>
 
-                            <ListItemText primary={item} />
-                        </ListItem>
-                    );
+            <List className={classes.list}>
+                {book.lfBooks.map((item) => {
+                    if (!item.deleted) {
+                        return (
+                            <ListItem key={item.value}>
+                                <ListItemSecondaryAction>
+                                    <IconButton
+                                        onClick={() => removeBook(item)}
+                                        disabled={book.lfBooks.length === 1}
+                                    >
+                                        <Icon>clear</Icon>
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+
+                                <ListItemText primary={item.value} />
+                            </ListItem>
+                        );
+                    } else return "";
                 })}
             </List>
 

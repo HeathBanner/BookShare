@@ -147,6 +147,7 @@ export default ({ editId }) => {
 
         setBook({ ...book, lfBooks: newList });
     };
+
     const notifyBook = (notification) => setNotify({ ...notify, ...notification });
 
     if (!store.loggedIn) return <ValidationScreen />;
@@ -352,7 +353,7 @@ export default ({ editId }) => {
                     addBook={addBook}
                     removeBook={removeBook}
                     notifyBook={notifyBook}
-                    list={book.lfBooks}
+                    lfBooks={book.lfBooks}
                 />
 
                 <Button

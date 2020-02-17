@@ -150,7 +150,7 @@ export default ({ history, store }) => {
     return (
         <>
             <Typography style={{ width: '100%', textAlign: 'center', marginTop: 20 }}>
-                Book List
+                Book List to Search
             </Typography>
 
             <IconButton

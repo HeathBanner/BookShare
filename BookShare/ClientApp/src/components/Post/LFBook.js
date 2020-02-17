@@ -87,11 +87,27 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export default ({ lfBooks, addBook, removeBook, handleChange, handleList, handleSave, isModal }) => {
+const initState = {
+    value: "",
+    open: true
+};
+
+export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
 
     const classes = useStyles();
 
-    const { open, value, list, openList } = lfBooks;
+    const [state, setState] = useState({ ...initState });
+
+    const handleChange = (event) => {
+        setState({ ...state, value: event.target.value });
+    };
+
+    const preAdd = () => {
+        addBook(state.value);
+        setState({ ...initState });
+    };
+
+    const handleList = () => setState({ ...state, open: !state.open });
 
     return (
         <Paper
@@ -107,14 +123,14 @@ export default ({ lfBooks, addBook, removeBook, handleChange, handleList, handle
 
             <TextField
                 className={classes.LFInput}
-                value={value}
+                value={state.value}
                 onChange={(e) => handleChange(e)}
                 label="Title"
             />
 
             <Button
                 className={classes.addButton}
-                onClick={addBook}
+                onClick={preAdd}
             >
                 Add
             </Button>
@@ -136,12 +152,12 @@ export default ({ lfBooks, addBook, removeBook, handleChange, handleList, handle
                 >
                     <ListItemText primary="Book List" />
                     <ListItemIcon>
-                        <Icon>{openList ? "expand_less" : "expand_more"}</Icon>
+                        <Icon>{state.open ? "expand_less" : "expand_more"}</Icon>
                     </ListItemIcon>
                 </ListItem>
                 <Divider className={classes.divider} />
-                    <Collapse in={openList} timeout="auto" unmountOnExit>
-                        {list.map((item, index) => {
+                <Collapse in={state.open} timeout="auto" unmountOnExit>
+                    {lfBooks.map((item, index) => {
                             return (
                                 <ListItem>
                                     <ListItemSecondaryAction>

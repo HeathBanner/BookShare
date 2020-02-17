@@ -94,7 +94,7 @@ export default ({ history, store }) => {
         if (store.user.lfBooks.length > 0) {
             return (
                 <FormControl className={classes.inputs}>
-                    <InputLabel>Book</InputLabel>
+                    <InputLabel>Book to Search</InputLabel>
                     <Select
                         value={book.Title}
                         onChange={(e) => handleInput(e, "Title")}

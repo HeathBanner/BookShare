@@ -75,5 +75,13 @@ namespace BookShare.Controllers
 
             return new ObjectResult(result);
         }
+
+        [Route("fetchByList")]
+        public async Task<IActionResult> FetchByList([FromBody] Region book)
+        {
+            var result = await _bookService.FetchByList(book);
+
+            return new ObjectResult(result);
+        }
     }
 }

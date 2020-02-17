@@ -5,6 +5,10 @@ import {
     List,
     ListItem,
     ListItemText,
+    ListItemSecondaryAction,
+    IconButton,
+    Icon,
+    Typography,
     FormControl,
     InputLabel,
     Select,
@@ -15,6 +19,11 @@ import {
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
+    list: {
+        backgroundColor: '#EAE7DC',
+        width: '100%',
+        marginBottom: 20
+    },
     inputs: {
         width: '100%',
         marginBottom: 20
@@ -70,17 +79,31 @@ export default ({ history, store }) => {
         setBook({ ...book, [type]: event.target.value });
     };
 
+    const removeBook = (index) => {
+        let newList = book.lfBooks;
+        newList.splice(index, 1);
+
+        setBook({ ...book, lfBooks: newList });
+    };
+
     const handleClose = () => setNotify({ ...initNotify });
 
     const handleSearch = () => {
-        const { Title, State, City } = book;
-        history.push(`/books/${Title}/${State}/${City}`);
+        const { lfBooks, State, City } = book;
+        let list;
+        lfBooks.forEach((item, index) => {
+            if (!list) return list = item;
+            if (index === list.length - 1) return list = list + item;
+
+            list = `${list}&${item}`;
+        });
+
+        console.log(list);
+        history.push(`/bookList/${State}/${City}/${list}`);
     };
 
     const preSubmit = () => {
         switch (true) {
-            case book.Title.length <= 0:
-                return setNotify({ ...notify, warning: true, message: "Book field is blank" });
             case !book.State:
                 return setNotify({ ...notify, warning: true, message: "You must select a State" });
             case book.City.length <= 0:
@@ -92,10 +115,23 @@ export default ({ history, store }) => {
 
     return (
         <>
-            <List>
-                {store.user.lfBooks.map((item) => {
+            <Typography style={{ width: '100%', textAlign: 'center', marginTop: 20 }}>
+                Book List
+            </Typography>
+
+            <List className={classes.list}>
+                {store.user.lfBooks.map((item, index) => {
                     return (
                         <ListItem key={item}>
+                            <ListItemSecondaryAction>
+                                <IconButton
+                                    onClick={() => removeBook(item, index)}
+                                    disabled={book.lfBooks.length === 1}
+                                >
+                                    <Icon>clear</Icon>
+                                </IconButton>
+                            </ListItemSecondaryAction>
+
                             <ListItemText primary={item} />
                         </ListItem>
                     );

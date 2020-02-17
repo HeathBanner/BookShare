@@ -7,6 +7,7 @@ import BookCards from './BookCards';
 import Filter from './Filter';
 import {
     fetchByBook,
+    fetchByList,
     initModal,
     genFilter,
     initFilter
@@ -50,6 +51,11 @@ const useStyles = makeStyles(() => ({
         padding: 10,
         backgroundColor: '#E98074',
         color: 'white'
+    },
+    circularProgress: {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
     }
 }));
 
@@ -93,6 +99,7 @@ const Landing = ({ params }) => {
     const fetchSwitch = async () => {
         let result;
         if (params.title) result = await fetchByBook(params, store.user.lfBooks);
+        if (params.list) result = await fetchByList(params);
 
         setBooks({ ...result });
     };
@@ -104,7 +111,7 @@ const Landing = ({ params }) => {
         setModal({ ...modal, filter: false });
     };
 
-    if (!books.loaded) return <CircularProgress />;
+    if (!books.loaded) return <CircularProgress className={classes.circularProgress} />;
     return (
         <Grid className={classes.container} item xs={12}>
 

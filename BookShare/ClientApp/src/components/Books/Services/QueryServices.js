@@ -10,12 +10,6 @@
 
 export const fetchByBook = async (params, lfBooks) => {
     const { title, state, city } = params;
-    console.log({
-        title: title,
-        state: state,
-        city: city,
-        lfBooks: lfBooks
-    });
     const options = {
         method: "POST",
         body: JSON.stringify({
@@ -28,6 +22,29 @@ export const fetchByBook = async (params, lfBooks) => {
     };
 
     const result = await fetch(`api/book/fetchBooks`, options);
+    const json = await result.json();
+
+    console.log(json);
+
+    return { list: json.books, loaded: true };
+};
+
+export const fetchByList = async (params) => {
+    const { list, state, city } = params;
+    const parsedList = list.split("&");
+    console.log(parsedList);
+
+    const options = {
+        method: "POST",
+        body: JSON.stringify({
+            state: state,
+            city: city,
+            lfBooks: parsedList
+        }),
+        headers: { "Content-Type": "application/json" }
+    };
+
+    const result = await fetch(`api/book/fetchByList`, options);
     const json = await result.json();
 
     console.log(json);

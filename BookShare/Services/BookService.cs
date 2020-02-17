@@ -132,5 +132,23 @@ namespace BookShare.Services
                 user = uResult
             };
         }
+
+        public async Task<CustomCodes> FetchByList(Region book)
+        {
+            var builder = Builders<Region>.Filter;
+
+            var filter = builder.In("Title", book.LFBooks)
+                &
+                builder.Eq("State", book.State)
+                &
+                builder.Eq("City", book.City);
+            var result = await _books.Find(filter).ToListAsync();
+
+            return new CustomCodes
+            {
+                statusCode = 200,
+                books = result
+            };
+        }
     }
 }

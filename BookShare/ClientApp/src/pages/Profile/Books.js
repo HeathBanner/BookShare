@@ -50,7 +50,8 @@ const Books = ({ history }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexWrap: 'wrap',
-                paddingTop: 60
+                paddingTop: 60,
+                paddingBottom: 30
             }}
             container
         >

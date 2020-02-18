@@ -48,7 +48,7 @@ export default ({ open, handleInput, handleClose }) => {
         >
             <Paper className={classes.paper}>
                 <TextField
-                    onChange={(e) => handleInput("Image", e)}
+                    onChange={(e) => handleInput("image", e)}
                     label="Image URL"
                     className={classes.input}
                 />

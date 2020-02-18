@@ -133,16 +133,25 @@ namespace BookShare.Services
             };
         }
 
-        public async Task<CustomCodes> FetchByList(Region book)
+        public async Task<CustomCodes> FetchByList(Region book, int page)
         {
             var builder = Builders<Region>.Filter;
+            int index = 0;
+
+            if (page > 1)
+            {
+                int newPage = page - 1;
+                index = newPage * 3;
+            }
+
+            Console.WriteLine("\n\n\n {0} \n\n\n", index);
 
             var filter = builder.In("Title", book.LFBooks)
                 &
                 builder.Eq("State", book.State)
                 &
                 builder.Eq("City", book.City);
-            var result = await _books.Find(filter).ToListAsync();
+            var result = await _books.Find(filter).Skip(index).Limit(3).ToListAsync();
 
             return new CustomCodes
             {

@@ -38,7 +38,8 @@ const useStyles = makeStyles(() => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '10%'
+        padding: '10%',
+        minHeight: '100vh'
     },
     paper: {
         display: 'flex',
@@ -90,9 +91,6 @@ export default ({ editId }) => {
     const [notify, setNotify] = useState({ ...initNotify });
 
     useEffect(() => {
-        console.log(book);
-    }, [book]);
-    useEffect(() => {
         if (!editId) return;
 
         handleBook(editId);
@@ -107,6 +105,7 @@ export default ({ editId }) => {
     };
 
     const handleInput = (type, event) => {
+        console.log(type, event.target.value);
         setBook({ ...book, [type]: { error: false, value: event.target.value } });
     };
 

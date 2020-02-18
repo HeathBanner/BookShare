@@ -33,6 +33,8 @@ const useStyles = makeStyles(() => ({
         flexWrap: 'wrap',
         padding: '5%',
         backgroundColor: '#EAE7DC',
+        minHeight: '100vh',
+        paddingTop: 80
     },
     button: {
         width: '100%',

@@ -44,7 +44,7 @@ export const fetchByList = async (params) => {
         headers: { "Content-Type": "application/json" }
     };
 
-    const result = await fetch(`api/book/fetchByList`, options);
+    const result = await fetch(`api/book/fetchByList/page=2`, options);
     const json = await result.json();
 
     console.log(json);

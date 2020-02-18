@@ -61,6 +61,7 @@ namespace BookShare.Controllers
         }
 
         [HttpPost]
+        [Route("postBook")]
         public IActionResult Books([FromBody] Region book)
         {
             var response = _bookService.Books(book);
@@ -76,10 +77,10 @@ namespace BookShare.Controllers
             return new ObjectResult(result);
         }
 
-        [Route("fetchByList")]
-        public async Task<IActionResult> FetchByList([FromBody] Region book)
+        [Route("fetchByList/page={page}")]
+        public async Task<IActionResult> FetchByList([FromBody] Region book, int page)
         {
-            var result = await _bookService.FetchByList(book);
+            var result = await _bookService.FetchByList(book, page);
 
             return new ObjectResult(result);
         }

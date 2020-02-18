@@ -1,11 +1,13 @@
-﻿export const fetchPost =  async (book, username) => {
+﻿export const fetchPost = async (book, username) => {
+    console.log(book, username);
+    const newBook = ExtractValues(book);
     const options = {
         method: 'POST',
-        body: JSON.stringify({ ...book, Owner: username }),
+        body: JSON.stringify({ ...newBook, Owner: username }),
         headers: { "Content-Type": "application/json" }
     };
 
-    const res = await fetch("api/Book", options);
+    const res = await fetch("api/book/postBook", options);
     const json = await res.json();
 
     if (json.statusCode !== 201) {

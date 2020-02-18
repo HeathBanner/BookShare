@@ -85,7 +85,7 @@ export default ({ history, store }) => {
                 Imported: true
             });
         }
-    }, [store, book]);
+    }, [store]);
 
     useEffect(() => {
         console.log(book);

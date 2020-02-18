@@ -13,7 +13,6 @@ import {
     Slide,
     Typography,
     Button,
-    IconButton,
     CircularProgress
 } from '@material-ui/core';
 
@@ -29,7 +28,7 @@ const useStyles = makeStyles(() => ({
         transform: 'translate(-50%, -50%)'
     },
     placeHolder: {
-        minHeight: 56
+        //minHeight: 56
     },
     button: {
         position: 'absolute',

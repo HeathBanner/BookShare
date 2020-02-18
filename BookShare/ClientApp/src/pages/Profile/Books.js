@@ -33,6 +33,14 @@ const Books = ({ history }) => {
 
     const handleNotify = () => setNotify({ ...initNotify });
 
+    const renderBookInfo = () => {
+        if (!store.user.posted) return "";
+
+        return store.user.posted.map((item) => {
+            return <BookInfo key={item.id} book={item} handleOpen={handleOpen} />
+        });
+    };
+
     if (!store.user) return "";
     return (
         <Grid
@@ -41,16 +49,12 @@ const Books = ({ history }) => {
                 alignContent: 'center',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flexWrap: 'wrap'
+                flexWrap: 'wrap',
+                paddingTop: 60
             }}
             container
         >
-            {!store.user.posted
-                ?
-                ""
-                :
-                store.user.posted.map((item) =>
-                    <BookInfo key={item.id} book={item} handleOpen={handleOpen} />)}
+            {renderBookInfo()}
 
             <EditBook
                 modal={modal}

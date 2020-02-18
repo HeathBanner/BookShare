@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React from 'react';
 
 import QueryContainer from './QueryContainer';
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => ({
         flexWrap: 'wrap',
         padding: '10%',
         backgroundColor: '#EAE7DC',
-        height: '100vh'
+        minHeight: '100vh'
     }
 }));
 

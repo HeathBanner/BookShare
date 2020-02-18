@@ -47,6 +47,7 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '5%',
+        marginTop: 50
     },
     title: {
         width: '100%',

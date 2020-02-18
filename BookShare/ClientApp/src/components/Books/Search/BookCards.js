@@ -8,7 +8,6 @@ import {
     Typography,
     Button,
     Card,
-    CardActionArea,
     CardActions,
     CardContent,
     CardMedia

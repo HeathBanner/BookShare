@@ -228,10 +228,21 @@ export const buttonData = (data, store) => {
         case "email":
             return store.email;
         case "lfBooks":
-            return store.lfBooks.length === 0 ? "Click the Edit button to add some!" : store.lfBooks;
+            return store.lfBooks.length === 0 ? "Click the Edit button to add some!" : genLFBooks(store.lfBooks);
         case "location":
             return !store.city && !store.state ? "Set your location for easier searching!" : `${store.city}, ${store.state}`;
         default:
             return "";
     }
+};
+
+const genLFBooks = (list) => {
+    let newList;
+    list.forEach((item, index) => {
+        if (!newList) return newList = `${item}, `;
+        if (index === list.length - 1) return newList = newList + item;
+        newList = newList + `${item}, `;
+    });
+
+    return newList;
 };

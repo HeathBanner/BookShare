@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import InfoEditor from './Editor/InfoEditor';
@@ -40,7 +40,7 @@ const useStyles = makeStyles(() => ({
         flexWrap: 'wrap',
         width: '90%',
         padding: '10%',
-        marginTop: 20
+        marginTop: 60
     },
     infoContainer: {
         position: 'relative',
@@ -73,6 +73,7 @@ const useStyles = makeStyles(() => ({
         color: '#8E8D8A'
     },
     secure: {
+        width: '100%',
         background: 'black',
         color: 'black',
         display: 'inline',
@@ -97,10 +98,6 @@ export default () => {
     const [modalProps, setModalProps] = useState({ ...initModalProps });
     const [lfBooks, setLFBooks] = useState({ ...initLFBooks });
     const [location, setLocation] = useState({ ...initLocation });
-
-    //useEffect(() => {
-    //    if (store)
-    //}, [store]);
 
     const closeLocation = () => setLocation({ ...location, open: false });
     const closeLFBooks = () => setLFBooks({ ...lfBooks, open: false });
@@ -130,6 +127,7 @@ export default () => {
 
         setLFBooks({ ...lfBooks, list: newList, value: "" });
     };
+
     const removeBook = (index) => {
         let newList = lfBooks.list;
         newList.splice(index, 1);
@@ -200,6 +198,7 @@ export default () => {
 
         return setModalProps({ ...status });
     };
+
     const handleBack = () => {
         setModalProps(prevState => ({ ...prevState, activeStep: prevState.activeStep - 1 }));
     };
@@ -262,9 +261,9 @@ export default () => {
 
             <Divider className={classes.dividers} />
 
-            {buttonInfo.map((button) => {
+            {buttonInfo.map((button, index) => {
                 return (
-                    <div className={classes.infoContainer}>
+                    <div className={classes.infoContainer} key={`${button.text + index}`}>
                         <IconButton
                             className={classes.buttons}
                             onClick={() => handleType(button.data)}
@@ -279,15 +278,16 @@ export default () => {
 
                         <Divider className={classes.dividers} />
 
-                        <Typography
-                            className={classes.info}
-                        >
                             {button.data === "password"
                                 ?
                                 <p className={classes.secure}>You Thought</p>
                                 :
-                                buttonData(button.data, store.user)}
-                        </Typography>
+                                <Typography
+                                    className={classes.info}
+                                >
+                                    {buttonData(button.data, store.user)}
+                                </Typography>
+                            }
                     </div>
                 );
             })}

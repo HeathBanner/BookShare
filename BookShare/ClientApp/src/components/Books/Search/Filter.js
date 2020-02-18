@@ -9,7 +9,6 @@ import {
     Select,
     MenuItem,
     Switch,
-    Icon,
     Typography,
     Button
 } from '@material-ui/core';

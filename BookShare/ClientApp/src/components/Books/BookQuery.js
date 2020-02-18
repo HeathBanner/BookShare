@@ -11,7 +11,6 @@ import {
     Input,
     FormControl,
     InputLabel,
-    Checkbox
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -64,7 +63,7 @@ export default ({ history, store }) => {
                 Imported: true
             });
         }
-    }, [store]);
+    }, [store, book]);
 
     const handleInput = (event, type) => {
         setBook({ ...book, [type]: event.target.value });

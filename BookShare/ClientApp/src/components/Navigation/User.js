@@ -111,6 +111,7 @@ const User = ({ user, history }) => {
                             {buttons.map((item) => {
                                 return (
                                     <Button
+                                        key={item.text}
                                         className={classes.buttons}
                                         onClick={() => item.func ? "" : handleHistory(item.url)}
                                     >

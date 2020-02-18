@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '0% 10% 5% 10%',
-        width: '90%'
+        width: '80%'
     },
 }));
 

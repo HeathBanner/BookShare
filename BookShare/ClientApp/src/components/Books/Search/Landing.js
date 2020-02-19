@@ -170,7 +170,7 @@ const Landing = ({ params, history }) => {
             <div className={classes.pageBox}>
                 <IconButton
                     className={classes.arrows}
-                    disabled={books.page === 1}
+                    disabled={parseInt(books.page) === 1}
                     onClick={handleBack}
                 >
                     <Icon>arrow_back_ios</Icon>

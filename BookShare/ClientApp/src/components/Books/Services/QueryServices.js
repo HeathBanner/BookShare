@@ -9,7 +9,7 @@
 };
 
 export const fetchByBook = async (params, lfBooks) => {
-    const { title, state, city } = params;
+    const { title, state, city, page } = params;
     const options = {
         method: "POST",
         body: JSON.stringify({
@@ -26,7 +26,7 @@ export const fetchByBook = async (params, lfBooks) => {
 
     console.log(json);
 
-    return { list: json.books, loaded: true };
+    return { list: json.books, loaded: true, page: page };
 };
 
 export const fetchByList = async (params) => {

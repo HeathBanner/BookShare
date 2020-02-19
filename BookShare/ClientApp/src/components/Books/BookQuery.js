@@ -73,7 +73,7 @@ export default ({ history, store }) => {
 
     const handleSearch = () => {
         const { Title, State, City } = book;
-        history.push(`/books/${Title}/${State}/${City}`);
+        history.push(`/books/1/${Title}/${State}/${City}`);
     };
 
     const preSubmit = () => {

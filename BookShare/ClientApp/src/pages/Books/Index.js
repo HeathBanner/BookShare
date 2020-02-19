@@ -1,16 +1,21 @@
 ﻿import React from 'react';
 
-import Appbar from '../../components/Navigation/Appbar';
 import Landing from '../../components/Books/Landing';
+
+import Image from '../../components/Books/imgs/patrick-tomasso.png';
 
 import { Grid } from '@material-ui/core';
 
 export default () => {
 
     return (
-        <Grid container>
-            <Appbar />
-
+        <Grid
+            style={{
+                backgroundImage: `url(${Image})`,
+                backgroundSize: 'cover'
+            }}
+            container
+        >
             <Landing />
         </Grid>
     );

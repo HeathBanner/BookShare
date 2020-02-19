@@ -9,7 +9,10 @@ export default ({ match }) => {
     console.log(match);
 
     return (
-        <Grid item xs={12}>
+        <Grid
+            item
+            xs={12}
+        >
             <Landing
                 params={match.params}
             />

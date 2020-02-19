@@ -15,6 +15,7 @@ const useStyles = makeStyles(() => ({
         padding: '10%'
     },
     message: {
+        marginTop: 60,
         width: '100%',
         textAlign: 'center',
     }

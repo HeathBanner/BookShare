@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 
 import QueryContainer from './QueryContainer';
+import Image from './imgs/patrick-tomasso.png';
 
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
@@ -13,7 +14,8 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '10%',
-        backgroundColor: '#EAE7DC',
+        backgroundImage: `url(${Image})`,
+        backgroundSize: 'cover',
         minHeight: '100vh'
     }
 }));

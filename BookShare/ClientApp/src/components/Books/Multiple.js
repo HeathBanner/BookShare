@@ -133,7 +133,7 @@ export default ({ history, store }) => {
         });
 
         console.log(list);
-        history.push(`/bookList/${State}/${City}/${list}`);
+        history.push(`/bookList/1/${State}/${City}/${list}`);
     };
 
     const preSubmit = () => {

@@ -41,7 +41,7 @@ export default () => {
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/books/:title/:state/:city" component={Search} />
-                <Route path="/bookList/:state/:city/:list" component={Search} />
+                <Route path="/bookList/:page/:state/:city/:list" component={Search} />
                 <Route path="/books/edit/:id" component={EditBook} />
                 <Route path="/books/:id" component={BookView} />
                 <Route exact path="/books" component={Books} />

@@ -30,7 +30,7 @@ export const fetchByBook = async (params, lfBooks) => {
 };
 
 export const fetchByList = async (params) => {
-    const { list, state, city } = params;
+    const { list, state, city, page } = params;
     const parsedList = list.split("&");
     console.log(parsedList);
 
@@ -44,12 +44,12 @@ export const fetchByList = async (params) => {
         headers: { "Content-Type": "application/json" }
     };
 
-    const result = await fetch(`api/book/fetchByList/page=2`, options);
+    const result = await fetch(`api/book/fetchByList/page=${page}`, options);
     const json = await result.json();
 
     console.log(json);
 
-    return { list: json.books, loaded: true };
+    return { list: json.books, loaded: true, page: page };
 };
 
 export const genFilter = async (checked, params) => {

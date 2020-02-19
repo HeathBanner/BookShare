@@ -61,19 +61,19 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const Landing = ({ params }) => {
+const Landing = ({ params, history }) => {
 
     const classes = useStyles();
     const store = useSelector(state => state);
 
-    const [page, setPage] = useState(0);
     const [modal, setModal] = useState({ ...initModal });
-    const [books, setBooks] = useState({ list: null, loaded: false });
+    const [books, setBooks] = useState({ list: null, loaded: false, page: 1 });
     const [checked, setChecked] = useState({ ...initFilter });
 
     useEffect(() => {
-        if (!books.loaded && store.user) fetchSwitch();
-    }, [store]);
+        if (!books.loaded && store.user || params.page !== books.page) fetchSwitch();
+
+    }, [store, books, params]);
 
     const handleOpen = (type) => event => {
         setModal({ ...modal, [type]: true });
@@ -82,8 +82,15 @@ const Landing = ({ params }) => {
         setModal({ ...modal, [type]: false });
     };
 
-    const handleBack = () => setPage(prevState => prevState - 10);
-    const handleNext = () => setPage(prevState => prevState + 10);
+    const handleBack = () => {
+        const newPage = parseInt(params.page) - 1;
+        history.push(`/bookList/${newPage}/${params.state}/${params.city}/${params.list}`);
+    };
+
+    const handleNext = () => {
+        const newPage = parseInt(params.page) + 1;
+        history.push(`/bookList/${newPage}/${params.state}/${params.city}/${params.list}`);
+    };
 
     const handleSwitch = (type) => event => {
         const value = !checked[type].on;
@@ -163,7 +170,7 @@ const Landing = ({ params }) => {
             <div className={classes.pageBox}>
                 <IconButton
                     className={classes.arrows}
-                    disabled={page === 0}
+                    disabled={books.page === 1}
                     onClick={handleBack}
                 >
                     <Icon>arrow_back_ios</Icon>
@@ -172,12 +179,13 @@ const Landing = ({ params }) => {
                 <Typography
                     style={{ margin: "0px 10px" }}
                 >
-                    {page}
+                    {books.page}
                 </Typography>
 
                 <IconButton
                     className={classes.arrows}
                     onClick={handleNext}
+                    disabled={books.list.length < 3}
                 >
                     <Icon>arrow_forward_ios</Icon>
                 </IconButton>

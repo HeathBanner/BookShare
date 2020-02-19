@@ -14,8 +14,22 @@ import {
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
-    button: {
+    drawer: {
+        backgroundImage: 'linear-gradient(#de1f27, #ca1d5d)'
+    },
+    listItems: {
+        color: "white",
+        flexWrap: 'wrap',
+        width: '100%',
+        display: 'block !important',
+        textAlign: 'center',
+        marginBottom: 10
+    },
+    buttons: {
         color: 'white',
+        width: '100%',
+        display: 'block !important',
+        textAlign: 'center',
     }
 }));
 
@@ -57,12 +71,13 @@ const NavDrawer = ({ history }) => {
     return (
         <>
             <IconButton
-                className={classes.button}
+                style={{ color: 'white' }}
                 onClick={toggleDrawer(true)}
             >
                 <Icon>menu</Icon>
             </IconButton>
             <Drawer
+                PaperProps={{ className: classes.drawer }}
                 open={open}
                 onClose={toggleDrawer(false)}
             >
@@ -70,17 +85,18 @@ const NavDrawer = ({ history }) => {
                     {navList.map((item) => {
                         return (
                             <ListItem
+                                className={classes.listItems}
                                 onClick={() => handleRedirect(item.link)}
                                 button
                                 key={item.text}
                             >
                                 <ListItemIcon
-                                    style={{ minWidth: 40 }}
+                                    className={classes.buttons}
                                 >
                                     <Icon>{item.icon}</Icon>
                                 </ListItemIcon>
 
-                                <ListItemText primary={item.text} />
+                                <ListItemText style={{width: '100%', textAlign: 'center'}} primary={item.text} />
                             </ListItem>
                         );
                     })}

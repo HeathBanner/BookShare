@@ -3,6 +3,8 @@
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Typography, Divider } from '@material-ui/core';
 
+import Image from './imgs/janko-ferlic.png';
+
 const useStyles = makeStyles(() => ({
     container: {
         display: 'flex',
@@ -11,7 +13,8 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '10%',
-        backgroundColor: '#EAE7DC',
+        backgroundImage: `url(${Image})`,
+        backgroundSize: 'cover',
         height: '100vh'
     },
     title: {
@@ -21,7 +24,7 @@ const useStyles = makeStyles(() => ({
     },
     introBody: {
         marginTop: 40,
-        color: '#8E8D8A',
+        color: 'white',
         textAlign: 'center'
     },
     divider: {

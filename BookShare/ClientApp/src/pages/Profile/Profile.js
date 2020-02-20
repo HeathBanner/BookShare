@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 
+import BackgroundImage from '../../components/Profile/imgs/sincerely-media.png';
 import PersonalInfo from '../../components/Profile/PersonalInfo';
 
 import { makeStyles } from '@material-ui/styles';
@@ -12,6 +13,8 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         justifyContent: 'center',
         padding: '5%',
+        backgroundImage: `url(${BackgroundImage})`,
+        backgroundSize: 'cover'
     },
 }));
 

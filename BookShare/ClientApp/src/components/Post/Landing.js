@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Image from './Image';
 import ImagePlaceholder from './AddImage.png';
+import Background from './imgs/jaredd-craig.png';
 import LFBook from './LFBook';
 import ValidationScreen from '../ScreenCatchers/ValidationScreen';
 import Notify from '../Notifications/Notify';
@@ -39,7 +40,9 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         justifyContent: 'center',
         padding: '10%',
-        minHeight: '100vh'
+        minHeight: '100vh',
+        backgroundImage: `url(${Background})`,
+        backgroundSize: 'cover'
     },
     paper: {
         display: 'flex',

@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 
 import QueryContainer from './QueryContainer';
-import Image from './imgs/patrick-tomasso.png';
+import Image from './imgs/patrick-tomasso-bright.png';
 
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';

@@ -25,7 +25,8 @@ const useStyles = makeStyles(() => ({
         //transform: 'translate(-50%, -50%)',
         padding: '0% 10% 10% 10%',
         width: '80%',
-        marginTop: 60
+        marginTop: 60,
+        background: 'rgb(255, 255, 255, 0.5)'
     },
     modal: {
         position: 'fixed',

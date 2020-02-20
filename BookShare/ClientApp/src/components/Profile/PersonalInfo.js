@@ -40,7 +40,8 @@ const useStyles = makeStyles(() => ({
         flexWrap: 'wrap',
         width: '90%',
         padding: '10%',
-        marginTop: 60
+        marginTop: 60,
+        background: 'rgb(255, 255, 255, 0.3)'
     },
     infoContainer: {
         position: 'relative',

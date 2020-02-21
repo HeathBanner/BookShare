@@ -39,30 +39,10 @@ namespace BookShare.Controllers
 
         [HttpPost]
         [Route("register")]
-        public HttpResponseMessage Create([FromBody] Users user)
+        public async Task<IActionResult> Create([FromBody] Users user)
         {
-            var response = _userService.Register(user);
-            return response;
-        }
-
-        [Route("login")]
-        public IActionResult Login([FromBody] Users user)
-        {
-            var response = _userService.Login(user);
-
-            if (response.Count == 0) return StatusCode(404, new CustomCodes {
-                user = null,
-                statusCode = 404
-            });
-            if (response[0].Password != user.Password) return StatusCode(401, new CustomCodes {
-                user = null,
-                statusCode = 401
-            });
-
-            return StatusCode(200, new CustomCodes {
-                user = response[0],
-                statusCode = 200
-            });
+            var result = await _userService.Register(user);
+            return new ObjectResult(result);
         }
 
         [Route("validatePassword")]

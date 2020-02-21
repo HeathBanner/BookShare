@@ -1,40 +1,35 @@
 ﻿export const fetchRegister = async (info) => {
-    const body = {
-        Username: info.Username,
-        Email: info.Email,
-        Password: info.Password
-    };
     const options = {
         method: "POST",
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+            Username: info.Username,
+            Email: info.Email,
+            Password: info.Password
+        }),
         headers: { "Content-Type": "application/json" }
     };
 
     const result = await fetch("api/user/register", options);
     const json = await result.json();
 
-    return json;
+    const status = statusHandler(json);
+    return status;
 };
 
 export const fetchLogin = async (info) => {
-    const body = {
-        Email: info.Email,
-        Password: info.Password
-    };
     const options = {
         method: "POST",
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+            Email: info.Email,
+            Password: info.Password
+        }),
         headers: { "Content-Type": "application/json" }
     };
 
     const result = await fetch("api/token/generate", options);
     const json = await result.json();
 
-    console.log(json);
-
     const status = statusHandler(json);
-
-    console.log(status);
     return status;
 };
 
@@ -44,9 +39,13 @@ const statusHandler = (status) => {
             return { error: true, message: "Email or Password was incorrect!" };
         case 403:
             return { error: true, message: "Password was incorrect!" };
+        case 401:
+            return { error: true, message: "Email already exists" };
         case 200:
             localStorage.setItem("token", status.access_token);
             return { success: true, message: "Login was successful!", payload: status.user };
+        case 201:
+            return { sucess: true, message: "Your account has been created!" };
         default:
             return { error: true, message: "Something went wrong :(" };
     }

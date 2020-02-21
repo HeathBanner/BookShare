@@ -3,7 +3,9 @@
 import { makeStyles } from '@material-ui/styles';
 import {
     Grid,
-    Typography
+    Typography,
+    Paper,
+    Icon
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -14,8 +16,25 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         padding: '10%'
     },
+    paper: {
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        padding: '10%',
+        width: '70%'
+    },
+    icon: {
+        fontSize: '4rem',
+        color: '#ff9800'
+    },
     message: {
-        marginTop: 60,
+        marginTop: 20,
         width: '100%',
         textAlign: 'center',
     }
@@ -27,9 +46,19 @@ export default () => {
 
     return (
         <Grid className={classes.container} item xs={12}>
-            <Typography className={classes.message} variant="h5">
-                You must be logged in to use this
-            </Typography>
+            <Paper className={classes.paper}>
+
+                <Icon className={classes.icon}>
+                    warning
+                </Icon>
+
+                <Typography
+                    className={classes.message}
+                    variant="h5"
+                >
+                    You must be logged in to use this
+                </Typography>
+            </Paper>
         </Grid>
     );
 };

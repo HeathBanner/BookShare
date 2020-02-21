@@ -34,31 +34,26 @@ namespace BookShare.Services
 
             return query[0];
         }
-        public HttpResponseMessage Register(Users user)
+        public async Task<CustomCodes> Register(Users user)
         {
             var filter = Builders<Users>.Filter;
-            var findFilter = filter.Or(
+            var find = filter.Or(
                     filter.Eq("Username", user.Username),
                     filter.Eq("Email", user.Email)
                     );
-            var findQuery = _users.Find(findFilter).ToList();
+            var query = await _users.Find(find).FirstOrDefaultAsync();
 
-            if (findQuery.Count >= 1) return new HttpResponseMessage(HttpStatusCode.Forbidden);
+            if (query.Email == user.Email)
+            {
+                return new CustomCodes { statusCode = 401 };
+            }
 
             _users.InsertOne(user);
 
-            return new HttpResponseMessage(HttpStatusCode.Created);
-        }
-
-        public List<Users> Login(Users user)
-        {
-            var filter = Builders<Users>.Filter;
-            var findFilter = filter.Eq("Email", user.Email);
-            var findQuery = _users.Find(findFilter).ToList();
-
-            Console.WriteLine("\n\n\n {0} \n\n\n", findQuery.Count);
-
-            return findQuery;
+            return new CustomCodes
+            {
+                statusCode = 201
+            };
         }
 
         public CustomCodes DeleteBook(string id, string username)

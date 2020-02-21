@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/styles';
@@ -50,11 +51,6 @@ const buttons = [
         func: false
     },
     {
-        text: "Settings",
-        url: "/settings",
-        func: false
-    },
-    {
         text: "Signout",
         func: true
     }
@@ -63,6 +59,7 @@ const buttons = [
 const User = ({ user, history }) => {
 
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -81,6 +78,8 @@ const User = ({ user, history }) => {
 
     const open = Boolean(anchorEl);
     const id = open ? 'transition-popper' : undefined;
+
+    const signOut = () => dispatch({ type: "SIGNOUT" });
 
     const handleHistory = (url) => {
         history.push(url);
@@ -113,7 +112,7 @@ const User = ({ user, history }) => {
                                     <Button
                                         key={item.text}
                                         className={classes.buttons}
-                                        onClick={() => item.func ? "" : handleHistory(item.url)}
+                                        onClick={() => item.func ? signOut() : handleHistory(item.url)}
                                     >
                                         <Typography variant="body2">
                                             {item.text}

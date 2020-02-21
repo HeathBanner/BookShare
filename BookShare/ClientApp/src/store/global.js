@@ -14,6 +14,12 @@ const auth = (state, action) => {
                 user: { ...action.payload },
                 loggedIn: true
             };
+        case "SIGNOUT":
+            localStorage.removeItem("token");
+            return {
+                ...initState,
+                checking: false
+            };
         case "UPDATE":
             return {
                 ...state,

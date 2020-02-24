@@ -72,7 +72,7 @@ const BookCards = ({ book, id, history }) => {
         <Card className={classes.card}>
             <CardMedia
                 className={classes.media}
-                image={image}
+                image={`data:image/jpeg;base64,${image}`}
                 title={title}
             />
             <CardContent className={classes.content}>

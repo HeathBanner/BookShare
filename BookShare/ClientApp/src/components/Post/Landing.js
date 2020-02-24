@@ -108,8 +108,28 @@ export default ({ editId }) => {
     };
 
     const handleInput = (type, event) => {
+        if (type === "image") return saveImage(type, event.target.files[0]);
         console.log(type, event.target.value);
         setBook({ ...book, [type]: { error: false, value: event.target.value } });
+    };
+
+    const saveImage = (type, blob) => {
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            console.log(e, e.target.result);
+            const result = e.target.result;
+            const parsed = result.split("base64,");
+            console.log(parsed);
+            return setBook({
+                ...book,
+                [type]: {
+                    error: false,
+                    value: parsed[1],
+                    display: result
+                }
+            });
+        };
+        return reader.readAsDataURL(blob);
     };
 
     const handleSubmit = async () => {
@@ -157,9 +177,22 @@ export default ({ editId }) => {
     return (
         <Grid className={classes.container} item xs={12}>
             <Paper className={classes.paper}>
+                <input
+                    value={book.value}
+                    onChange={(e) => handleInput("image", e)}
+                    accept="image/*"
+                    id="image-upload"
+                    multiple
+                    type="file"
+                />
+                <label htmlFor="image-upload">
+                    <Button>
+                        Upload
+                    </Button>
+                </label>
 
                 <img
-                    src={book.image.value ? book.image.value : ImagePlaceholder}
+                    src={book.image.value ? book.image.display : ImagePlaceholder}
                     alt="Book Field"
                     onClick={handleImage}
                     style={{ marginBottom: 20 }}

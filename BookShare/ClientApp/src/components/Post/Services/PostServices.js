@@ -1,5 +1,4 @@
 ﻿export const fetchPost = async (book, username) => {
-    console.log(book, username);
     const newBook = ExtractValues(book);
     const options = {
         method: 'POST',

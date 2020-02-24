@@ -118,7 +118,7 @@ export default ({ params }) => {
             <Paper className={classes.paper}>
                 <img
                     className={classes.img}
-                    src={image}
+                    src={`data:image/jpeg;base64,${image}`}
                     alt={title}
                 />
 

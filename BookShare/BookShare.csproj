@@ -21,13 +21,14 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+    <None Include="**/*" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ClientApp\src\components\ScreenCatchers\" />
     <Folder Include="ClientApp\src\components\Profile\Editor\" />
-    <Folder Include="ClientApp\src\components\Profile\LFBooks\" />
     <Folder Include="ClientApp\src\components\Profile\Location\" />
+    <Folder Include="ClientApp\src\components\Resources\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Models\EmptyClass.cs" />

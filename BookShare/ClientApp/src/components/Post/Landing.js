@@ -33,6 +33,7 @@ import {
     Input,
     Button
 } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -111,6 +112,10 @@ export default ({ editId }) => {
         if (type === "image") return saveImage(type, event.target.files[0]);
         console.log(type, event.target.value);
         setBook({ ...book, [type]: { error: false, value: event.target.value } });
+    };
+
+    const handleAutocomplete = (value, type) => {
+        setBook({ ...book, [type]: value.title });
     };
 
     const saveImage = (type, blob) => {
@@ -228,33 +233,14 @@ export default ({ editId }) => {
                     error={book.description.error}
                 />
 
-                <FormControl style={{ flexGrow: 1 }}>
-                    <InputLabel
-                        id="condition-label"
-                        color="secondary"
-                    >
-                        State
-                    </InputLabel>
-                    <Select
-                        value={book.state.value}
-                        onChange={(e) => handleInput("state", e)}
-                        labelId="condition-label"
-                        input={<Input
-                            color="secondary"
-                            helperText="required"
-                            error={book.state.error}
-                        />}
-                    >
-                        {states.map((item) => {
-                            return (
-                                <MenuItem value={item} key={item}>
-                                    {item}
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                    <FormHelperText>required</FormHelperText>
-                </FormControl>
+                <Autocomplete
+                    options={states}
+                    getOptionLabel={option => option.title}
+                    className={classes.inputs}
+                    value={{ title: book.state }}
+                    onChange={(e, newValue) => handleAutocomplete(newValue, "state")}
+                    renderInput={params => <TextField { ...params} label="State" />}
+                />
 
                 <TextField
                     className={classes.inputs}

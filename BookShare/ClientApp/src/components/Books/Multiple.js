@@ -1,5 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 
+import { states } from '../Resources/index';
+
 import { makeStyles } from '@material-ui/styles';
 import {
     List,
@@ -9,14 +11,10 @@ import {
     IconButton,
     Icon,
     Typography,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Input,
     TextField,
     Button
 } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles(() => ({
     list: {
@@ -41,7 +39,6 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const states = ["NC", "SC", "FL", "CA", "AK", "HI"];
 const initBook = {
     lfBooks: [],
     trash: [],
@@ -68,18 +65,18 @@ export default ({ history, store }) => {
         if (!book.imported && store.user) {
 
             let lfBooks = [];
-            if (store.user.lfBooks.length > 0) {
+            if (store.user.lfBooks && store.user.lfBooks.length > 0) {
                 store.user.lfBooks.forEach((item, index) => {
                     lfBooks.push({
                         index: index,
                         value: item,
                         deleted: false
                     });
-                })
-            }
+                });
+                }
             setBook({
                 ...book,
-                lfBooks: store.user.lfBooks.length > 0 ? lfBooks : [],
+                lfBooks: store.user.lfBooks ? store.user.lfBooks.length > 0 ? lfBooks : [] : [],
                 City: store.user.city ? store.user.city : "",
                 State: store.user.state ? store.user.state : "",
                 Imported: true
@@ -93,6 +90,10 @@ export default ({ history, store }) => {
 
     const handleInput = (event, type) => {
         setBook({ ...book, [type]: event.target.value });
+    };
+
+    const handleAutocomplete = (value, type) => {
+        setBook({ ...book, [type]: value.title });
     };
 
     const removeBook = (item) => {
@@ -181,23 +182,14 @@ export default ({ history, store }) => {
                 })}
             </List>
 
-            <FormControl className={classes.inputs}>
-                <InputLabel>State</InputLabel>
-                <Select
-                    value={book.State}
-                    onChange={(e) => handleInput(e, "State")}
-                    label="Field of Study"
-                    input={<Input color="secondary" />}
-                >
-                    {states.map((item) => {
-                        return (
-                            <MenuItem value={item} key={item}>
-                                {item}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
+            <Autocomplete
+                options={states}
+                getOptionLabel={option => option.title}
+                className={classes.inputs}
+                value={{ title: book.State }}
+                onChange={(e, newValue) => handleAutocomplete(newValue, "State")}
+                renderInput={params => <TextField { ...params } label="State" />}
+            />
 
             <TextField
                 className={classes.inputs}

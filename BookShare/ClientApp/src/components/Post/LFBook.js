@@ -95,6 +95,7 @@ const initState = {
 export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
 
     const classes = useStyles();
+    console.log(lfBooks);
 
     const [state, setState] = useState({ ...initState });
 
@@ -157,7 +158,7 @@ export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
                 </ListItem>
                 <Divider className={classes.divider} />
                 <Collapse in={state.open} timeout="auto" unmountOnExit>
-                    {lfBooks.map((item, index) => {
+                    {lfBooks ? lfBooks.map((item, index) => {
                             return (
                                 <ListItem>
                                     <ListItemSecondaryAction>
@@ -171,7 +172,7 @@ export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
                                     <ListItemText primary={item} />
                                 </ListItem>
                             );
-                        })}
+                        }) : ""}
                     </Collapse>
                 </List>
         </Paper>

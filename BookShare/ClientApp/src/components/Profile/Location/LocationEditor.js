@@ -1,11 +1,14 @@
 ﻿import React from 'react';
 
+import { states } from '../../Resources/index';
+
 import { makeStyles } from '@material-ui/styles';
 import {
     Paper,
     TextField,
     Button
 } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles(() => ({
     paper: {
@@ -38,7 +41,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export default ({ location, handleChange, handleSave }) => {
+export default ({ location, handleChange, handleAutocomplete, handleSave }) => {
 
     const classes = useStyles();
     const { city, state } = location;
@@ -52,11 +55,13 @@ export default ({ location, handleChange, handleSave }) => {
                 label="City"
             />
 
-            <TextField
+            <Autocomplete
+                options={states}
+                getOptionLabel={option => option.title}
                 className={classes.inputs}
-                value={state}
-                onChange={(e) => handleChange(e, "location", "state")}
-                label="State"
+                value={{ title: state }}
+                onChange={(e, newValue) => handleAutocomplete(newValue, "state")}
+                renderInput={params => <TextField {...params} label="State" />}
             />
 
             <Button

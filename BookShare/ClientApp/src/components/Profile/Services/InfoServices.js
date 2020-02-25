@@ -228,7 +228,7 @@ export const buttonData = (data, store) => {
         case "email":
             return store.email;
         case "lfBooks":
-            return store.lfBooks.length === 0 ? "Click the Edit button to add some!" : genLFBooks(store.lfBooks);
+            return store.lfBooks ? store.lfBooks.length === 0 ? "Click the Edit button to add some!" : genLFBooks(store.lfBooks) : "Click the Edit button to add some!";
         case "location":
             return !store.city && !store.state ? "Set your location for easier searching!" : `${store.city}, ${store.state}`;
         default:

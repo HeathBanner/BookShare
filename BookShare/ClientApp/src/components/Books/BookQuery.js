@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 
 import Notify from '../Notifications/Notify';
+import { states } from '../Resources/index';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -12,6 +13,7 @@ import {
     FormControl,
     InputLabel,
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const useStyles = makeStyles(() => ({
     inputs: {
@@ -31,7 +33,6 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const states = ["NC", "SC", "FL", "CA", "AK", "HI"];
 const initBook = {
     lfBooks: "",
     Title: "",
@@ -54,10 +55,11 @@ export default ({ history, store }) => {
     const [notify, setNotify] = useState({ ...initNotify });
 
     useEffect(() => {
-        if (!book.imported && store.user) {
+        console.log(book);
+        if (!book.Imported && store.user) {
             setBook({
                 ...book,
-                lfBooks: store.user.lfBooks.length > 0 ? store.user.lfBooks : [],
+                lfBooks: store.user.lfBooks ? store.user.lfBooks.length > 0 ? store.user.lfBooks : [] : [],
                 City: store.user.city ? store.user.city : "",
                 State: store.user.state ? store.user.state : "",
                 Imported: true
@@ -66,7 +68,12 @@ export default ({ history, store }) => {
     }, [store, book]);
 
     const handleInput = (event, type) => {
+        console.log(event.target);
         setBook({ ...book, [type]: event.target.value });
+    };
+
+    const handleAutocomplete = (value, type) => {
+        setBook({ ...book, [type]: value.title });
     };
 
     const handleClose = () => setNotify({ ...initNotify });
@@ -89,7 +96,18 @@ export default ({ history, store }) => {
         }
     };
 
-    const renderInput = () => {
+    const renderInput = (flag) => {
+        if (!flag) {
+            return (
+                <TextField
+                    className={classes.inputs}
+                    value={book.Title}
+                    onChange={(e) => handleInput(e, "Title")}
+                    label="Book"
+                    color="secondary"
+                />
+            );
+        }
         if (store.user.lfBooks.length > 0) {
             return (
                 <FormControl className={classes.inputs}>
@@ -125,25 +143,16 @@ export default ({ history, store }) => {
 
     return (
         <>
-            {store.user ? renderInput() : ""}
+            {store.user && store.user.lfBooks ? renderInput() : renderInput(false)}
 
-            <FormControl className={classes.inputs}>
-                <InputLabel>State</InputLabel>
-                <Select
-                    value={book.State}
-                    onChange={(e) => handleInput(e, "State")}
-                    label="Field of Study"
-                    input={<Input color="secondary" />}
-                >
-                    {states.map((item) => {
-                        return (
-                            <MenuItem value={item} key={item}>
-                                {item}
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
+            <Autocomplete
+                options={states}
+                getOptionLabel={option => option.title}
+                className={classes.inputs}
+                value={{ title: book.State }}
+                onChange={(e, newValue) => handleAutocomplete(newValue, "State")}
+                renderInput={params => <TextField {...params} label="State" />}
+            />
 
             <TextField
                 className={classes.inputs}

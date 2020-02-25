@@ -118,6 +118,10 @@ export default () => {
         }
     };
 
+    const handleAutocomplete = (value, key) => {
+        setLocation({ ...location, [key]: value.title });
+    };
+
     const lfBooksInput = (event) => {
         setLFBooks({ ...lfBooks, value: event.target.value });
     };
@@ -230,7 +234,7 @@ export default () => {
             >
                 {lfBooks.open ? (
                     <LFBooksEditor
-                        lfBooks={lfBooks}
+                        lfBooks={lfBooks.list}
                         handleClose={closeLFBooks}
                         handleChange={lfBooksInput}
                         addBook={addBook}
@@ -243,6 +247,7 @@ export default () => {
                     <LocationEditor
                         location={location}
                         handleChange={handleInput}
+                        handleAutocomplete={handleAutocomplete}
                         handleSave={handleSave}
                     />
                 )}

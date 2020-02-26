@@ -50,7 +50,8 @@ export const fetchById = async (id) => {
     const result = await fetch(`api/book/getById/id=${id}`);
     const json = await result.json();
 
-    console.log(json);
+    if (json.statusCode === 404) return { error: true, message: "Book could not be found" };
+
     const reObj = assignValue(json.book);
     return { book: reObj };
 };

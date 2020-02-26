@@ -72,13 +72,18 @@ namespace BookShare.Services
             };
         }
 
-        public List<Region> GetBooks(string id, out List<Region> document)
+        public async Task<CustomCodes> GetBooks(string id)
         {
             var builder = Builders<Region>.Filter;
             var filter = builder.Eq("id", new Guid(id));
-            var result = _books.Find(x => x.Id == new Guid(id)).ToList();
+            var result = await _books.Find(x => x.Id == new Guid(id)).ToListAsync();
 
-            return document = result;
+            if (result.Count < 1) return new CustomCodes { statusCode = 404 };
+
+            return new CustomCodes {
+                statusCode = 200,
+                books = result
+            };
         }
 
         public List<Region> BookFilter(string Title, string State, string City, string Study, string Condition, string ISBN, string CourseId, out List<Region> document)

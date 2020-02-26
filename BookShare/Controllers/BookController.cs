@@ -38,13 +38,11 @@ namespace BookShare.Controllers
         }
 
         [Route("id={id}")]
-        public ActionResult<List<Region>> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
-            List<Region> document;
+            CustomCodes result = await _bookService.GetBooks(id);
 
-            _bookService.GetBooks(id, out document);
-
-            return document;
+            return new ObjectResult(result);
         }
 
         [Route("filter/Title={Title}&State={State}&City={City}&Study={Study}&Condition={Condition}&ISBN={ISBN}&CourseId={CourseId}")]

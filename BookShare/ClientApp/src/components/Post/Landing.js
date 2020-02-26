@@ -1,7 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Image from './Image';
 import ImagePlaceholder from './AddImage.png';
 import Background from './imgs/jaredd-craig.png';
 import LFBook from './LFBook';
@@ -54,6 +53,11 @@ const useStyles = makeStyles(() => ({
         padding: '5%',
         marginTop: 50
     },
+    image: {
+        width: '100%',
+        height: 300,
+        marginBottom: 20
+    },
     title: {
         width: '100%',
         textAlign: 'center'
@@ -91,8 +95,8 @@ export default ({ editId }) => {
     const store = useSelector(state => state);
 
     const [book, setBook] = useState({ ...initBook });
-    const [open, setOpen] = useState(false);
     const [notify, setNotify] = useState({ ...initNotify });
+    //const [open, setOpen] = useState(false);
 
     useEffect(() => {
         if (!editId) return;
@@ -103,7 +107,7 @@ export default ({ editId }) => {
     const handleBook = async () => {
         const result = await fetchById(editId);
 
-        if (result.warning) return console.log("WARNING");
+        if (result.warning || result.error) return setNotify({ ...notify, ...result });
 
         setBook(result.book);
     };
@@ -121,16 +125,12 @@ export default ({ editId }) => {
     const saveImage = (type, blob) => {
         let reader = new FileReader();
         reader.onload = (e) => {
-            console.log(e, e.target.result);
-            const result = e.target.result;
-            const parsed = result.split("base64,");
-            console.log(parsed);
+            const parsed = e.target.result.split("base64,");
             return setBook({
                 ...book,
                 [type]: {
                     error: false,
                     value: parsed[1],
-                    display: result
                 }
             });
         };
@@ -153,8 +153,8 @@ export default ({ editId }) => {
         dispatch({ type: "UPDATE", payload: result.user });
     };
 
-    const handleClose = () => setOpen(false);
-    const handleImage = () => setOpen(true);
+    //const handleClose = () => setOpen(false);
+    //const handleImage = () => setOpen(true);
 
     const closeNotify = () => {
         if (notify.warning || notify.error) return setNotify({ ...initNotify });
@@ -178,36 +178,29 @@ export default ({ editId }) => {
 
     const notifyBook = (notification) => setNotify({ ...notify, ...notification });
 
+    const imgHelper = "data:image/jpeg;base64,"
+
     if (!store.loggedIn) return <ValidationScreen />;
     return (
         <Grid className={classes.container} item xs={12}>
             <Paper className={classes.paper}>
-                <input
-                    value={book.value}
-                    onChange={(e) => handleInput("image", e)}
-                    accept="image/*"
-                    id="image-upload"
-                    multiple
-                    type="file"
-                />
-                <label htmlFor="image-upload">
-                    <Button>
-                        Upload
-                    </Button>
-                </label>
-
-                <img
-                    src={book.image.value ? book.image.display : ImagePlaceholder}
-                    alt="Book Field"
-                    onClick={handleImage}
-                    style={{ marginBottom: 20 }}
-                />
-
-                <Image
-                    open={open}
-                    handleClose={handleClose}
-                    handleInput={handleInput}
-                />
+                <div
+                    className={classes.image}
+                    style={{
+                        backgroundImage: book.image.value ? `url(${imgHelper}${book.image.value})` : `url(${ImagePlaceholder})`,
+                        backgroundSize: 'cover'
+                    }}
+                >
+                    <input
+                        style={{ width: '100%', height: '100%' }}
+                        value={book.value}
+                        onChange={(e) => handleInput("image", e)}
+                        accept="image/*"
+                        id="image-upload"
+                        multiple
+                        type="file"
+                    />
+                </div>
 
                 <TextField
                     className={classes.inputs}
@@ -237,7 +230,7 @@ export default ({ editId }) => {
                     options={states}
                     getOptionLabel={option => option.title}
                     className={classes.inputs}
-                    value={{ title: book.state }}
+                    value={{ title: book.state.value }}
                     onChange={(e, newValue) => handleAutocomplete(newValue, "state")}
                     renderInput={params => <TextField { ...params} label="State" />}
                 />

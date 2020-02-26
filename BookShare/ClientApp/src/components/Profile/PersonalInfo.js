@@ -6,6 +6,7 @@ import LFBooksEditor from '../../components/Post/LFBook';
 import LocationEditor from './Location/LocationEditor';
 import {
     initModalProps,
+    initNotify,
     initLFBooks,
     initLocation,
     emailSteps,
@@ -99,6 +100,7 @@ export default () => {
     const [modalProps, setModalProps] = useState({ ...initModalProps });
     const [lfBooks, setLFBooks] = useState({ ...initLFBooks });
     const [location, setLocation] = useState({ ...initLocation });
+    const [notify, setNotify] = useState({ ...initNotify })
 
     const closeLocation = () => setLocation({ ...location, open: false });
     const closeLFBooks = () => setLFBooks({ ...lfBooks, open: false });
@@ -126,9 +128,9 @@ export default () => {
         setLFBooks({ ...lfBooks, value: event.target.value });
     };
 
-    const addBook = () => {
+    const addBook = (title) => {
         let newList = lfBooks.list;
-        newList.push(lfBooks.value);
+        newList.push(title);
 
         setLFBooks({ ...lfBooks, list: newList, value: "" });
     };
@@ -162,26 +164,43 @@ export default () => {
     };
 
     const handleSave = async (type) => {
-        let result;
-
         switch (type) {
             case "lfBooks":
-                result = await fetchUpdateLF(lfBooks.list, username);
-                setLFBooks({ ...initLFBooks });
-                dispatch({ type: "UPDATE", payload: result });
+                handleUpdateLF();
                 break;
             case "location":
-                result = await fetchUpdateLocation(location, username);
-                setLocation({ ...initLocation });
-                dispatch({ type: "UPDATE", payload: result });
+                handleUpdateLocation();
                 break;
             default:
                 break;
         }
-    }
+    };
+
+    const handleUpdateLF = async () => {
+        const result = await fetchUpdateLF(lfBooks.list, username);
+        if (result.warning || result.error) return setNotify({ ...notify, ...result });
+
+        setLFBooks({ ...initLFBooks });
+        dispatch({ type: "UPDATE", payload: result });
+    };
+
+    const handleUpdateLocation = async () => {
+        const result = await fetchUpdateLocation(location, username);
+        if (result.warning || result.error) return setNotify({ ...notify, ...result });
+
+        setLocation({ ...initLocation });
+        dispatch({ type: "UPDATE", payload: result });
+    };
+
+    const closeMainNotify = () => {
+        if (location.open) setLocation({ ...initLocation });
+        else setLFBooks({ ...initLFBooks });
+
+        setNotify({ ...initNotify });
+    };
 
     const closeModal = () => setModalProps({ ...initModalProps });
-    const closeNotify = () => {
+    const closeModalNotify = () => {
         if (modalProps.activeStep === 0 || modalProps.notify.warning) {
             return setModalProps(prevState => ({
                 ...prevState,
@@ -254,8 +273,8 @@ export default () => {
             </Modal>
 
             <Notification
-                notification={modalProps.open ? modalProps.notify : lfBooks.notify}
-                handleClose={closeNotify}
+                notification={modalProps.open ? modalProps.notify : notify}
+                handleClose={modalProps.open ? closeModalNotify : closeMainNotify}
             />
 
             <Typography

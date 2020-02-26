@@ -97,7 +97,7 @@ export default ({ history, store }) => {
     };
 
     const renderInput = (flag) => {
-        if (!flag) {
+        if (flag) {
             return (
                 <TextField
                     className={classes.inputs}
@@ -143,7 +143,7 @@ export default ({ history, store }) => {
 
     return (
         <>
-            {store.user && store.user.lfBooks ? renderInput() : renderInput(false)}
+            {store.user && store.user.lfBooks ? renderInput() : renderInput(true)}
 
             <Autocomplete
                 options={states}

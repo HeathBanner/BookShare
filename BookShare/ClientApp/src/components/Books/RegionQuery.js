@@ -1,30 +1,29 @@
 ﻿import React, { useState } from 'react';
 
 import Notify from '../Notifications/Notify';
+import { states } from '../Resources/index';
 
 import { makeStyles } from '@material-ui/styles';
 import {
     TextField,
-    Paper,
     Button,
+    Paper,
     Select,
     MenuItem,
     Input
 } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles(() => ({
-    inputContainer: {
+    container: {
         display: 'flex',
         alignContent: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
         padding: '10%',
-        width:'70%'
+        backgroundColor: '#8860D0',
+        height: '100vh'
     },
     header: {
         width: '100%',
@@ -38,8 +37,12 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
         padding: '10%',
-        width: '95%'
+        width: '70%'
     },
     modal: {
         position: 'fixed',
@@ -90,7 +93,13 @@ export default ({ history }) => {
     const [info, setInfo] = useState({ ...initInfo });
     const [notify, setNotify] = useState({ ...initNotify });
 
-    const handleInput = (type) => event => setInfo({ ...info, [type]: event.target.value });
+    const handleInput = (type) => event => {
+        setInfo({ ...info, [type]: event.target.value });
+    };
+
+    const handleAutocomplete = (value, type) => {
+        setInfo({ ...info, [type]: value.title });
+    };
 
     const handleClose = () => setNotify({ ...initNotify });
 
@@ -112,7 +121,7 @@ export default ({ history }) => {
     };
 
     return (
-        <Paper className={classes.inputContainer}>
+        <Paper className={classes.paper}>
             <TextField
                 className={classes.input}
                 value={info.city}
@@ -121,29 +130,21 @@ export default ({ history }) => {
                 color="secondary"
             />
 
-            <TextField
+            <Autocomplete
+                options={states}
+                getOptionLabel={option => option.title}
                 className={classes.input}
-                value={info.state}
-                onChange={handleInput("state")}
-                label="State"
-                color="secondary"
+                value={{ title: info.state }}
+                onChange={(e, newValue) => handleAutocomplete(newValue, "state")}
+                renderInput={params => <TextField {...params} label="State" />}
             />
 
-            <Select
-                className={classes.input}
+            <TextField
+                label="Study"
                 value={info.study}
                 onChange={handleInput("study")}
-                label="Field of Study"
-                input={<Input color="secondary" />}
-            >
-                {fields.map((item) => {
-                    return (
-                        <MenuItem value={item} key={item}>
-                            {item}
-                        </MenuItem>
-                    );
-                })}
-            </Select>
+                className={classes.input}
+            />
 
             <Button
                 className={classes.search}

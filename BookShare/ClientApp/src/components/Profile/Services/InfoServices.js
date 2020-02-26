@@ -11,8 +11,6 @@ export const fetchValidatePassword = async (props, username) => {
     const result = await fetch("api/user/validatePassword", options);
     const json = await result.json();
 
-    console.log(json);
-
     return statusHandler(json, props);
 };
 
@@ -54,8 +52,6 @@ export const fetchUpdateEmail = async (props, username) => {
     const result = await fetch("api/user/updateEmail", options);
     const json = await result.json();
 
-    console.log(json);
-
     return statusHandler(json, props);
 };
 
@@ -69,7 +65,7 @@ export const fetchUpdateLF = async (list, username) => {
     const result = await fetch("api/user/updateLF", options);
     const json = await result.json();
 
-    console.log(json);
+    if (json.statusCode !== 200) return 
 
     return json.user;
 };
@@ -90,7 +86,9 @@ export const fetchUpdateLocation = async (location, username) => {
 
     console.log(json);
 
-    return json.user;
+    return { error: true, message: "This is a test!" };
+
+    //return json.user;
 };
 
 const statusHandler = (json, props) => {
@@ -136,6 +134,13 @@ export const initModalProps = {
         success: false,
         message: ""
     }
+};
+
+export const initNotify = {
+    error: false,
+    success: false,
+    warning: false,
+    message: ""
 };
 
 export const initLFBooks = {
@@ -237,6 +242,7 @@ export const buttonData = (data, store) => {
 };
 
 const genLFBooks = (list) => {
+    if (list.length === 1) return list[0];
     let newList;
     list.forEach((item, index) => {
         if (!newList) return newList = `${item}, `;

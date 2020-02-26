@@ -93,7 +93,7 @@ export default ({ params }) => {
         const result = await fetch(`api/book/id=${params.id}`);
         const json = await result.json();
 
-        setBook({ info: json[0], loaded: true });
+        setBook({ info: json.books[0], loaded: true });
     };
 
     if (!book.loaded) return <CircularProgress />;

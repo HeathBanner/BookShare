@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 
 import BookQuery from './BookQuery';
 import Multiple from './Multiple';
+import Manual from './Manual';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -51,8 +52,7 @@ const QueryContainer = ({ isModal, history }) => {
     const renderSearch = () => {
         if (query === 0) return <BookQuery history={history} store={store} />;
         if (query === 1) return <Multiple history={history} store={store} />;
-
-        return "";
+        return <Manual history={history} store={store} />;
     };
 
     return (

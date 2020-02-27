@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '10%',
+        padding: '10% 5%',
         minHeight: '100vh',
         backgroundImage: `url(${Background})`,
         backgroundSize: 'cover'
@@ -56,7 +56,10 @@ const useStyles = makeStyles(() => ({
     image: {
         width: '100%',
         height: 300,
-        marginBottom: 20
+        marginBottom: 20,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: '50% 50%'
     },
     title: {
         width: '100%',
@@ -188,16 +191,17 @@ export default ({ editId }) => {
                     className={classes.image}
                     style={{
                         backgroundImage: book.image.value ? `url(${imgHelper}${book.image.value})` : `url(${ImagePlaceholder})`,
-                        backgroundSize: 'cover'
                     }}
                 >
                     <input
-                        style={{ width: '100%', height: '100%' }}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                        }}
                         value={book.value}
                         onChange={(e) => handleInput("image", e)}
                         accept="image/*"
                         id="image-upload"
-                        multiple
                         type="file"
                     />
                 </div>

@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import InfoEditor from './Editor/InfoEditor';
 import LFBooksEditor from '../../components/Post/LFBook';
@@ -89,7 +90,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 // CLEAN UP FUNCTIONS AND CONSTS TO SERVICES
-export default () => {
+const PersonalInfo =  ({ history }) => {
 
     const classes = useStyles();
     const store = useSelector(store => store);
@@ -151,6 +152,9 @@ export default () => {
                     open: true,
                     type: type
                 });
+                break;
+            case "posted":
+                history.push("/bookshelf");
                 break;
             case "lfBooks":
                 setLFBooks({ ...lfBooks, open: true });
@@ -319,3 +323,5 @@ export default () => {
         </Paper>
     );
 };
+
+export default withRouter(PersonalInfo);

@@ -127,6 +127,7 @@ export const initModalProps = {
     password: "",
     newPassword0: "",
     newPassword1: "",
+    visible: false,
     activeStep: 0,
     notify: {
         error: false,
@@ -180,12 +181,25 @@ export const passwordSteps = [
     "Finished"
 ];
 
-export const getStepContent = (step) => {
+export const getEmailContent = (step) => {
     switch (step) {
         case 0:
             return "Verify your password to proceed";
         case 1:
             return "Enter your new email";
+        case 2:
+            return "You're finished!";
+        default:
+            return "Unkown step";
+    }
+};
+
+export const getPasswordContent = (step) => {
+    switch (step) {
+        case 0:
+            return "Verify your password to proceed";
+        case 1:
+            return "Enter your new password";
         case 2:
             return "You're finished!";
         default:

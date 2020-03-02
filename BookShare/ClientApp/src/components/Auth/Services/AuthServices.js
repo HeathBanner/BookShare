@@ -54,7 +54,8 @@ const statusHandler = (status) => {
 export const initInfo = {
     Username: "",
     Email: "",
-    Password: ""
+    Password: "",
+    Visible: false
 };
 
 export const initNotify = {

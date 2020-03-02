@@ -12,7 +12,8 @@ import {
     initLocation,
     emailSteps,
     passwordSteps,
-    getStepContent,
+    getEmailContent,
+    getPasswordContent,
     fetchValidatePassword,
     fetchUpdatePassword,
     fetchUpdateEmail,
@@ -233,6 +234,8 @@ const PersonalInfo =  ({ history }) => {
 
     const inputModal = (event, type) => {
         const { value } = event.target;
+        if (type === "visible") return setModalProps({ ...modalProps, visible: !modalProps.visible });
+
         setModalProps({ ...modalProps, [type]: value });
     };
 
@@ -246,7 +249,8 @@ const PersonalInfo =  ({ history }) => {
                 handleNext={handleNext}
                 handleBack={handleBack}
                 steps={modalProps.type === "email" ? emailSteps : passwordSteps}
-                getStepContent={getStepContent}
+                getEmailContent={getEmailContent}
+                getPasswordContent={getPasswordContent}
             />
             
             <Modal

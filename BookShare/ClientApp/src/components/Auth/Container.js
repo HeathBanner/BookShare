@@ -48,6 +48,7 @@ export default ({ auth, handleClose }) => {
     const handleChange = (event, value) => setMode(value);
 
     const handleInput = (mode, type) => event => {
+        if (type === "Visible") return setInfo({ ...info, Visible: !info.Visible }); 
         setInfo({ ...info, [type]: event.target.value });
     };
 

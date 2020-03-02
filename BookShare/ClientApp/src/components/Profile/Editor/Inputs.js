@@ -1,7 +1,15 @@
 ﻿import React from 'react';
 
 import { makeStyles } from '@material-ui/styles';
-import { TextField } from '@material-ui/core';
+import {
+    TextField,
+    FormControl,
+    InputLabel,
+    Input,
+    InputAdornment,
+    Icon,
+    IconButton
+} from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
     inputContainers: {
@@ -22,24 +30,36 @@ export default ({ modalProps, handleChange }) => {
 
     const classes = useStyles();
 
-    const { type, email, password, newPassword0, newPassword1, activeStep } = modalProps;
+    const { type, email, password, newPassword0, newPassword1, activeStep, visible } = modalProps;
+
+    console.log(type);
 
     const renderStep = () => {
-        if (type === "Password") {
+        if (type === "password") {
             return (
                 <div className={classes.inputContainers}>
-                    <TextField
-                        className={classes.input}
-                        label={type}
-                        value={newPassword0}
-                        onChange={(e) => handleChange(e, "newPassword0")}
-                    />
-                    <TextField
-                        className={classes.input}
-                        label={`Re-Enter ${type}`}
-                        value={newPassword1}
-                        onChange={(e) => handleChange(e, "newPassword1")}
-                    />
+                    {["newPassword0", "newPassword1"].map((item, index) => {
+                        return (
+                            <FormControl style={{ width: '100%' }}>
+                            <InputLabel>{index === 0 ? "Password" : "Re-Enter Password"}</InputLabel>
+                                <Input
+                                    className={classes.input}
+                                    type={visible ? "text" : "password"}
+                                    value={index === 0 ? newPassword0 : newPassword1}
+                                    onChange={e => handleChange(e, item)}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={e => handleChange(e, "visible")}
+                                            >
+                                                <Icon>{visible ? "visibility" : "visibility_off"}</Icon>
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                        </FormControl>        
+                        );
+                    })}
                 </div>
             );
         }
@@ -48,7 +68,7 @@ export default ({ modalProps, handleChange }) => {
             <div className={classes.inputContainers}>
                 <TextField
                     className={classes.input}
-                    label={type}
+                    label="Email"
                     value={email}
                     onChange={(e) => handleChange(e, "email")}
                 />
@@ -59,12 +79,25 @@ export default ({ modalProps, handleChange }) => {
     if (activeStep === 0) {
         return (
             <div className={classes.inputContainers}>
-                <TextField
-                    className={classes.input}
-                    label="Password"
-                    value={password}
-                    onChange={(e) => handleChange(e, "password")}
-                />
+                <FormControl style={{ width: '100%' }}>
+                    <InputLabel>Password</InputLabel>
+                        <Input
+                            className={classes.input}
+                            label="Password"
+                            type={visible ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => handleChange(e, "password")}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={e => handleChange(e, "visible")}
+                                    >
+                                        <Icon>{visible ? "visibility" : "visibility_off"}</Icon>
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                </FormControl>
             </div>
         );
     }

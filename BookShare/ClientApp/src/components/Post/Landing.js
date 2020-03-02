@@ -107,6 +107,10 @@ export default ({ editId }) => {
         handleBook(editId);
     }, []);
 
+    useEffect(() => {
+        console.log(book);
+    }, [book]);
+
     const handleBook = async () => {
         const result = await fetchById(editId);
 
@@ -122,7 +126,13 @@ export default ({ editId }) => {
     };
 
     const handleAutocomplete = (value, type) => {
-        setBook({ ...book, [type]: value.title });
+        setBook({
+            ...book,
+            [type]: {
+                error: false,
+                value: value.title
+            }
+        });
     };
 
     const saveImage = (type, blob) => {
@@ -248,7 +258,7 @@ export default ({ editId }) => {
                     helperText="required"
                     error={book.city.error}
                 />
-
+                
                 <div className={classes.inputContainers}>
                     <Typography
                         style={{ paddingBottom: 6, marginRight: 10 }}

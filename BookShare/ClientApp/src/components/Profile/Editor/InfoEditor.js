@@ -38,7 +38,8 @@ export default ({
     handleSubmit,
     handleChange,
     steps,
-    getStepContent,
+    getEmailContent,
+    getPasswordContent,
     handleNext,
     handleBack
 }) => {
@@ -83,7 +84,7 @@ export default ({
                     <StepButtons
                         switchBoard={activeStep === steps.length}
                         activeStep={activeStep}
-                        getStepContent={getStepContent}
+                        getStepContent={modalProps.type === "password" ? getPasswordContent : getEmailContent}
                         handleBack={handleBack}
                         handleNext={handleNext}
                         handleSubmit={handleSubmit}

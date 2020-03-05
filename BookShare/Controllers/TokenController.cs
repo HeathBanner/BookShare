@@ -31,7 +31,7 @@ namespace BookShare.Controllers
             {
                 return new ObjectResult(new CustomCodes
                 {
-                    statusCode = 500
+                    statusCode = 404
                 });
             }
         }

@@ -1,6 +1,8 @@
 ﻿import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import LFBooks from '../LFBooks';
+import InfoScreen from '../../ScreenCatchers/InfoScreen';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -79,14 +81,15 @@ const useStyles = makeStyles(() => ({
 export default ({ params }) => {
 
     const classes = useStyles();
+    const store = useSelector(store => store);
 
     const [book, setBook] = useState({ info: null, loaded: false });
 
     useEffect(() => {
-        if (book.loaded) return;
+        if (book.loaded || !store.user) return;
 
         fetchBooks();
-    }, []);
+    }, [store]);
 
     const fetchBooks = async () => {
         console.log(params.id);
@@ -96,6 +99,12 @@ export default ({ params }) => {
         setBook({ info: json.books[0], loaded: true });
     };
 
+    if (!store.user) return (
+        <InfoScreen
+            message="You must be logged in to view this"
+            action={false}
+        />
+    );
     if (!book.loaded) return <CircularProgress />;
 
     const { image, title, description, condition, eMedia, city, state, lfBooks } = book.info;

@@ -16,6 +16,17 @@ const useStyles = makeStyles(() => ({
     inputs: {
         width: '100%',
         marginBottom: 20
+    },
+    button: {
+        width: '100%',
+        padding: 10,
+        backgroundColor: '#ca1d5d',
+        color: 'white',
+        transition: 'background-color 0.4s ease',
+        '&:hover': {
+            backgroundColor: '#de1f27',
+            color: 'white'
+        }
     }
 }));
 
@@ -59,6 +70,7 @@ export default ({ handleInput, handleSubmit, register }) => {
             </FormControl>        
 
             <Button
+                className={classes.button}
                 onClick={() => handleSubmit("register")}
             >
                 Submit

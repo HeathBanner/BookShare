@@ -59,6 +59,9 @@ export default ({ auth, handleClose }) => {
         if (mode === "register") result = await fetchRegister(info);
 
         if (result.error) return setNotify({ ...notify, ...result });
+        if (result.success && mode === "register") {
+            return setNotify({ ...notify, ...result });
+        }
         if (result.success) {
             dispatch({
                 type: "LOGIN",
@@ -68,7 +71,10 @@ export default ({ auth, handleClose }) => {
         }
     };
 
-    const handleNotify = () => setNotify({ ...initNotify });
+    const handleNotify = () => {
+        if (notify.success) setInfo({ ...initInfo });
+        setNotify({ ...initNotify });
+    };
 
     const renderAuth = () => {
         if (mode === 0) {

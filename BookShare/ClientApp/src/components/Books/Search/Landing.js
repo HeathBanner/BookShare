@@ -4,6 +4,7 @@ import { withRouter } from 'react-router';
 
 import RegionQuery from '../RegionQuery';
 import BookCards from './BookCards';
+import InfoScreen from '../../ScreenCatchers/InfoScreen';
 import Filter from './Filter';
 import {
     fetchByBook,
@@ -120,6 +121,12 @@ const Landing = ({ params, history }) => {
         setModal({ ...modal, filter: false });
     };
 
+    if (!store.user) return (
+        <InfoScreen
+            message="You must be logged in to view this"
+            action={false}
+        />
+    );
     if (!books.loaded) return <CircularProgress className={classes.circularProgress} />;
     return (
         <Grid className={classes.container} item xs={12}>

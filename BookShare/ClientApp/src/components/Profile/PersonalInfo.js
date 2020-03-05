@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import InfoEditor from './Editor/InfoEditor';
 import LFBooksEditor from '../../components/Post/LFBook';
 import LocationEditor from './Location/LocationEditor';
+import InfoScreen from '../ScreenCatchers/InfoScreen';
 import {
     initModalProps,
     initNotify,
@@ -239,7 +240,13 @@ const PersonalInfo =  ({ history }) => {
         setModalProps({ ...modalProps, [type]: value });
     };
 
-    if (!store.user) return "";
+    if (!store.user) return (
+        <InfoScreen
+            message="You must be logged in to use this"
+            action={false}
+            icon="warning"
+        />
+    );
     return (
         <Paper className={classes.paper}>
             <InfoEditor

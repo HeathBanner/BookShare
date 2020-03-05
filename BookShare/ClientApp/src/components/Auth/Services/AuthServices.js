@@ -1,11 +1,9 @@
 ﻿export const fetchRegister = async (info) => {
+    const obj = assignValues(info);
+    console.log(obj);
     const options = {
         method: "POST",
-        body: JSON.stringify({
-            Username: info.Username,
-            Email: info.Email,
-            Password: info.Password
-        }),
+        body: JSON.stringify(obj),
         headers: { "Content-Type": "application/json" }
     };
 
@@ -13,16 +11,15 @@
     const json = await result.json();
 
     const status = statusHandler(json);
+    console.log(json, status);
     return status;
 };
 
 export const fetchLogin = async (info) => {
+    const obj = assignValues(info);
     const options = {
         method: "POST",
-        body: JSON.stringify({
-            Email: info.Email,
-            Password: info.Password
-        }),
+        body: JSON.stringify(obj),
         headers: { "Content-Type": "application/json" }
     };
 
@@ -31,6 +28,25 @@ export const fetchLogin = async (info) => {
 
     const status = statusHandler(json);
     return status;
+};
+
+const defaultObj = {
+    Username: "",
+    Email: "",
+    Password: "",
+    Posted: [],
+    LFBooks: [],
+    City: "",
+    State: ""
+};
+
+const assignValues = (info) => {
+    let newObj = defaultObj;
+    Object.entries(info).forEach(([key, value]) => {
+        if (key === "Visible") return;
+        newObj[key] = value;
+    });
+    return newObj;
 };
 
 const statusHandler = (status) => {
@@ -45,7 +61,7 @@ const statusHandler = (status) => {
             localStorage.setItem("token", status.access_token);
             return { success: true, message: "Login was successful!", payload: status.user };
         case 201:
-            return { sucess: true, message: "Your account has been created!" };
+            return { success: true, message: "Your account has been created!" };
         default:
             return { error: true, message: "Something went wrong :(" };
     }

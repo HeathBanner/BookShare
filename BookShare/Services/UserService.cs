@@ -43,7 +43,7 @@ namespace BookShare.Services
                     );
             var query = await _users.Find(find).FirstOrDefaultAsync();
 
-            if (query.Email == user.Email)
+            if (query != null && query.Email == user.Email)
             {
                 return new CustomCodes { statusCode = 401 };
             }

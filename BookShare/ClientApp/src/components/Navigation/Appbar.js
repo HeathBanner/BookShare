@@ -2,7 +2,7 @@
 import { useSelector } from 'react-redux';
 
 import Drawer from './Drawer';
-import Container from '../Auth/Container';
+import Container from '../../pages/Auth/index';
 import User from './User';
 
 import { makeStyles } from '@material-ui/styles';
@@ -26,9 +26,6 @@ const useStyles = makeStyles(() => ({
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)'
-    },
-    placeHolder: {
-        //minHeight: 56
     },
     button: {
         position: 'absolute',
@@ -73,28 +70,28 @@ export default ({ window }) => {
 
     return (
         <>
-        <div className={classes.placeHolder}></div>
-        <Slide appear={false} direction="down" in={!trigger}>
-            <AppBar>
-                <Toolbar className={classes.toolbar}>
-                    <Drawer />
+            <div className={classes.placeHolder}></div>
+            <Slide appear={false} direction="down" in={!trigger}>
+                <AppBar>
+                    <Toolbar className={classes.toolbar}>
+                        <Drawer />
 
-                    <Typography
-                        className={classes.navHeader}
-                        variant="h5"
-                    >
-                        Booksies
-                    </Typography>
+                        <Typography
+                            className={classes.navHeader}
+                            variant="h5"
+                        >
+                            Booksies
+                        </Typography>
 
-                    {renderAuth()}
+                        {renderAuth()}
 
-                    </Toolbar>
+                        </Toolbar>
 
-                    <Container
-                        auth={auth}
-                        handleClose={handleClose}
-                    />
-            </AppBar>
+                        <Container
+                            auth={auth}
+                            handleClose={handleClose}
+                        />
+                </AppBar>
             </Slide>
         </>
     );

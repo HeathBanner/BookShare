@@ -49,6 +49,15 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+/* Props structure 
+    message = string
+    action = {
+        func: function,
+        message: string
+    }
+    icon = string
+*/
+
 export default ({ message, action, icon }) => {
 
     const classes = useStyles();

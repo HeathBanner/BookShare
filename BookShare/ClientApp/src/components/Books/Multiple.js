@@ -36,6 +36,21 @@ const useStyles = makeStyles(() => ({
             backgroundColor: '#E98074',
             color: 'white'
         }
+    },
+    warningMessage: {
+        textAlign: 'center',
+        marginTop: 10
+    },
+    helperButtons: {
+        width: '100%',
+        margin: 10,
+        backgroundColor: '#ca1d5d',
+        color: 'white',
+        transition: 'background-color 0.4s ease',
+        '&:hover': {
+            backgroundColor: '#de1f27',
+            color: 'white'
+        }
     }
 }));
 
@@ -54,9 +69,10 @@ const initNotify = {
     message: ""
 };
 
-export default ({ history, store }) => {
+export default (props) => {
 
     const classes = useStyles();
+    const store = props.store;
 
     const [book, setBook] = useState({ ...initBook });
     const [notify, setNotify] = useState({ ...initNotify });
@@ -83,10 +99,6 @@ export default ({ history, store }) => {
             });
         }
     }, [store]);
-
-    useEffect(() => {
-        console.log(book);
-    }, [book]);
 
     const handleInput = (event, type) => {
         setBook({ ...book, [type]: event.target.value });
@@ -121,8 +133,6 @@ export default ({ history, store }) => {
         setBook({ ...book, lfBooks: newList, trash: newTrash });
     };
 
-    const handleClose = () => setNotify({ ...initNotify });
-
     const handleSearch = () => {
         const { lfBooks, State, City } = book;
         let list;
@@ -134,7 +144,7 @@ export default ({ history, store }) => {
         });
 
         console.log(list);
-        history.push(`/bookList/1/${State}/${City}/${list}`);
+        props.history.push(`/bookList/1/${State}/${City}/${list}`);
     };
 
     const preSubmit = () => {
@@ -148,39 +158,92 @@ export default ({ history, store }) => {
         }
     };
 
+    const renderInput = (flag) => {
+        if (flag) {
+            return (
+                <>
+                    <Typography className={classes.warningMessage} variant="body2">
+                        It appears you do not have any books of interest saved.
+                        Would you like to do that now?
+                    </Typography>
+                    <Button
+                        onClick={props.toggleValidation}
+                        className={classes.helperButtons}
+                    >
+                        Books of Interest
+                    </Button>
+                    <Button
+                        onClick={() => props.changeTab(false, 2)}
+                        className={classes.helperButtons}
+                    >
+                        Search Manually
+                    </Button>
+                </>
+            );
+        }
+        if (store.user.lfBooks.length > 0) {
+            return (
+                <>
+                    <Typography style={{ width: '100%', textAlign: 'center', marginTop: 20 }}>
+                        Book List to Search
+                    </Typography>
+
+                    <IconButton
+                        onClick={undoBook}
+                        disabled={book.trash.length === 0}
+                    >
+                        <Icon>undo</Icon>
+                    </IconButton>
+
+                    <List className={classes.list}>
+                        {book.lfBooks.map((item) => {
+                            if (!item.deleted) {
+                                return (
+                                    <ListItem key={item.value}>
+                                        <ListItemSecondaryAction>
+                                            <IconButton
+                                                onClick={() => removeBook(item)}
+                                                disabled={book.lfBooks.length === 1}
+                                            >
+                                                <Icon>clear</Icon>
+                                            </IconButton>
+                                        </ListItemSecondaryAction>
+
+                                        <ListItemText primary={item.value} />
+                                    </ListItem>
+                                );
+                            } else return "";
+                        })}
+                    </List>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    <Typography className={classes.warningMessage} variant="body2">
+                        It appears you do not have any books of interest saved.
+                        Would you like to do that now?
+                    </Typography>
+                    <Button
+                        onClick={props.toggleValidation}
+                        className={classes.helperButtons}
+                    >
+                        Books of Interest
+                    </Button>
+                    <Button
+                        onClick={() => props.changeTab(false, 2)}
+                        className={classes.helperButtons}
+                    >
+                        Search Manually
+                    </Button>
+                </>
+            );
+        }
+    };
+
     return (
         <>
-            <Typography style={{ width: '100%', textAlign: 'center', marginTop: 20 }}>
-                Book List to Search
-            </Typography>
-
-            <IconButton
-                onClick={undoBook}
-                disabled={book.trash.length === 0}
-            >
-                <Icon>undo</Icon>
-            </IconButton>
-
-            <List className={classes.list}>
-                {book.lfBooks.map((item) => {
-                    if (!item.deleted) {
-                        return (
-                            <ListItem key={item.value}>
-                                <ListItemSecondaryAction>
-                                    <IconButton
-                                        onClick={() => removeBook(item)}
-                                        disabled={book.lfBooks.length === 1}
-                                    >
-                                        <Icon>clear</Icon>
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-
-                                <ListItemText primary={item.value} />
-                            </ListItem>
-                        );
-                    } else return "";
-                })}
-            </List>
+            {store.user && store.user.lfBooks ? renderInput() : renderInput(true)}
 
             <Autocomplete
                 options={states}

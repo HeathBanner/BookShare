@@ -12,6 +12,7 @@ import {
     Input,
     FormControl,
     InputLabel,
+    Typography
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -28,6 +29,21 @@ const useStyles = makeStyles(() => ({
         transition: 'background-color 0.4s ease',
         '&:hover': {
             backgroundColor: '#E98074',
+            color: 'white'
+        }
+    },
+    warningMessage: {
+        textAlign: 'center',
+        marginTop: 10
+    },
+    helperButtons: {
+        width: '100%',
+        margin: 10,
+        backgroundColor: '#ca1d5d',
+        color: 'white',
+        transition: 'background-color 0.4s ease',
+        '&:hover': {
+            backgroundColor: '#de1f27',
             color: 'white'
         }
     }
@@ -47,15 +63,15 @@ const initNotify = {
     message: ""
 };
 
-export default ({ history, store }) => {
+export default (props) => {
 
     const classes = useStyles();
+    const store = props.store;
 
     const [book, setBook] = useState({ ...initBook });
     const [notify, setNotify] = useState({ ...initNotify });
 
     useEffect(() => {
-        console.log(book);
         if (!book.Imported && store.user) {
             setBook({
                 ...book,
@@ -68,7 +84,6 @@ export default ({ history, store }) => {
     }, [store, book]);
 
     const handleInput = (event, type) => {
-        console.log(event.target);
         setBook({ ...book, [type]: event.target.value });
     };
 
@@ -80,7 +95,7 @@ export default ({ history, store }) => {
 
     const handleSearch = () => {
         const { Title, State, City } = book;
-        history.push(`/books/1/${Title}/${State}/${City}`);
+        props.history.push(`/books/1/${Title}/${State}/${City}`);
     };
 
     const preSubmit = () => {
@@ -99,13 +114,24 @@ export default ({ history, store }) => {
     const renderInput = (flag) => {
         if (flag) {
             return (
-                <TextField
-                    className={classes.inputs}
-                    value={book.Title}
-                    onChange={(e) => handleInput(e, "Title")}
-                    label="Book"
-                    color="secondary"
-                />
+                <>
+                    <Typography className={classes.warningMessage} variant="body2">
+                        It appears you do not have any books of interest saved.
+                        Would you like to do that now?
+                    </Typography>
+                    <Button
+                        onClick={props.toggleValidation}
+                        className={classes.helperButtons}
+                    >
+                        Books of Interest
+                    </Button>
+                    <Button
+                        onClick={() => props.changeTab(false, 2)}
+                        className={classes.helperButtons}
+                    >
+                        Search Manually
+                    </Button>
+                </>
             );
         }
         if (store.user.lfBooks.length > 0) {
@@ -130,13 +156,24 @@ export default ({ history, store }) => {
             );
         } else {
             return (
-                <TextField
-                    className={classes.inputs}
-                    value={book.Title}
-                    onChange={(e) => handleInput(e, "Title")}
-                    label="Book"
-                    color="secondary"
-                />
+                <>
+                    <Typography className={classes.warningMessage} variant="body2">
+                        It appears you do not have any books of interest saved.
+                        Would you like to do that now?
+                    </Typography>
+                    <Button
+                        onClick={props.toggleValidation}
+                        className={classes.helperButtons}
+                    >
+                        Books of Interest
+                    </Button>
+                    <Button
+                        onClick={() => props.changeTab(false, 2)}
+                        className={classes.helperButtons}
+                    >
+                        Search Manually
+                    </Button>
+                </>
             );
         }
     };

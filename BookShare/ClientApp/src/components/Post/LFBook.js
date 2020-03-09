@@ -40,7 +40,8 @@ const useStyles = makeStyles(() => ({
         transform: 'translate(-50%, -50%)',
         padding: '5%',
         marginBottom: 20,
-        width: '80%'
+        width: '80%',
+        zIndex: 5
     },
     header: {
         width: '100%',
@@ -58,32 +59,35 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         marginBottom: 10,
         padding: 5,
+        backgroundColor: '#ca1d5d',
         color: 'white',
-        backgroundColor: '#E98074',
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#E85A4F',
+            backgroundColor: '#de1f27',
             color: 'white'
-        },
+        }
     },
     saveButton: {
         width: '100%',
         marginBottom: 10,
         padding: 5,
+        backgroundColor: '#ca1d5d',
         color: 'white',
-        backgroundColor: '#E98074',
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#E85A4F',
+            backgroundColor: '#de1f27',
             color: 'white'
-        },
-    },
-    listHeader: {
+        }
     },
     divider: {
         marginBlockStart: '0.5em',
         width: '100%',
         backgroundColor: 'rgb(0, 0, 0, 0.2)'
+    },
+    closeButton: { 
+        position: 'absolute',
+        top: 0,
+        right: 0,
     }
 }));
 
@@ -92,10 +96,9 @@ const initState = {
     open: true
 };
 
-export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
+export default ({ lfBooks, handleBooks, addBook, removeBook, handleSave, isModal, toggle }) => {
 
     const classes = useStyles();
-    console.log(lfBooks);
 
     const [state, setState] = useState({ ...initState });
 
@@ -104,7 +107,7 @@ export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
     };
 
     const preAdd = () => {
-        addBook(state.value);
+        handleBooks("ADD", state.value);
         setState({ ...initState });
     };
 
@@ -116,6 +119,9 @@ export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
                 isModal ? classes.modalPaper : classes.listContainer
             }
         >
+            <IconButton className={classes.closeButton} onClick={toggle}>
+                <Icon>close</Icon>
+            </IconButton>
             <Typography
                 className={classes.header}
             >
@@ -136,15 +142,6 @@ export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
                 Add
             </Button>
 
-            {isModal ? (
-                <Button
-                    className={classes.saveButton}
-                    onClick={() => handleSave("lfBooks")}
-                >
-                    Save
-                </Button>
-                ) : ""}
-
             <List className={classes.list}>
                 <ListItem
                     className={classes.listHeader}
@@ -160,10 +157,10 @@ export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
                 <Collapse in={state.open} timeout="auto" unmountOnExit>
                     {lfBooks ? lfBooks.map((item, index) => {
                             return (
-                                <ListItem>
+                                <ListItem key={`${item}&${index}`}>
                                     <ListItemSecondaryAction>
                                         <IconButton
-                                            onClick={() => removeBook(index)}
+                                            onClick={() => handleBooks("REMOVE", index)}
                                         >
                                             <Icon>clear</Icon>
                                         </IconButton>
@@ -175,6 +172,15 @@ export default ({ lfBooks, addBook, removeBook, handleSave, isModal }) => {
                         }) : ""}
                     </Collapse>
                 </List>
+
+                {isModal ? (
+                <Button
+                    className={classes.saveButton}
+                    onClick={() => handleSave("lfBooks")}
+                >
+                    Save
+                </Button>
+                ) : ""}
         </Paper>
     );
 };

@@ -109,7 +109,6 @@ const QueryContainer = ({ isModal, history }) => {
                     <LFBook
                         lfBooks={validation.lfBooks}
                         handleBooks={handleBooks}
-                        addBook={handleBooks}
                         handleSave={handleSave}
                         isModal={true}
                         toggle={toggleValidation}

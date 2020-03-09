@@ -120,6 +120,14 @@ export const preSubmit = (book, notify) => {
     }
 };
 
+export const handleBook = (type, param, list) => {
+    let newList = list;
+    if (type === "ADD") newList.push(param);
+    if (type === "REMOVE") newList.splice(param, 1);
+
+    return newList;
+};
+
 const initValues = { error: false, value: "" };
 
 export const initBook = {

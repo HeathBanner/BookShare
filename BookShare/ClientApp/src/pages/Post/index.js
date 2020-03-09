@@ -6,17 +6,7 @@ import Background from '../../components/Post/imgs/jaredd-craig.png';
 import LFBook from '../../components/Post/LFBook';
 import ValidationScreen from '../../components/ScreenCatchers/ValidationScreen';
 import Notify from '../../components/Notifications/Notify';
-import {
-    fetchPost,
-    fetchEdit,
-    fetchById,
-    preSubmit,
-    initBook,
-    initNotify,
-    conditions,
-    studies,
-    states
-} from '../../components/Post/Services/PostServices';
+import * as services from '../../components/Post/Services/PostServices';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -97,9 +87,8 @@ export default ({ editId }) => {
     const dispatch = useDispatch();
     const store = useSelector(state => state);
 
-    const [book, setBook] = useState({ ...initBook });
-    const [notify, setNotify] = useState({ ...initNotify });
-    //const [open, setOpen] = useState(false);
+    const [book, setBook] = useState({ ...services.initBook });
+    const [notify, setNotify] = useState({ ...services.initNotify });
 
     useEffect(() => {
         if (!editId) return;
@@ -107,13 +96,8 @@ export default ({ editId }) => {
         handleBook(editId);
     }, []);
 
-    useEffect(() => {
-        console.log(book);
-    }, [book]);
-
     const handleBook = async () => {
-        const result = await fetchById(editId);
-
+        const result = await services.fetchById(editId);
         if (result.warning || result.error) return setNotify({ ...notify, ...result });
 
         setBook(result.book);
@@ -121,7 +105,6 @@ export default ({ editId }) => {
 
     const handleInput = (type, event) => {
         if (type === "image") return saveImage(type, event.target.files[0]);
-        console.log(type, event.target.value);
         setBook({ ...book, [type]: { error: false, value: event.target.value } });
     };
 
@@ -153,43 +136,30 @@ export default ({ editId }) => {
     const handleSubmit = async () => {
         let result;
         const username = store.user.username;
-        const flag = preSubmit(book, notify);
+        const flag = services.preSubmit(book, notify);
 
         if (flag.notify.warning) {
             setBook(flag.book);
             return setNotify(flag.notify);
         }
-        if (editId) result = await fetchEdit(book, username, editId);
-        else result = await fetchPost(book, username);
+        if (editId) result = await services.fetchEdit(book, username, editId);
+        else result = await services.fetchPost(book, username);
 
         setNotify({ ...notify, ...result.notify });
         dispatch({ type: "UPDATE", payload: result.user });
     };
 
-    //const handleClose = () => setOpen(false);
-    //const handleImage = () => setOpen(true);
-
     const closeNotify = () => {
-        if (notify.warning || notify.error) return setNotify({ ...initNotify });
+        if (notify.warning || notify.error) return setNotify({ ...services.initNotify });
 
-        setNotify({ ...initNotify });
-        setBook({ ...initBook });
+        setNotify({ ...services.initNotify });
+        setBook({ ...services.initBook });
     };
 
-    const addBook = (title) => {
-        let newList = book.lfBooks;
-        newList.push(title);
-
-        setBook({ ...book, lfBooks: newList });
+    const bookInput = (type, param) => {
+        const result = services.handleBook(type, param, book.lfBooks);
+        setBook({ ...book, lfBooks: result });
     };
-    const removeBook = (index) => {
-        let newList = book.lfBooks;
-        newList.splice(index, 1);
-
-        setBook({ ...book, lfBooks: newList });
-    };
-
-    const notifyBook = (notification) => setNotify({ ...notify, ...notification });
 
     const imgHelper = "data:image/jpeg;base64,"
 
@@ -243,7 +213,7 @@ export default ({ editId }) => {
                     />
 
                     <Autocomplete
-                        options={states}
+                        options={services.states}
                         getOptionLabel={option => option.title}
                         className={classes.inputs}
                         value={{ title: book.state.value }}
@@ -285,7 +255,7 @@ export default ({ editId }) => {
                                     error={book.study.error}
                                 />}
                             >
-                                {studies.map((item) => {
+                                {services.studies.map((item) => {
                                     return <MenuItem value={item} key={item}>
                                         {item}
                                     </MenuItem>;
@@ -319,7 +289,7 @@ export default ({ editId }) => {
                                     error={book.condition.error}
                                 />}
                             >
-                                {conditions.map((item) => {
+                                {services.conditions.map((item) => {
                                     return <MenuItem value={item} key={item}>
                                         {item}
                                     </MenuItem>;
@@ -381,10 +351,8 @@ export default ({ editId }) => {
                     </div>
 
                     <LFBook
-                        addBook={addBook}
-                        removeBook={removeBook}
-                        notifyBook={notifyBook}
                         lfBooks={book.lfBooks}
+                        handleBooks={bookInput}
                     />
 
                     <Button

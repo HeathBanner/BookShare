@@ -12,7 +12,7 @@ import Login from '../../components/Auth/Login';
 import Register from '../../components/Auth/Register';
 import Notify from '../../components/Notifications/Notify';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Grid,
     Paper,
@@ -21,7 +21,7 @@ import {
     Modal
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     paper: {
         position: 'fixed',
         left: '50%',
@@ -32,14 +32,23 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        padding: '0% 10% 5% 10%',
-        width: '70%'
+        padding: '0% 5% 2% 5%',
+        [theme.breakpoints.up('lg')]: {
+            width: '25%',
+        },
+        [theme.breakpoints.down('md')]: {
+        },
+        [theme.breakpoints.down('xs')]: {
+            padding: '0% 10% 5% 10%',
+            width: '70%'
+        }
     },
 }));
 
 export default ({ auth, handleClose }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
     const dispatch = useDispatch();
 
     const [mode, setMode] = useState(0);

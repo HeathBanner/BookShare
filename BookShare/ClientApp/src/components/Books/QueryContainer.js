@@ -10,7 +10,7 @@ import Notify from '../Notifications/Notify';
 import * as services from './Services/ContainerServices';
 import { fetchUpdateLF } from '../Profile/Services/InfoServices';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Paper,
     Tabs,
@@ -18,17 +18,27 @@ import {
     Grow
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     paper: {
         display: 'flex',
         alignContent: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        padding: '0% 10% 10% 10%',
-        width: '80%',
         marginTop: 60,
-        background: 'rgb(255, 255, 255, 0.5)'
+        background: 'rgb(255, 255, 255, 0.5)',
+        padding: '0% 5% 3% 5%',
+        [theme.breakpoints.up('lg')]: {
+            width: '45%'
+        },
+        [theme.breakpoints.down('md')]: {
+            width: '60%',
+            padding: '0% 5% 5% 5%',
+        },
+        [theme.breakpoints.down('xs')]: {
+            width: '80%',
+            padding: '0% 10% 10% 10%'
+        }
     },
     modal: {
         position: 'fixed',
@@ -47,7 +57,8 @@ const useStyles = makeStyles(() => ({
 
 const QueryContainer = ({ isModal, history }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
     const store = useSelector(state => state);
     const dispatch = useDispatch();
 

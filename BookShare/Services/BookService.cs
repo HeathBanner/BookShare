@@ -53,15 +53,16 @@ namespace BookShare.Services
         public async Task<CustomCodes> GetBooks(Region book)
         {
             var builder = Builders<Region>.Filter;
-            var filter = builder.In("Title", book.LFBooks)
-                &
-                builder.Eq("Title", book.Title)
+            var filter = builder.Eq("Title", book.Title)
                 &
                 builder.Eq("State", book.State)
                 &
                 builder.Eq("City", book.City);
 
-            //var filter = builder.Eq("Title", title) & builder.Eq("State", state) & builder.Eq("City", city);
+            if (book.LFBooks.Length > 0)
+            {
+                filter = filter & builder.In("Title", book.LFBooks);
+            }
 
             var result = await _books.Find(filter).ToListAsync();
 

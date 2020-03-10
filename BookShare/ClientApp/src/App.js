@@ -15,12 +15,15 @@ import Post from './pages/Post';
 import Profile from './pages/Profile/Profile';
 import BookProfile from './pages/Profile/Books';
 
+import { ThemeProvider } from '@material-ui/styles';
 import './custom.css'
+import { createMuiTheme, useMediaQuery } from '@material-ui/core';
 
 export default () => {
 
     const store = useSelector(state => state);
     const dispatch = useDispatch();
+    const theme = createMuiTheme()
 
     useEffect(() => {
         if (store.loggedIn || !store.checking) return;
@@ -35,8 +38,30 @@ export default () => {
         dispatch({ type: "NO_TOKEN" });
     }, [store]);
 
+    const xs = useMediaQuery(theme.breakpoints.down('xs'));
+    const sm = useMediaQuery(theme.breakpoints.down('sm'));
+    const md = useMediaQuery(theme.breakpoints.down('md'));
+    const lg = useMediaQuery(theme.breakpoints.down('lg'));
+
+    const widthSignal = () => {
+        switch (true) {
+            case xs:
+                return console.log('XS');
+            case sm:
+                return console.log('SM');
+            case md:
+                return console.log('MD');
+            case lg:
+                return console.log('LG');
+            default:
+                console.log('XL');
+        }
+    };
+
+    widthSignal();
+
     return (
-        <>
+        <ThemeProvider theme={theme}>
             <Appbar />
             <Switch>
                 <Route exact path="/" component={Home} />
@@ -49,6 +74,6 @@ export default () => {
                 <Route exact path="/profile" component={Profile} />
                 <Route exact path="/bookshelf" component={BookProfile} />
             </Switch>
-        </>
+        </ThemeProvider>
     );
 };

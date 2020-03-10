@@ -96,7 +96,7 @@ const initState = {
     open: true
 };
 
-export default ({ lfBooks, handleBooks, addBook, removeBook, handleSave, isModal, toggle }) => {
+export default ({ lfBooks, handleBooks, handleSave, isModal, toggle }) => {
 
     const classes = useStyles();
 

@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Paper,
     TextField,
@@ -13,7 +13,7 @@ import {
     Button
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     paper: {
         position: 'fixed',
         top: '50%',
@@ -24,8 +24,12 @@ const useStyles = makeStyles(() => ({
         alignItems: 'center',
         alignContent: 'center',
         flexWrap: 'wrap',
-        padding: '10%',
-        width: '70%'
+        width: '40%',
+        padding: '5%',
+        [theme.breakpoints.down('xs')]: {
+            width: '70%',
+            padding: '10%'
+        }
     },
     header: {
         width: '100%',
@@ -60,7 +64,8 @@ const conditions = ["Mint", "Good", "Fair", "Rough"];
 
 export default ({ handleApply, handleSwitch, handleChange, handleInput, checked }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
 
     return (
         <Paper className={classes.paper}>

@@ -29,11 +29,10 @@ namespace BookShare.Controllers
             return new ObjectResult(result);
         }
 
-        [Route("fetchBooks")]
-        public async Task<IActionResult> GetBooks([FromBody] Region book)
+        [Route("fetchBooks/page={page}")]
+        public async Task<IActionResult> GetBooks([FromBody] Region book, int page)
         {
-            var result = await _bookService.GetBooks(book);
-
+            var result = await _bookService.GetBooks(book, page);
             return new ObjectResult(result);
         }
 

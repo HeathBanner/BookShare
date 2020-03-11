@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Typography,
     Button,
@@ -11,13 +11,18 @@ import {
     CardMedia
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     card: {
-        marginTop: 30,
-        width: '90%'
+        width: '100%',
+        backgroundColor: 'rgb(255, 255, 255, 0.3)',
+        boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
     },
     media: {
-        height: 140
+        height: 300,
+        backgroundSize: 'contain',
+        [theme.breakpoints.down('xs')]: {
+            height: 140
+        }
     },
     content: {
         display: 'flex',
@@ -49,7 +54,8 @@ const useStyles = makeStyles(() => ({
 
 export default ({ book, handleOpen }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
 
     const { image, title, description, city, state, condition, eMedia, id } = book;
 

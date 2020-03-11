@@ -28,12 +28,12 @@ const useStyles = makeStyles(() => ({
     },
     search: {
         width: '100%',
-        backgroundColor: '#E85A4F',
+        backgroundColor: '#28ac60',
         color: 'white',
         padding: 10,
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#E98074',
+            backgroundColor: '#23de71',
             color: 'white'
         }
     },

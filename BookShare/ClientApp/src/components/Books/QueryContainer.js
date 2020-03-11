@@ -53,9 +53,21 @@ const useStyles = makeStyles((theme) => ({
         padding: '10%',
         width: '95%'
     },
+    desktop: {
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        marginTop: 60,
+        marginBottom: 30,
+        background: 'rgb(255, 255, 255, 0.5)',
+        padding: '0% 5% 3% 5%',
+        width: '50%'
+    }
 }));
 
-const QueryContainer = ({ isModal, history }) => {
+const QueryContainer = ({ isModal, isDesktop, history }) => {
 
     const theme = useTheme();
     const classes = useStyles(theme);
@@ -104,8 +116,14 @@ const QueryContainer = ({ isModal, history }) => {
         return <Manual history={history} store={store} />;
     };
 
+    const classnameSwitch = () => {
+        if (isModal) return classes.modal;
+        if (isDesktop) return classes.desktop;
+        else return classes.paper;
+    };
+
     return (
-        <Paper className={isModal ? classes.modal : classes.paper}>
+        <Paper className={classnameSwitch()}>
             <Tabs
                 value={query}
                 onChange={handleChange}

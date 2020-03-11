@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import LFBooks from '../LFBooks';
 import InfoScreen from '../../ScreenCatchers/InfoScreen';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Grid,
     Typography,
@@ -15,14 +15,15 @@ import {
     Icon
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     container: {
         display: 'flex',
         alignContent: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        padding: '5%'
+        padding: '5%',
+        marginTop: 60
     },
     paper: {
         display: 'flex',
@@ -31,9 +32,20 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '5%',
+        width: '40%',
+        [theme.breakpoints.down('sm')]: {
+            width: '60%'
+        },
+        [theme.breakpoints.down('xs')]: {
+            width: '80%'
+        },
     },
     img: {
-
+        width: 'auto',
+        height: 300,
+        [theme.breakpoints.down('xs')]: {
+            height: 140
+        }
     },
     title: {
         width: '100%',
@@ -80,7 +92,8 @@ const useStyles = makeStyles(() => ({
 
 export default ({ params }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
     const store = useSelector(store => store);
 
     const [book, setBook] = useState({ info: null, loaded: false });

@@ -8,7 +8,7 @@ import ValidationScreen from '../../components/ScreenCatchers/ValidationScreen';
 import Notify from '../../components/Notifications/Notify';
 import * as services from '../../components/Post/Services/PostServices';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Grid,
     Paper,
@@ -24,15 +24,18 @@ import {
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     container: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '10% 5%',
+        padding: '5% 25%',
         minHeight: '100vh',
         backgroundImage: `url(${Background})`,
-        backgroundSize: 'cover'
+        backgroundSize: 'cover',
+        [theme.breakpoints.down('xs')]: {
+            padding: '10% 5%',
+        }
     },
     paper: {
         display: 'flex',
@@ -41,7 +44,7 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         flexWrap: 'wrap',
         padding: '5%',
-        marginTop: 50
+        marginTop: 50,
     },
     image: {
         width: '100%',
@@ -83,7 +86,8 @@ const useStyles = makeStyles(() => ({
 
 export default ({ editId }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
     const dispatch = useDispatch();
     const store = useSelector(state => state);
 

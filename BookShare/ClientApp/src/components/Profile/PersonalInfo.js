@@ -25,7 +25,7 @@ import {
 } from './Services/InfoServices';
 import Notification from '../Notifications/Notify';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 import {
     Paper,
     Typography,
@@ -35,17 +35,21 @@ import {
     Modal
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     paper: {
         display: 'flex',
         alignContent: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        width: '90%',
-        padding: '10%',
+        width: '40%',
+        padding: '5%',
         marginTop: 60,
-        background: 'rgb(255, 255, 255, 0.3)'
+        background: 'rgb(255, 255, 255, 0.3)',
+        [theme.breakpoints.down('xs')]: {
+            width: '90%',
+            padding: '10%'
+        }
     },
     infoContainer: {
         position: 'relative',
@@ -94,7 +98,8 @@ const useStyles = makeStyles(() => ({
 // CLEAN UP FUNCTIONS AND CONSTS TO SERVICES
 const PersonalInfo =  ({ history }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
     const store = useSelector(store => store);
     const dispatch = useDispatch();
 

@@ -21,10 +21,10 @@ export const fetchByBook = async (params, lfBooks) => {
         headers: { "Content-Type": "application/json" }
     };
 
-    const result = await fetch(`api/book/fetchBooks`, options);
+    const result = await fetch(`api/book/fetchBooks/page=${page}`, options);
     const json = await result.json();
 
-    console.log(json);
+    console.log(json, page);
 
     return { list: json.books, loaded: true, page: page };
 };

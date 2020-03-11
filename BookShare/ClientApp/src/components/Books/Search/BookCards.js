@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 
 import LFBooks from '../LFBooks';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Typography,
     Button,
@@ -13,12 +13,16 @@ import {
     CardMedia
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     card: {
         marginTop: 30,
     },
     media: {
-        height: 140
+        height: 300,
+        backgroundSize: 'contain',
+        [theme.breakpoints.down('xs')]: {
+            height: 140
+        }
     },
     content: {
         display: 'flex',
@@ -62,7 +66,8 @@ const useStyles = makeStyles(() => ({
 
 const BookCards = ({ book, id, history }) => {
 
-    const classes = useStyles();
+    const theme = useTheme();
+    const classes = useStyles(theme);
         
     const handleClick = () => history.push(`/books/${id}`);
 

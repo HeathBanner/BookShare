@@ -1,5 +1,6 @@
 ﻿export const fetchPost = async (book, username) => {
     const newBook = ExtractValues(book);
+    console.log(newBook);
     const options = {
         method: 'POST',
         body: JSON.stringify({ ...newBook, Owner: username }),
@@ -70,6 +71,7 @@ const ExtractValues = (book) => {
     let newObj = {};
     Object.entries(book).forEach(([key, value]) => {
         if (key === "lfBooks") newObj[key] = value;
+        else if (key === "price") newObj[key] = parseFloat(value.value);
         else newObj[key] = value.value;
     });
 
@@ -77,6 +79,11 @@ const ExtractValues = (book) => {
 };
 
 export const preSubmit = (book, notify) => {
+    if (parseFloat(book.price.value) === NaN) return {
+        notify: { ...notify, warning: true, message: "Study field is required" },
+        book: { ...book, study: { ...book.study, error: true } }
+    };
+
     switch (true) {
         case !book.image.value:
             return {
@@ -135,6 +142,7 @@ export const initBook = {
     title: initValues,
     description: initValues,
     condition: initValues,
+    price: initValues,
     lfBooks: [],
     eMedia: initValues,
     state: initValues,

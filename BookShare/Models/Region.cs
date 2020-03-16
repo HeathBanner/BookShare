@@ -19,5 +19,6 @@ namespace BookShare.Models
         public string ISBN { get; set; }
         public string CourseId { get; set; }
         public string[] LFBooks { get; set; }
+        public float Price { get; set; }
     }
 }

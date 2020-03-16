@@ -71,7 +71,7 @@ const BookCards = ({ book, id, history }) => {
         
     const handleClick = () => history.push(`/books/${id}`);
 
-    const { image, title, description, condition, eMedia, state, city, lfBooks } = book;
+    const { image, title, description, condition, eMedia, state, city, lfBooks, price } = book;
 
     return (
         <Card className={classes.card}>
@@ -113,7 +113,14 @@ const BookCards = ({ book, id, history }) => {
                     External Media: {eMedia ? eMedia : "None"}
                 </Typography>
 
-                <LFBooks lfBooks={lfBooks} />
+                <Typography
+                    className={classes.info}
+                    color="textSecondary"
+                >
+                    Price: {price ? `$${price}` : "Not For Sale"}
+                </Typography>
+
+                {lfBooks.length > 0 ? <LFBooks lfBooks={lfBooks} /> : ""}
 
             </CardContent>
             <CardActions className={classes.content}>

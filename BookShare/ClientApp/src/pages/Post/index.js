@@ -12,7 +12,6 @@ import { makeStyles, useTheme } from '@material-ui/styles';
 import {
     Grid,
     Paper,
-    Typography,
     TextField,
     Select,
     MenuItem,
@@ -236,12 +235,6 @@ export default ({ editId }) => {
                     />
                     
                     <div className={classes.inputContainers}>
-                        <Typography
-                            style={{ paddingBottom: 6, marginRight: 10 }}
-                        >
-                            Study:
-                        </Typography>
-
                         <FormControl style={{ flexGrow: 1 }}>
                             <InputLabel
                                 id="condition-label"
@@ -271,12 +264,6 @@ export default ({ editId }) => {
 
 
                     <div className={classes.inputContainers}>
-                        <Typography
-                            style={{ paddingBottom: 6, marginRight: 10 }}
-                        >
-                            Condition:
-                        </Typography>
-
                         <FormControl style={{ flexGrow: 1 }}>
                             <InputLabel
                                 id="condition-label"
@@ -304,12 +291,6 @@ export default ({ editId }) => {
                     </div>
 
                     <div className={classes.inputContainers}>
-                        <Typography
-                            style={{ paddingBottom: 6, marginRight: 10, flexGrow: 1 }}
-                        >
-                            External Media:
-                        </Typography>
-
                         <TextField
                             style={{ flexGrow: 1 }}
                             value={book.eMedia.value}
@@ -321,36 +302,13 @@ export default ({ editId }) => {
                     </div>
 
                     <div className={classes.inputContainers}>
-                        <Typography
-                            style={{ paddingBottom: 6, marginRight: 10, flexGrow: 1 }}
-                        >
-                            ISBN:
-                        </Typography>
-
                         <TextField
                             style={{ flexGrow: 1 }}
-                            value={book.isbn.value}
-                            onChange={(e) => handleInput("isbn", e)}
-                            placeholder="1111-2222-33333"
+                            value={book.price.value}
+                            onChange={(e) => handleInput("price", e)}
+                            placeholder="0.00"
                             color="secondary"
-                            error={book.isbn.error}
-                        />
-                    </div>
-
-                    <div className={classes.inputContainers}>
-                        <Typography
-                            style={{ paddingBottom: 6, marginRight: 10, flexGrow: 1 }}
-                        >
-                            Course ID:
-                        </Typography>
-
-                        <TextField
-                            style={{ flexGrow: 1 }}
-                            value={book.courseId.value}
-                            onChange={(e) => handleInput("courseId", e)}
-                            placeholder="1111-2222-33333"
-                            color="secondary"
-                            error={book.courseId.error}
+                            error={book.price.error}
                         />
                     </div>
 
@@ -358,6 +316,30 @@ export default ({ editId }) => {
                         lfBooks={book.lfBooks}
                         handleBooks={bookInput}
                     />
+
+                    <div className={classes.inputContainers}>
+                        <TextField
+                            style={{ flexGrow: 1 }}
+                            value={book.isbn.value}
+                            onChange={(e) => handleInput("isbn", e)}
+                            label="ISBN"
+                            placeholder="1111-2222-33333"
+                            color="secondary"
+                            error={book.isbn.error}
+                        />
+                    </div>
+
+                    <div className={classes.inputContainers}>
+                        <TextField
+                            style={{ flexGrow: 1 }}
+                            value={book.courseId.value}
+                            onChange={(e) => handleInput("courseId", e)}
+                            label="Course ID"
+                            placeholder="1111-2222-33333"
+                            color="secondary"
+                            error={book.courseId.error}
+                        />
+                    </div>
 
                     <Button
                         className={classes.button}

@@ -154,6 +154,29 @@ const Landing = ({ match, history }) => {
         );
     };
 
+    const renderTiles = () => {
+        if (books.loaded && books.list.length === 0) return (
+            <Typography
+                style={{
+                    width: '100%',
+                    textAlign: 'center',
+                    margin: '30px 0px'
+                }}
+            >
+                There appears to be no books with the title of {params.title} in your area
+            </Typography>
+        );
+        else return books.list.map((item) => (
+                <GridListTile key={item.title}>
+                    <BookCards
+                        book={item}
+                        id={item.id}
+                    />
+                </GridListTile>
+            )
+        );
+    };
+
     if (!store.user) return (
         <InfoScreen
             message="You must be logged in to view this"
@@ -202,15 +225,7 @@ const Landing = ({ match, history }) => {
                     className={classes.gridList}
                     cols={isDesktop ? 2 : 1}
                 >
-                    {books.list.map((item) => (
-                        <GridListTile key={item.title}>
-                            <BookCards
-                                book={item}
-                                id={item.id}
-                            />
-                        </GridListTile>
-                        )
-                    )}
+                    {renderTiles()}
                 </GridList>
 
                 <div className={classes.pageBox}>

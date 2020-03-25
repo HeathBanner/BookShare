@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using BookShare.Models;
 using BookShare.Services;
@@ -25,14 +23,6 @@ namespace BookShare.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             CustomCodes result = await _bookService.GetById(id);
-
-            return new ObjectResult(result);
-        }
-
-        [Route("fetchBooks/page={page}")]
-        public async Task<IActionResult> GetBooks([FromBody] Region book, int page)
-        {
-            var result = await _bookService.GetBooks(book, page);
             return new ObjectResult(result);
         }
 
@@ -40,7 +30,6 @@ namespace BookShare.Controllers
         public async Task<IActionResult> Get(string id)
         {
             CustomCodes result = await _bookService.GetBooks(id);
-
             return new ObjectResult(result);
         }
 
@@ -62,7 +51,6 @@ namespace BookShare.Controllers
         public IActionResult Books([FromBody] Region book)
         {
             var response = _bookService.Books(book);
-
             return StatusCode(201, response);
         }
 
@@ -70,15 +58,20 @@ namespace BookShare.Controllers
         public async Task<IActionResult> EditBook([FromBody] Region book)
         {
             var result = await _bookService.EditBook(book);
-
             return new ObjectResult(result);
         }
 
-        [Route("fetchByList/page={page}")]
-        public async Task<IActionResult> FetchByList([FromBody] Region book, int page)
+        [Route("fetchBooks/page={page}&sale={sale}&trade={trade}")]
+        public async Task<IActionResult> GetBooks([FromBody] Region book, int page, string sale, string trade)
         {
-            var result = await _bookService.FetchByList(book, page);
+            var result = await _bookService.GetBooks(book, page, sale, trade);
+            return new ObjectResult(result);
+        }
 
+        [Route("fetchByList/page={page}&sale={sale}&trade={trade}")]
+        public async Task<IActionResult> FetchByList([FromBody] Region book, int page, string sale, string trade)
+        {
+            var result = await _bookService.FetchByList(book, page, sale, trade);
             return new ObjectResult(result);
         }
     }

@@ -11,8 +11,11 @@ import {
     Button,
     Input,
     FormControl,
+    FormGroup,
+    FormControlLabel,
     InputLabel,
-    Typography
+    Typography,
+    Switch
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -20,6 +23,9 @@ const useStyles = makeStyles(() => ({
     inputs: {
         width: '100%',
         marginBottom: 20
+    },
+    toggleRow: {
+        marginTop: 20
     },
     search: {
         width: '100%',
@@ -54,6 +60,8 @@ const initBook = {
     Title: "",
     State: "",
     City: "",
+    Sale: true,
+    Trade: true,
     Imported: false
 };
 const initNotify = {
@@ -95,7 +103,8 @@ export default (props) => {
 
     const handleSearch = () => {
         const { Title, State, City } = book;
-        props.history.push(`/books/1/${Title}/${State}/${City}`);
+        const filter = `${book.Sale ? "Y" : "N"}/${book.Trade ? "Y" : "N"}`;
+        props.history.push(`/books/1/${Title}/${State}/${City}/${filter}`);
     };
 
     const preSubmit = () => {
@@ -109,6 +118,11 @@ export default (props) => {
             default:
                 handleSearch();
         }
+    };
+
+    const toggleFilter = (type) => {
+        const newValue = !book[type];
+        setBook({ ...book, [type]: newValue });
     };
 
     const renderInput = (flag) => {
@@ -180,6 +194,35 @@ export default (props) => {
 
     return (
         <>
+            <FormControl>
+                <FormGroup className={classes.toggleRow} row>
+                    <FormControlLabel
+                        value={book.Sale}
+                        control={
+                            <Switch
+                                color="primary"
+                                onChange={() => toggleFilter("Sale")}
+                                checked={book.Sale}
+                            />
+                        }
+                        label="For Sale"
+                        labelPlacement="top"
+                    />
+                    <FormControlLabel
+                        value={book.Trade}
+                        control={
+                            <Switch
+                                color="primary"
+                                onChange={() => toggleFilter("Trade")}
+                                checked={book.Trade}
+                            />
+                    }
+                        label="For Trade"
+                        labelPlacement="top"                    
+                    />
+                </FormGroup>
+            </FormControl>
+
             {store.user && store.user.lfBooks ? renderInput() : renderInput(true)}
 
             <Autocomplete

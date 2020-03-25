@@ -50,7 +50,7 @@ namespace BookShare.Services
             };
         }
 
-        public async Task<CustomCodes> GetBooks(Region book, int page)
+        public async Task<CustomCodes> GetBooks(Region book, int page, string sale, string trade)
         {
             var builder = Builders<Region>.Filter;
             int index = 0;
@@ -61,11 +61,10 @@ namespace BookShare.Services
                 index = newPage * 3;
             }
 
-            var filter = builder.Eq("Title", book.Title)
-                &
-                builder.Eq("State", book.State)
-                &
-                builder.Eq("City", book.City);
+            var filter = builder.Eq("Title", book.Title)&builder.Eq("State", book.State)&builder.Eq("City", book.City);
+            
+            if (sale == "Y" && trade == "N") filter = builder.Gt("Price", 0);
+            else if (sale == "N" && trade == "Y") filter = builder.Eq("Price", 0);
 
             var result = await _books.Find(filter).Skip(index).Limit(3).ToListAsync();
 
@@ -142,7 +141,7 @@ namespace BookShare.Services
             };
         }
 
-        public async Task<CustomCodes> FetchByList(Region book, int page)
+        public async Task<CustomCodes> FetchByList(Region book, int page, string sale, string trade)
         {
             var builder = Builders<Region>.Filter;
             int index = 0;
@@ -160,6 +159,10 @@ namespace BookShare.Services
                 builder.Eq("State", book.State)
                 &
                 builder.Eq("City", book.City);
+
+            if (sale == "Y" && trade == "N") filter = builder.Gt("Price", 0);
+            else if (sale == "N" && trade == "Y") filter = builder.Eq("Price", 0);
+
             var result = await _books.Find(filter).Skip(index).Limit(3).ToListAsync();
 
             return new CustomCodes

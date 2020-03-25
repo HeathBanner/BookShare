@@ -149,6 +149,7 @@ export const initLFBooks = {
     value: "",
     list: [],
     openList: true,
+    loaded: false,
     notify: {
         error: false,
         warning: false,

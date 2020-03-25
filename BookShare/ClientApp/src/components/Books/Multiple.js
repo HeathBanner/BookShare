@@ -12,7 +12,11 @@ import {
     Icon,
     Typography,
     TextField,
-    Button
+    Button,
+    FormControl,
+    FormGroup,
+    FormControlLabel,
+    Switch
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
@@ -25,6 +29,9 @@ const useStyles = makeStyles(() => ({
     inputs: {
         width: '100%',
         marginBottom: 20
+    },
+    toggleRow: {
+        marginTop: 20
     },
     search: {
         width: '100%',
@@ -60,6 +67,8 @@ const initBook = {
     Title: "",
     State: "",
     City: "",
+    Sale: true,
+    Trade: true,
     Imported: false
 };
 const initNotify = {
@@ -99,6 +108,11 @@ export default (props) => {
             });
         }
     }, [store]);
+
+    const toggleFilter = (type) => {
+        const newValue = !book[type];
+        setBook({ ...book, [type]: newValue });
+    };
 
     const handleInput = (event, type) => {
         setBook({ ...book, [type]: event.target.value });
@@ -184,6 +198,35 @@ export default (props) => {
         if (store.user.lfBooks.length > 0) {
             return (
                 <>
+                    <FormControl>
+                        <FormGroup className={classes.toggleRow} row>
+                            <FormControlLabel
+                                value={book.Sale}
+                                control={
+                                    <Switch
+                                        color="primary"
+                                        onChange={() => toggleFilter("Sale")}
+                                        checked={book.Sale}
+                                    />
+                                }
+                                label="For Sale"
+                                labelPlacement="top"
+                            />
+                            <FormControlLabel
+                                value={book.Trade}
+                                control={
+                                    <Switch
+                                        color="primary"
+                                        onChange={() => toggleFilter("Trade")}
+                                        checked={book.Trade}
+                                    />
+                            }
+                                label="For Trade"
+                                labelPlacement="top"                    
+                            />
+                        </FormGroup>
+                    </FormControl>
+
                     <Typography style={{ width: '100%', textAlign: 'center', marginTop: 20 }}>
                         Book List to Search
                     </Typography>

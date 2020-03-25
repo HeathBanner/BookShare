@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
@@ -110,6 +110,12 @@ const PersonalInfo =  ({ history }) => {
     const [location, setLocation] = useState({ ...initLocation });
     const [notify, setNotify] = useState({ ...initNotify })
 
+    useEffect(() => {
+        if (!store.user || store.user.lfBooks.length === 0 && lfBooks.loaded) return;
+        const list = store.user.lfBooks;
+        setLFBooks({ ...lfBooks, list: list, loaded: true });
+    }, [store, lfBooks]);
+
     const closeLocation = () => setLocation({ ...location, open: false });
     const closeLFBooks = () => setLFBooks({ ...lfBooks, open: false });
     const handleList = () => setLFBooks({ ...lfBooks, openList: !lfBooks.openList });
@@ -136,18 +142,18 @@ const PersonalInfo =  ({ history }) => {
         setLFBooks({ ...lfBooks, value: event.target.value });
     };
 
-    const addBook = (title) => {
-        let newList = lfBooks.list;
-        newList.push(title);
-
-        setLFBooks({ ...lfBooks, list: newList, value: "" });
-    };
-
-    const removeBook = (index) => {
-        let newList = lfBooks.list;
-        newList.splice(index, 1);
-
-        setLFBooks({ ...lfBooks, list: newList });
+    const handleBooks = (type, param) => {
+        if (type === "REMOVE") {
+            let newList = lfBooks.list;
+            newList.splice(param, 1);
+    
+            setLFBooks({ ...lfBooks, list: newList });    
+        } else {
+            let newList = lfBooks.list;
+            newList.push(param);
+    
+            setLFBooks({ ...lfBooks, list: newList, value: "" });    
+        }
     };
 
     const handleType = (type) => {
@@ -276,8 +282,7 @@ const PersonalInfo =  ({ history }) => {
                         lfBooks={lfBooks.list}
                         handleClose={closeLFBooks}
                         handleChange={lfBooksInput}
-                        addBook={addBook}
-                        removeBook={removeBook}
+                        handleBooks={handleBooks}
                         handleList={handleList}
                         handleSave={handleSave}
                         isModal={true}

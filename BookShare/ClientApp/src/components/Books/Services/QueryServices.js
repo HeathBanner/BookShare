@@ -9,7 +9,7 @@
 };
 
 export const fetchByBook = async (params, lfBooks) => {
-    const { title, state, city, page } = params;
+    const { title, state, city, page, sale, trade } = params;
     const options = {
         method: "POST",
         body: JSON.stringify({
@@ -21,7 +21,7 @@ export const fetchByBook = async (params, lfBooks) => {
         headers: { "Content-Type": "application/json" }
     };
 
-    const result = await fetch(`api/book/fetchBooks/page=${page}`, options);
+    const result = await fetch(`api/book/fetchBooks/page=${page}&sale=${sale}&trade=${trade}`, options);
     const json = await result.json();
 
     console.log(json, page);
@@ -30,7 +30,7 @@ export const fetchByBook = async (params, lfBooks) => {
 };
 
 export const fetchByList = async (params) => {
-    const { list, state, city, page } = params;
+    const { list, state, city, page, sale, trade } = params;
     const parsedList = list.split("&");
     console.log(parsedList);
 
@@ -44,7 +44,7 @@ export const fetchByList = async (params) => {
         headers: { "Content-Type": "application/json" }
     };
 
-    const result = await fetch(`api/book/fetchByList/page=${page}`, options);
+    const result = await fetch(`api/book/fetchByList/page=${page}&sale=${sale}&trade=${trade}`, options);
     const json = await result.json();
 
     console.log(json);

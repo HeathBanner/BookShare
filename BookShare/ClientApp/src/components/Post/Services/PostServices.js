@@ -1,9 +1,9 @@
-﻿export const fetchPost = async (book, username) => {
+﻿export const fetchPost = async (book, user) => {
     const newBook = ExtractValues(book);
     console.log(newBook);
     const options = {
         method: 'POST',
-        body: JSON.stringify({ ...newBook, Owner: username }),
+        body: JSON.stringify({ ...newBook, Owner: user.username, Email: user.email }),
         headers: { "Content-Type": "application/json" }
     };
 
@@ -13,7 +13,7 @@
     if (json.statusCode !== 201) {
         return {
             notify: { error: true, message: "Something went wrong :(" },
-            user: null
+            user: user
         };
     }
 
@@ -23,11 +23,12 @@
     };
 };
 
-export const fetchEdit = async (book, username, id) => {
+export const fetchEdit = async (book, user, id) => {
     const newBook = ExtractValues(book);
+    console.log(newBook);
     const options = {
         method: 'POST',
-        body: JSON.stringify({ ...newBook, Owner: username, Id: id }),
+        body: JSON.stringify({ ...newBook, Owner: user.username, Id: id }),
         headers: { "Content-Type": "application/json" }
     };
 
@@ -70,11 +71,12 @@ const assignValue = (book) => {
 const ExtractValues = (book) => {
     let newObj = {};
     Object.entries(book).forEach(([key, value]) => {
-        if (key === "lfBooks") newObj[key] = value;
+        if (key === "image") newObj[key] = value;
+        else if (key === "lfBooks") newObj[key] = value;
+        else if (key === "price" && isNaN(parseFloat(value.value))) newObj[key] = parseFloat(0);
         else if (key === "price") newObj[key] = parseFloat(value.value);
         else newObj[key] = value.value;
     });
-
     return newObj;
 };
 
@@ -85,7 +87,7 @@ export const preSubmit = (book, notify) => {
     };
 
     switch (true) {
-        case !book.image.value:
+        case book.image.length < 0 || book.image.length > 5:
             return {
                 notify: { ...notify, warning: true, message: "Image of book is required" },
                 book: { ...book, image: { ...book.image, error: true } }
@@ -95,11 +97,11 @@ export const preSubmit = (book, notify) => {
                 notify: { ...notify, warning: true, message: "Title is required" },
                 book: { ...book, title: { ...book.title, error: true } }
             };
-        case !book.description.value:
-            return {
-                notify: { ...notify, warning: true, message: "Description is required" },
-                book: { ...book, description: { ...book.description, error: true } }
-            };
+        // case !book.description.value:
+        //     return {
+        //         notify: { ...notify, warning: true, message: "Description is required" },
+        //         book: { ...book, description: { ...book.description, error: true } }
+        //     };
         case !book.condition.value:
             return {
                 notify: { ...notify, warning: true, message: "Condition is required" },
@@ -121,10 +123,11 @@ export const preSubmit = (book, notify) => {
                 book: { ...book, study: { ...book.study, error: true } }
             };
         default:
-            return {
-                notify: { warning: false }
+            return { 
+                notify: { ...notify, warning: false },
+                book: book
             };
-    }
+    };
 };
 
 export const handleBook = (type, param, list) => {
@@ -138,7 +141,7 @@ export const handleBook = (type, param, list) => {
 const initValues = { error: false, value: "" };
 
 export const initBook = {
-    image: initValues,
+    image: [],
     title: initValues,
     description: initValues,
     condition: initValues,

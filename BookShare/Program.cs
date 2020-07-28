@@ -7,6 +7,21 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.ObjectPool;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
+using BookShare.Entities.Templates;
 
 namespace BookShare
 {
@@ -14,22 +29,22 @@ namespace BookShare
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-
-            //var config = new ConfigurationBuilder().AddCommandLine(args).Build();
-            //var host = new WebHostBuilder()
-            //    .UseKestrel()
-            //    .UseContentRoot(Directory.GetCurrentDirectory())
-            //    .UseConfiguration(config)
-            //    .UseIISIntegration()
-            //    .UseStartup<Startup>()
-            //    .Build();
-
-            //host.Run();
+            var host = CreateWebHostBuilder(args)
+                .UseKestrel().
+                UseUrls("http://0.0.0.0:" + Environment.GetEnvironmentVariable("PORT")).
+                Build();
+            host.Run();
+            // CreateWebHostBuilder(args).Build().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            WebHost.CreateDefaultBuilder(args).ConfigureServices(services => 
+            {
+                services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+                {
+                    var appDirectory = Directory.GetCurrentDirectory();
+                    options.FileProviders.Add(new PhysicalFileProvider(appDirectory));
+                });
+            }).UseStartup<Startup>();
     }
 }

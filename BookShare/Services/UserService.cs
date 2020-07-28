@@ -34,6 +34,81 @@ namespace BookShare.Services
 
             return query[0];
         }
+
+        public async Task<CustomCodes> EmailCheck(string email) 
+        {
+            var filter = Builders<Users>.Filter.Eq("Email", email);
+            Users query = await _users.Find(filter).FirstOrDefaultAsync();
+
+            if (query == null)
+            {
+                return new CustomCodes
+                {
+                    statusCode = 401,
+                    message = "An error occured."
+                };
+            }
+
+            DateTime dateTime = DateTime.UtcNow.Date;
+            string todayTime = dateTime.ToString("dd/MM/yy");
+
+            if (query.PasswordRecovery.LastActive == todayTime)
+            {
+                return new CustomCodes
+                {
+                    statusCode = 401,
+                    message = "Too many requests for today."
+                };
+            }
+            
+            Recovery newObj = new Recovery() { Active = true, LastActive = todayTime };
+            var uFilter = Builders<Users>.Filter.Eq("Email", email);
+            var update = Builders<Users>.Update.Set(u => u.PasswordRecovery, newObj);
+
+            await _users.UpdateOneAsync(filter, update);
+
+            return new CustomCodes { statusCode = 200 };
+        }
+
+        public async Task<CustomCodes> checkRequests(string email, Guid id)
+        {
+            var filter = Builders<Users>.Filter.Eq("Email", email);
+            Users query = await _users.Find(filter).FirstOrDefaultAsync();
+            Console.WriteLine("\n\n\n {0} \n\n\n", query);
+            if (query == null) 
+            {
+                return new CustomCodes {
+                    statusCode = 500,
+                    message = "Something went wrong :("
+                };
+            }
+            foreach (Requests Request in query.Request)
+            {
+                if (Request.Id == id)
+                {
+                    return new CustomCodes
+                    {
+                        statusCode = 401,
+                        message = "You've already requested this book."
+                    };
+                }
+            }
+
+            DateTime dateTime = DateTime.UtcNow.Date;
+            string todayTime = dateTime.ToString("dd/MM/yy");
+            Requests newRequest = new Requests
+            { 
+                Id = id,
+                DateRequested = todayTime
+            };
+
+            var uFilter = Builders<Users>.Filter.Eq("Email", email);
+            var update = Builders<Users>.Update.Push("Request", newRequest);
+
+            await _users.UpdateOneAsync(filter, update);
+            return new CustomCodes { statusCode = 200 };
+        }
+
         public async Task<CustomCodes> Register(Users user)
         {
             var filter = Builders<Users>.Filter;
@@ -101,6 +176,16 @@ namespace BookShare.Services
             return new CustomCodes { statusCode = 200 };
         }
 
+        public async Task<CustomCodes> PasswordRecovery(Users user)
+        {
+            var filter = Builders<Users>.Filter.Eq("Email", user.Email);
+            var update = Builders<Users>.Update.Set("Password", user.Password);
+
+            await _users.UpdateOneAsync(filter, update);
+
+            return new CustomCodes { statusCode = 200 };
+        }
+
         public async Task<bool> UpdateEmail(Users user)
         {
             var filter = Builders<Users>.Filter.Eq("Username", user.Username);
@@ -110,7 +195,7 @@ namespace BookShare.Services
 
             return true;
         }
-
+        
         public async Task<CustomCodes> UpdateLF(Users user)
         {
             var filter = Builders<Users>.Filter.Eq("Username", user.Username);
@@ -142,11 +227,7 @@ namespace BookShare.Services
 
             var result = await _users.FindOneAndUpdateAsync(filter, update, options);
 
-            return new CustomCodes
-            {
-                statusCode = 200,
-                user = result
-            };
+            return new CustomCodes { statusCode = 200 };
         }
     }
 }

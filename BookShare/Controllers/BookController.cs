@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookShare.Models;
 using BookShare.Services;
+using BookShare.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookShare.Controllers
@@ -12,10 +13,14 @@ namespace BookShare.Controllers
     public class BookController : ControllerBase
     {
         private readonly BookService _bookService;
+        private readonly IMailer _mailer;
+        private readonly UserService _userService;
 
-        public BookController(BookService bookService)
+        public BookController(BookService bookService, IMailer mailer, UserService userService)
         {
             _bookService = bookService;
+            _mailer = mailer;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -47,11 +52,23 @@ namespace BookShare.Controllers
         }
 
         [HttpPost]
-        [Route("postBook")]
-        public IActionResult Books([FromBody] Region book)
+        [Route("request")]
+        public async Task<IActionResult> BookRequest([FromBody] EmailTemplate email)
         {
-            var response = _bookService.Books(book);
-            return StatusCode(201, response);
+            CustomCodes result = await _userService.checkRequests(email.Email, email.Book.Id);
+            if (result.statusCode != 200) return new ObjectResult(result);
+
+            await _mailer.SendEmailAsync(email);
+            CustomCodes response = new CustomCodes { statusCode = 200 };
+            return new ObjectResult(response);
+        }
+
+        [Route("postBook")]
+        public async Task<IActionResult> PostBook([FromBody] Region book)
+        {
+            Console.WriteLine("\n\n\n CONTROLLER \n\n\n");
+            CustomCodes response = await _bookService.PostBook(book);
+            return new ObjectResult(response);
         }
 
         [Route("editBook")]

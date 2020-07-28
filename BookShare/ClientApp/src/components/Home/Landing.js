@@ -52,13 +52,13 @@ export default () => {
     return (
         <Grid item xs={12} className={classes.container}>
             <Typography className={classes.title}>
-                Booksies
+                Sothis
             </Typography>
 
             <Divider className={classes.divider} />
 
             <Typography className={classes.introBody}>
-                The one, the only, text book trading platform
+                Re-inventing the library
             </Typography>
         </Grid>
     );

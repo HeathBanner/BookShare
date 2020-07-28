@@ -38,7 +38,7 @@ export default ({ lfBooks }) => {
         <List className={classes.list}>
             <ListItem button onClick={handleOpen}>
                 <ListItemIcon>
-                    <Icon>{open ? "expand_less" : "expand_more"}</Icon>
+                    <Icon>{open ? "remove" : "add"}</Icon>
                 </ListItemIcon>
                 <ListItemText primary="Tradeable Books" />
             </ListItem>
@@ -48,7 +48,7 @@ export default ({ lfBooks }) => {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 {lfBooks.map((item) => {
                     return (
-                        <ListItem>
+                        <ListItem style={{ padding: '4px 16px' }}>
                             <ListItemText primary={item} />
                         </ListItem>
                     );

@@ -1,10 +1,14 @@
 ﻿import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { makeStyles } from '@material-ui/styles';
 import {
     Paper,
     Typography,
-    TextField,
+    FormControl,
+    InputLabel,
+    Input,
+    InputAdornment,
     Button,
     List,
     ListItem,
@@ -51,7 +55,7 @@ const useStyles = makeStyles(() => ({
     list: {
         width: '100%'
     },
-    LFInput: {
+    input: {
         width: '100%',
         marginBottom: 10
     },
@@ -59,11 +63,11 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         marginBottom: 10,
         padding: 5,
-        backgroundColor: '#ca1d5d',
+        backgroundColor: '#21ce99',
         color: 'white',
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#de1f27',
+            backgroundColor: '#1ee8ab',
             color: 'white'
         }
     },
@@ -71,11 +75,11 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         marginBottom: 10,
         padding: 5,
-        backgroundColor: '#ca1d5d',
+        backgroundColor: '#21ce99',
         color: 'white',
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#de1f27',
+            backgroundColor: '#1ee8ab',
             color: 'white'
         }
     },
@@ -88,6 +92,26 @@ const useStyles = makeStyles(() => ({
         position: 'absolute',
         top: 0,
         right: 0,
+    },
+    underline: {
+        '&:before': {
+            borderBottom: '1px solid #21ce99'
+        },
+        '&:after': {
+            borderBottom: `2px solid #21ce99`
+        },
+        '&:hover:not($disabled):not($focused):not($error):before': {
+            borderBottom: `2px solid #f50057`
+        },
+        '&.MuiFormLabel-root': {
+            color: '#21ce99'
+        },
+        '&.MuiFormLabel-root .Mui-focused': {
+            color: '#21ce99'
+        }
+    },
+    label: {
+        color: '#21ce99 !important',
     }
 }));
 
@@ -96,30 +120,37 @@ const initState = {
     open: true
 };
 
-export default ({ lfBooks, handleBooks, handleSave, isModal, toggle }) => {
+export default ({ lfBooks, handleBooks, handleSave, isModal, handleClose }) => {
 
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [state, setState] = useState({ ...initState });
 
     const handleChange = (event) => {
-        setState({ ...state, value: event.target.value });
+        try {
+            setState({ ...state, value: event.target.value });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const preAdd = () => {
-        handleBooks("ADD", state.value);
-        setState({ ...initState });
+        try {
+            handleBooks("ADD", state.value);
+            setState({ ...initState });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleList = () => setState({ ...state, open: !state.open });
 
     return (
         <Paper
-            className={
-                isModal ? classes.modalPaper : classes.listContainer
-            }
+            className={isModal ? classes.modalPaper : classes.listContainer}
         >
-            <IconButton className={classes.closeButton} onClick={toggle}>
+            <IconButton className={classes.closeButton} onClick={handleClose}>
                 <Icon>close</Icon>
             </IconButton>
             <Typography
@@ -128,19 +159,24 @@ export default ({ lfBooks, handleBooks, handleSave, isModal, toggle }) => {
                 Tradeable Books
             </Typography>
 
-            <TextField
-                className={classes.LFInput}
-                value={state.value}
-                onChange={(e) => handleChange(e)}
-                label="Title"
-            />
-
-            <Button
-                className={classes.addButton}
-                onClick={preAdd}
-            >
-                Add
-            </Button>
+            <FormControl style={{ width: '100%' }}>
+                <InputLabel classes={{ focused: classes.label }}>Title</InputLabel>
+                <Input
+                    className={classes.input}
+                    classes={{ underline: classes.underline }}
+                    value={state.value}
+                    onChange={(e) => handleChange(e)}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                onClick={preAdd}
+                            >
+                                <Icon style={{ color: '#1976d2' }}>add</Icon>
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                />
+            </FormControl>
 
             <List className={classes.list}>
                 <ListItem
@@ -148,10 +184,10 @@ export default ({ lfBooks, handleBooks, handleSave, isModal, toggle }) => {
                     button
                     onClick={handleList}
                 >
-                    <ListItemText primary="Book List" />
                     <ListItemIcon>
-                        <Icon>{state.open ? "expand_less" : "expand_more"}</Icon>
+                        <Icon style={{ color: '#1976d2' }}>{state.open ? "remove" : "add"}</Icon>
                     </ListItemIcon>
+                    <ListItemText primary="Book List" />
                 </ListItem>
                 <Divider className={classes.divider} />
                 <Collapse in={state.open} timeout="auto" unmountOnExit>

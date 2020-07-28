@@ -10,8 +10,7 @@ namespace BookShare.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Study { get; set; }
-        public string Owner { get; set; }
-        public byte[] Image { get; set; }
+        public Images[] Image { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Condition { get; set; }
@@ -20,5 +19,11 @@ namespace BookShare.Models
         public string CourseId { get; set; }
         public string[] LFBooks { get; set; }
         public float Price { get; set; }
+        public string Owner { get; set; }
+        public string Email { get; set; }
+    }
+    public class Images
+    {
+        public byte[] Url { get; set; }
     }
 }

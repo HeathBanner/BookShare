@@ -78,7 +78,7 @@ namespace BookShare.Services
 
         public async Task<dynamic> ValidateToken(string token)
         {
-            var validaionParameters = new TokenValidationParameters
+            var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MyKeyIsSuperSecretButIProbablyWillStillUploadThisToGithubBecauseImStupid")),
@@ -90,7 +90,7 @@ namespace BookShare.Services
 
             try
             {
-                new JwtSecurityTokenHandler().ValidateToken(token, validaionParameters, out var newToken);
+                new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out var newToken);
             }
             catch
             {
@@ -112,5 +112,69 @@ namespace BookShare.Services
             };
         }
 
+        public async Task<CustomCodes> ForgotPassword(string email)
+        {
+            var filter = Builders<Users>.Filter.Eq("Email", email);
+            Users user = await _users.Find(filter).FirstOrDefaultAsync();
+
+            if (user == null) return new CustomCodes { statusCode = 401 };
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, email),
+                new Claim(ClaimTypes.NameIdentifier, email),
+                new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
+                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddMinutes(30)).ToUnixTimeSeconds().ToString()),
+            };
+
+            var token = new JwtSecurityToken(
+                new JwtHeader(
+                    new SigningCredentials(
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("IforgotmypasswordSoIamRequestinganewpassword")),
+                        SecurityAlgorithms.HmacSha256)),
+                new JwtPayload(claims));
+
+            return new CustomCodes
+            {
+                access_token = new JwtSecurityTokenHandler().WriteToken(token),
+                statusCode = 200,
+                user = user
+            };
+        }
+        public async Task<CustomCodes> ValidatePasswordToken(string token)
+        {
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("IforgotmypasswordSoIamRequestinganewpassword")),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(5)
+            };
+
+            try
+            {
+                new JwtSecurityTokenHandler().ValidateToken(token, validationParameters, out var newToken);
+            }
+            catch
+            {
+                return new CustomCodes {
+                    statusCode = 401
+                };
+            }
+
+            var securityToken = new JwtSecurityTokenHandler().ReadToken(token) as JwtSecurityToken;
+            var email = securityToken.Claims.First(claim => claim.Type == ClaimTypes.Name).Value;
+
+            Console.WriteLine("\n\n\n {0} \n\n\n", email);
+
+            var filter = Builders<Users>.Filter.Eq("Email", email);
+            Users query = await _users.Find(filter).FirstOrDefaultAsync();
+
+            if (query == null) return new CustomCodes { statusCode = 401 };
+            Users user = new Users() { Email = email };
+            return new CustomCodes { statusCode = 200, user = user };
+        }
     }
 }

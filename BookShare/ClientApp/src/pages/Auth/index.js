@@ -1,16 +1,9 @@
 ﻿import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import {
-    fetchLogin,
-    fetchRegister,
-    initInfo,
-    initNotify
-} from '../../components/Auth/Services/AuthServices';
-
 import Login from '../../components/Auth/Login';
 import Register from '../../components/Auth/Register';
-import Notify from '../../components/Notifications/Notify';
+import { initInfo } from '../../components/Auth/Services/AuthServices';
 
 import { makeStyles, useTheme } from '@material-ui/styles';
 import {
@@ -18,7 +11,8 @@ import {
     Paper,
     Tabs,
     Tab,
-    Modal
+    Modal,
+    Button
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,63 +37,94 @@ const useStyles = makeStyles((theme) => ({
             width: '70%'
         }
     },
+    forgotPassword: {
+        marginTop: 10,
+        padding: 10
+    }
 }));
 
-export default ({ auth, handleClose }) => {
+export default ({ auth, handleClose, history }) => {
 
-    const theme = useTheme();
-    const classes = useStyles(theme);
+    const classes = useStyles();
     const dispatch = useDispatch();
 
     const [mode, setMode] = useState(0);
     const [info, setInfo] = useState({ ...initInfo });
-    const [notify, setNotify] = useState({ ...initNotify });
 
-    const handleChange = (event, value) => setMode(value);
+    const handleChange = (event, value) => {
+        try {
+            setMode(value);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    };
 
     const handleInput = (mode, type) => event => {
-        if (type === "Visible") return setInfo({ ...info, Visible: !info.Visible }); 
-        setInfo({ ...info, [type]: event.target.value });
+        try {
+            if (type === "Visible") return setInfo({ ...info, Visible: !info.Visible }); 
+            setInfo({ ...info, [type]: event.target.value });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleSubmit = async (mode) => {
-        let result;
-
-        if (mode === "login") result = await fetchLogin(info);
-        if (mode === "register") result = await fetchRegister(info);
-
-        if (result.error) return setNotify({ ...notify, ...result });
-        if (result.success && mode === "register") {
-            return setNotify({ ...notify, ...result });
-        }
-        if (result.success) {
-            dispatch({
-                type: "LOGIN",
-                payload: result.payload
-            });
-            handleClose();
+        try {
+            let result;
+    
+            if (mode === "login") {
+                const { fetchLogin } = await import('../../components/Auth/Services/AuthServices');
+                result = await fetchLogin(info);
+            }
+            if (mode === "register") {
+                const { fetchRegister } = await import('../../components/Auth/Services/AuthServices');
+                result = await fetchRegister(info);
+            }
+    
+            if (result.error) {
+                return dispatch({ type: "ERROR_NOTIFY", payload: result.message });
+            }
+            if (result.success && mode === "register") {
+                return dispatch({ type: "SUCCESS_NOTIFY", payload: result.message });
+            }
+            if (result.success) {
+                dispatch({
+                    type: "LOGIN",
+                    payload: result.payload
+                });
+                handleClose();
+            }
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    const handleNotify = () => {
-        if (notify.success) setInfo({ ...initInfo });
-        setNotify({ ...initNotify });
+    const handlePush = () => {
+        try {
+            history.push("/passwordRecovery");
+            handleClose();
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const renderAuth = () => {
-        if (mode === 0) {
-            return <Login
-                login={info}
+        try {
+            if (mode === 0) {
+                return <Login
+                        login={info}
+                        handleInput={handleInput}
+                        handleSubmit={handleSubmit}
+                    />;
+            }
+            return <Register
+                register={info}
                 handleInput={handleInput}
                 handleSubmit={handleSubmit}
             />;
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
-
-        return <Register
-            register={info}
-            handleInput={handleInput}
-            handleSubmit={handleSubmit}
-        />;
     };
 
     return (
@@ -120,12 +145,15 @@ export default ({ auth, handleClose }) => {
                             <Tab label="Register" />
                         </Tabs>
 
+                        <Button
+                            className={classes.forgotPassword}
+                            onClick={() => handlePush()}
+                        >
+                            Forgot password?
+                        </Button>
+
                         {renderAuth()}
 
-                        <Notify
-                            notification={notify}
-                            handleClose={handleNotify}
-                        />
                     </Paper>
 
                 </Modal>

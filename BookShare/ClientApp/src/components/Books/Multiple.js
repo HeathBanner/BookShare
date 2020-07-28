@@ -1,21 +1,17 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { states } from '../Resources/index';
 
 import { makeStyles } from '@material-ui/styles';
 import {
-    List,
-    ListItem,
-    ListItemText,
-    ListItemSecondaryAction,
-    IconButton,
-    Icon,
     Typography,
     TextField,
     Button,
     FormControl,
     FormGroup,
     FormControlLabel,
+    Checkbox,
     Switch
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
@@ -35,9 +31,10 @@ const useStyles = makeStyles(() => ({
     },
     search: {
         width: '100%',
-        backgroundColor: '#28ac60',
+        backgroundColor: '#21ce99',
         color: 'white',
         padding: 10,
+        borderRadius: '20px',
         transition: 'background-color 0.4s ease',
         '&:hover': {
             backgroundColor: '#23de71',
@@ -58,6 +55,29 @@ const useStyles = makeStyles(() => ({
             backgroundColor: '#de1f27',
             color: 'white'
         }
+    },
+    checkboxContainer: {
+        marginBottom: 20
+    },
+    underline: {
+        '&:before': {
+            borderBottom: '1px solid #21ce99'
+        },
+        '&:after': {
+            borderBottom: `2px solid #21ce99`
+        },
+        '&:hover:not($disabled):not($focused):not($error):before': {
+            borderBottom: `2px solid #f50057`
+        },
+        '&.MuiFormLabel-root': {
+            color: '#21ce99'
+        },
+        '&.MuiFormLabel-root .Mui-focused': {
+            color: '#21ce99'
+        }
+    },
+    label: {
+        color: '#21ce99 !important',
     }
 }));
 
@@ -82,93 +102,98 @@ export default (props) => {
 
     const classes = useStyles();
     const store = props.store;
+    const dispatch = useDispatch();
 
     const [book, setBook] = useState({ ...initBook });
     const [notify, setNotify] = useState({ ...initNotify });
 
     useEffect(() => {
-        if (!book.imported && store.user) {
-
-            let lfBooks = [];
-            if (store.user.lfBooks && store.user.lfBooks.length > 0) {
-                store.user.lfBooks.forEach((item, index) => {
-                    lfBooks.push({
-                        index: index,
-                        value: item,
-                        deleted: false
+        try {
+            if (!book.imported && store.user) {
+                let lfBooks = [];
+                if (store.user.lfBooks && store.user.lfBooks.length > 0) {
+                    store.user.lfBooks.forEach((item) => {
+                        lfBooks.push({
+                            value: item,
+                            checked: false
+                        });
                     });
-                });
                 }
-            setBook({
-                ...book,
-                lfBooks: store.user.lfBooks ? store.user.lfBooks.length > 0 ? lfBooks : [] : [],
-                City: store.user.city ? store.user.city : "",
-                State: store.user.state ? store.user.state : "",
-                Imported: true
-            });
+                setBook({
+                    ...book,
+                    lfBooks: store.user.lfBooks ? store.user.lfBooks.length > 0 ? lfBooks : [] : [],
+                    City: store.user.city ? store.user.city : "",
+                    State: store.user.state ? store.user.state : "",
+                    Imported: true
+                });
+            }
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     }, [store]);
 
     const toggleFilter = (type) => {
-        const newValue = !book[type];
-        setBook({ ...book, [type]: newValue });
+        try {
+            const newValue = !book[type];
+            setBook({ ...book, [type]: newValue });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleInput = (event, type) => {
-        setBook({ ...book, [type]: event.target.value });
+        try {
+            setBook({ ...book, [type]: event.target.value });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleAutocomplete = (value, type) => {
-        setBook({ ...book, [type]: value.title });
+        try {
+            setBook({ ...book, [type]: value.title });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
-    const removeBook = (item) => {
-        let newList = book.lfBooks;
-        let newTrash = book.trash;
-
-        newTrash.push({
-            index: item.index,
-            value: item.value,
-        });
-        newList[item.index].deleted = true;
-
-        setBook({ ...book, lfBooks: newList, trash: newTrash });
-    };
-
-    const undoBook = () => {
-        const len = book.trash.length - 1;
-        const newTrash = book.trash;
-        const marker = newTrash[len].index;
-        const newList = book.lfBooks;
-
-        newList[marker].deleted = false;
-        newTrash.splice(len, 1);
-
-        setBook({ ...book, lfBooks: newList, trash: newTrash });
+    const handleToggle = (index) => {
+        try {
+            let newList = book.lfBooks;
+            newList[index].checked = !newList[index].checked;
+            setBook({ ...book, lfBooks: newList });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleSearch = () => {
-        const { lfBooks, State, City } = book;
-        let list;
-        lfBooks.forEach((item, index) => {
-            if (!list) return list = item.value;
-            if (index === list.length - 1) return list = list + item.value;
-
-            list = `${list}&${item.value}`;
-        });
-
-        console.log(list);
-        props.history.push(`/bookList/1/${State}/${City}/${list}`);
+        try {
+            const { lfBooks, State, City, Sale, Trade } = book;
+            let list;
+            lfBooks.forEach((item) => {
+                if (!list && item.checked) return list = item.value;
+                if (item.checked) return list = `${list}&${item.value}`;
+            });
+    
+            props.history.push(`/bookList/1/${State}/${City}/${list}/${Sale}/${Trade}`);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const preSubmit = () => {
-        switch (true) {
-            case !book.State:
-                return setNotify({ ...notify, warning: true, message: "You must select a State" });
-            case book.City.length <= 0:
-                return setNotify({ ...notify, warning: true, message: "City field cannot be blank" });
-            default:
-                handleSearch();
+        try {
+            switch (true) {
+                case !book.State:
+                    return setNotify({ ...notify, warning: true, message: "You must select a State" });
+                case book.City.length <= 0:
+                    return setNotify({ ...notify, warning: true, message: "City field cannot be blank" });
+                default:
+                    handleSearch();
+            }
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
@@ -204,6 +229,7 @@ export default (props) => {
                                 value={book.Sale}
                                 control={
                                     <Switch
+                                        style={{ color: "#21ce99" }}    
                                         color="primary"
                                         onChange={() => toggleFilter("Sale")}
                                         checked={book.Sale}
@@ -216,6 +242,7 @@ export default (props) => {
                                 value={book.Trade}
                                 control={
                                     <Switch
+                                        style={{ color: "#21ce99" }}
                                         color="primary"
                                         onChange={() => toggleFilter("Trade")}
                                         checked={book.Trade}
@@ -231,33 +258,52 @@ export default (props) => {
                         Book List to Search
                     </Typography>
 
-                    <IconButton
-                        onClick={undoBook}
-                        disabled={book.trash.length === 0}
-                    >
-                        <Icon>undo</Icon>
-                    </IconButton>
-
-                    <List className={classes.list}>
-                        {book.lfBooks.map((item) => {
+                    <FormGroup className={classes.checkboxContainer} row>
+                        {book.lfBooks.map((item, index) => {
                             if (!item.deleted) {
                                 return (
-                                    <ListItem key={item.value}>
-                                        <ListItemSecondaryAction>
-                                            <IconButton
-                                                onClick={() => removeBook(item)}
-                                                disabled={book.lfBooks.length === 1}
-                                            >
-                                                <Icon>clear</Icon>
-                                            </IconButton>
-                                        </ListItemSecondaryAction>
+                                        <FormControlLabel 
+                                            control={
+                                                <Checkbox
+                                                    checked={item.checked}
+                                                    onChange={() => handleToggle(index)}
+                                                    name={item.value}
+                                                    color="primary"
+                                                />
+                                            }
+                                            label={item.value}
+                                        />
+                                        );
+                                    } else return "";
+                                })}
+                    </FormGroup>
 
-                                        <ListItemText primary={item.value} />
-                                    </ListItem>
-                                );
-                            } else return "";
-                        })}
-                    </List>
+                    <Autocomplete
+                        options={states}
+                        getOptionLabel={option => option.title}
+                        className={classes.inputs}
+                        classes={{ inputRoot: classes.underline }}
+                        value={{ title: book.State }}
+                        onChange={(e, newValue) => handleAutocomplete(newValue, "State")}
+                        renderInput={params => <TextField { ...params } label="State" InputLabelProps={{ classes: { focused: classes.label }}} />}
+                    />
+
+                    <TextField
+                        className={classes.inputs}
+                        InputProps={{ classes: { underline: classes.underline }}}
+                        InputLabelProps={{ classes: { focused: classes.label }}}        
+                        value={book.City}
+                        onChange={(e) => handleInput(e, "City")}
+                        label="City"
+                    />
+
+                    <Button
+                        className={classes.search}
+                        onClick={preSubmit}
+                    >
+                        Search
+                    </Button>
+
                 </>
             );
         } else {
@@ -287,30 +333,6 @@ export default (props) => {
     return (
         <>
             {store.user && store.user.lfBooks ? renderInput() : renderInput(true)}
-
-            <Autocomplete
-                options={states}
-                getOptionLabel={option => option.title}
-                className={classes.inputs}
-                value={{ title: book.State }}
-                onChange={(e, newValue) => handleAutocomplete(newValue, "State")}
-                renderInput={params => <TextField { ...params } label="State" />}
-            />
-
-            <TextField
-                className={classes.inputs}
-                value={book.City}
-                onChange={(e) => handleInput(e, "City")}
-                label="City"
-                color="secondary"
-            />
-
-            <Button
-                className={classes.search}
-                onClick={preSubmit}
-            >
-                Search
-            </Button>
         </>
     );
 };

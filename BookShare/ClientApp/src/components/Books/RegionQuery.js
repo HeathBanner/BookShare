@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import Notify from '../Notifications/Notify';
 import { states } from '../Resources/index';
 
 import { makeStyles } from '@material-ui/styles';
@@ -80,43 +80,51 @@ const initInfo = {
     state: "",
     study: ""
 };
-const initNotify = {
-    error: false,
-    success: false,
-    warning: false,
-    message: ""
-};
 
 export default ({ history }) => {
+
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [info, setInfo] = useState({ ...initInfo });
-    const [notify, setNotify] = useState({ ...initNotify });
 
     const handleInput = (type) => event => {
-        setInfo({ ...info, [type]: event.target.value });
+        try {
+            setInfo({ ...info, [type]: event.target.value });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleAutocomplete = (value, type) => {
-        setInfo({ ...info, [type]: value.title });
+        try {
+            setInfo({ ...info, [type]: value.title });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
-    const handleClose = () => setNotify({ ...initNotify });
-
     const handleSearch = () => {
-        const { city, state, study } = info;
-        history.push(`/books/${city}/${state}/${study}`);
+        try {
+            const { city, state, study } = info;
+            history.push(`/books/${city}/${state}/${study}`);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const preSubmit = () => {
-        console.log("pre")
-        switch (true) {
-            case info.city.length <= 0:
-                return setNotify({ ...notify, warning: true, message: "City field is blank" });
-            case info.state.length <= 2:
-                return setNotify({ ...notify, warning: true, message: "State name is too short" });
-            default:
-                return handleSearch();
+        try {
+            switch (true) {
+                case info.city.length <= 0:
+                    return dispatch({ type: "WARNING_NOTIFY", payload: "City field is blank" });
+                case info.state.length <= 2:
+                    return dispatch({ type: "WARNING_NOTIFY", payload: "State name is too short" });
+                default:
+                    return handleSearch();
+            }
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
@@ -153,10 +161,6 @@ export default ({ history }) => {
                 Search
             </Button>
 
-            <Notify
-                handleClose={handleClose}
-                notification={notify}
-            />
         </Paper>
     );
 };

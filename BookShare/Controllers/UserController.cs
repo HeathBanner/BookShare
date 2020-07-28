@@ -57,7 +57,13 @@ namespace BookShare.Controllers
         public async Task<IActionResult> UpdatePassword([FromBody] Users user)
         {
             var result = await _userService.UpdatePassword(user);
+            return new ObjectResult(result);
+        }
 
+        [Route("passwordRecovery")]
+        public async Task<IActionResult> PasswordRecovery([FromBody] Users user)
+        {
+            var result = await _userService.PasswordRecovery(user);
             return new ObjectResult(result);
         }
 
@@ -82,7 +88,6 @@ namespace BookShare.Controllers
         public async Task<IActionResult> UpdateLF([FromBody] Users user)
         {
             var result = await _userService.UpdateLF(user);
-
             return new ObjectResult(result);
         }
 

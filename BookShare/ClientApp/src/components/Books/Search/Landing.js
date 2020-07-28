@@ -1,18 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import RegionQuery from '../RegionQuery';
 import BookCards from './BookCards';
 import InfoScreen from '../../ScreenCatchers/InfoScreen';
 import Filter from './Filter';
-import {
-    fetchByBook,
-    fetchByList,
-    initModal,
-    genFilter,
-    initFilter
-} from '../Services/QueryServices';
+import ImageViewer from '../../Utils/ImageViewer';
+import * as services from '../Services/QueryServices';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -66,60 +61,108 @@ const Landing = ({ params, history }) => {
 
     const classes = useStyles();
     const store = useSelector(state => state);
+    const dispatch = useDispatch();
+    const errorMsg = { error: true, message: "Something went wrong :(" };
 
-    const [modal, setModal] = useState({ ...initModal });
+    const [modal, setModal] = useState({ ...services.initModal });
+    const [viewer, setViewer] = useState(false);
     const [books, setBooks] = useState({ list: null, loaded: false, page: 1 });
-    const [checked, setChecked] = useState({ ...initFilter });
+    const [checked, setChecked] = useState({ ...services.initFilter });
 
     useEffect(() => {
-        if (!books.loaded && store.user || params.page !== books.page) fetchSwitch();
+        try {
+            if (!books.loaded && store.user || params.page !== books.page) {
+                fetchSwitch();
+            }
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
 
     }, [store, books, params]);
 
     const handleOpen = (type) => event => {
-        setModal({ ...modal, [type]: true });
+        try {
+            setModal({ ...modal, [type]: true });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
     const handleClose = (type) => event => {
-        setModal({ ...modal, [type]: false });
+        try {
+            setModal({ ...modal, [type]: false });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleBack = () => {
-        const newPage = parseInt(params.page) - 1;
-        history.push(`/bookList/${newPage}/${params.state}/${params.city}/${params.list}`);
+        try {
+            const newPage = parseInt(params.page) - 1;
+            history.push(`/bookList/${newPage}/${params.state}/${params.city}/${params.list}`);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleNext = () => {
-        const newPage = parseInt(params.page) + 1;
-        history.push(`/bookList/${newPage}/${params.state}/${params.city}/${params.list}`);
+        try {
+            const newPage = parseInt(params.page) + 1;
+            history.push(`/bookList/${newPage}/${params.state}/${params.city}/${params.list}`);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleSwitch = (type) => event => {
-        const value = !checked[type].on;
-        setChecked({ ...checked, [type]: { ...checked[type], on: value } });
+        try {
+            const value = !checked[type].on;
+            setChecked({ ...checked, [type]: { ...checked[type], on: value } });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleChange = (type) => event => {
-        setChecked({ ...checked, [type]: { ...checked[type], value: event.target.value } });
+        try {
+            setChecked({ ...checked, [type]: { ...checked[type], value: event.target.value } });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleInput = (type) => event => {
-        setChecked({ ...checked, [type]: { ...checked[type], value: event.target.value } });
+        try {
+            setChecked({ ...checked, [type]: { ...checked[type], value: event.target.value } });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const fetchSwitch = async () => {
-        let result;
-        if (params.title) result = await fetchByBook(params, store.user.lfBooks);
-        if (params.list) result = await fetchByList(params);
-
-        setBooks({ ...result });
+        try {
+            let result;
+            if (params.title) result = await services.fetchByBook(params, store.user.lfBooks);
+            if (params.list) result = await services.fetchByList(params);
+        
+            setBooks({ ...result });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     const handleApply = async (checked) => {
-        const newBooks = await genFilter(checked, params);
-
-        setBooks({ ...books, list: newBooks });
-        setModal({ ...modal, filter: false });
+        try {
+            const newBooks = await services.genFilter(checked, params);
+    
+            setBooks({ ...books, list: newBooks });
+            setModal({ ...modal, filter: false });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
+
+    const openViewer = () => setViewer(true);
+    const closeViewer = () => setViewer(false);
 
     if (!store.user) return (
         <InfoScreen
@@ -170,7 +213,7 @@ const Landing = ({ params, history }) => {
             {books.list.map((item) => <BookCards
                     book={item}
                     id={item.id}
-                    key={item.title}
+                    openViewer={openViewer}
                 />
             )}
 
@@ -197,6 +240,12 @@ const Landing = ({ params, history }) => {
                     <Icon>arrow_forward_ios</Icon>
                 </IconButton>
             </div>
+
+            <ImageViewer
+                images={books.image}
+                open={viewer}
+                handleClose={closeViewer}
+            />
 
         </Grid>
     );

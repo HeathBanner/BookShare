@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.ObjectPool;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
+using BookShare.Entities;
 
 namespace BookShare
 {
@@ -24,6 +41,31 @@ namespace BookShare
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var applicationEnvironment = PlatformServices.Default.Application;
+            services.AddSingleton(applicationEnvironment);
+            // var appDirectory = Directory.GetCurrentDirectory();
+
+            // var webHostBuilder = new WebHostBuilder().ConfigureServices(services => 
+            // {
+            //     services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+            //     {
+            //         options.FileProviders.Add(new PhysicalFileProvider(appDirectory));
+            //     });
+
+            services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+
+            var diagnosticSource = new DiagnosticListener("Microsoft.AspNetCore");
+            services.AddSingleton<DiagnosticListener>(diagnosticSource);
+            services.AddSingleton<DiagnosticSource>(diagnosticSource);
+
+            services.AddLogging();
+
+            services.AddRazorPages();
+            services.AddMvc();
+            services.AddScoped<RazorViewToStringRenderer>();
+
+
+
             services.Configure<Models.BookDatabaseSettings>(
                 Configuration.GetSection(nameof(Models.BookDatabaseSettings)));
 
@@ -33,7 +75,10 @@ namespace BookShare
             services.AddSingleton<Services.BookService>();
             services.AddSingleton<Services.UserService>();
             services.AddSingleton<Services.TokenService>();
+            services.AddScoped<Entities.IMailer, Entities.Templates.Mailer>();
 
+            services.Configure<Entities.SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+            
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = "JwtBearer";

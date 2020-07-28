@@ -84,11 +84,8 @@ export const fetchUpdateLocation = async (location, username) => {
     const result = await fetch("api/user/updateLocation", options);
     const json = await result.json();
 
-    console.log(json);
-
-    return { error: true, message: "This is a test!" };
-
-    //return json.user;
+    if (json.statusCode !== 200) return { error: true, message: "Something went wrong :(" };
+    return json.user;
 };
 
 const statusHandler = (json, props) => {

@@ -1,5 +1,8 @@
 ﻿import React, { useState } from 'react';
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router';
+import { useDispatch } from 'react-redux';
+
+import Notify from '../Notifications/Notify';
 
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -53,18 +56,30 @@ const navList = [
 const NavDrawer = ({ history }) => {
 
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const [open, setOpen] = useState(false);
 
     const toggleDrawer = (open) => event => {
-        if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) return;
+        try {
+            if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+                return;
+            }
 
-        setOpen(open);
+            setOpen(open);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+
     };
 
     const handleRedirect = (link) => {
-        setOpen(false);
-        history.push(link);
+        try {
+            setOpen(false);
+            history.push(link);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     return (

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import BookInfo from '../../components/Profile/BookInfo';
+import BookCards from '../../components/Books/Search/BookCards';
+import ImageViewer from '../../components/Utils/ImageViewer';
 import InfoScreen from '../../components/ScreenCatchers/InfoScreen';
 import EditBook from '../../components/Profile/Books/EditBook';
-import Notification from '../../components/Notifications/Notify';
-import { fetchDelete, initModal, initNotify } from '../../components/Profile/Services/BookServices';
+import { fetchDelete, initModal } from '../../components/Profile/Services/BookServices';
 
 import { makeStyles, useTheme } from '@material-ui/styles';
 import {
@@ -31,6 +31,12 @@ import {
             paddingRight: '10%',
             paddingLeft: '10%'
         }
+    },
+    tile: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center'
     }
  }));
 
@@ -43,32 +49,63 @@ const Books = ({ history }) => {
     const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
     
     const [modal, setModal] = useState({ ...initModal });
-    const [notify, setNotify] = useState({ ...initNotify });
+    const [viewer, setViewer] = useState({ open: false, index: 0 });
 
-    const handleOpen = (id) => setModal({ open: true, id: id });
+    const handleOpen = (id) => {
+        try {
+            setModal({ open: true, id: id });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    };
     const handleClose = () => setModal({ ...initModal });
 
     const handleService = async (type, id) => {
-        const { username } = store.user;
-
-        let result;
-        if (type === "edit") return history.push(`books/edit/${id}`);
-        if (type === "delete") result = await fetchDelete(id, username);
-        
-        setNotify({ ...notify, ...result.notify });
-        dispatch({ type: "UPDATE", payload: result.user });
+        try {
+            const { username } = store.user;
+    
+            let result;
+            if (type === "edit") return history.push(`books/edit/${id}`);
+            if (type === "delete") result = await fetchDelete(id, username);
+            
+            dispatch({ type: "UPDATE", payload: result.user });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        } 
     };
 
-    const handleNotify = () => setNotify({ ...initNotify });
+    const openViewer = (index) => {
+        try {
+            setViewer({ open: true, index: index });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    };
+    const closeViewer = () => setViewer({ open: false, index: 0 });
 
     const renderBookInfo = () => {
-        if (!store.user.posted) return "";
-
-        return store.user.posted.map((item) => (
-                <GridListTile key={item.id} style={{ marginTop: 20 }}>
-                    <BookInfo book={item} handleOpen={handleOpen} />
-                </GridListTile>
-            ));
+        try {
+            if (!store.user.posted) return "";
+    
+            return store.user.posted.map((item, index) => (
+                    <GridListTile
+                        key={item.id}
+                        style={{ marginTop: 20, justifyContent: 'center' }}
+                        classes={{ tile: classes.tile }}
+                    >
+                        <BookCards
+                            book={item}
+                            id={item.id}
+                            index={index}
+                            openViewer={openViewer}
+                            openModal={handleOpen}
+                        />
+                    </GridListTile>
+                ));
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+            return "";
+        }
     };
 
     if (!store.user || store.user.posted.length < 1) return (
@@ -95,9 +132,10 @@ const Books = ({ history }) => {
                 handleService={handleService}
             />
 
-            <Notification
-                notification={notify}
-                handleClose={handleNotify}
+            <ImageViewer
+                images={store.user.posted[viewer.index].image}
+                open={viewer.open}
+                handleClose={closeViewer}
             />
         </Grid>
     );

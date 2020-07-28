@@ -23,6 +23,26 @@ const useStyles = makeStyles(() => ({
     button: {
         width: '100%',
         padding: 10,
+    },
+    underline: {
+        '&:before': {
+            borderBottom: '1px solid #21ce99'
+        },
+        '&:after': {
+            borderBottom: `2px solid #21ce99`
+        },
+        '&:hover:not($disabled):not($focused):not($error):before': {
+            borderBottom: `2px solid #f50057`
+        },
+        '&.MuiFormLabel-root': {
+            color: '#21ce99'
+        },
+        '&.MuiFormLabel-root .Mui-focused': {
+            color: '#21ce99'
+        }
+    },
+    label: {
+        color: '#21ce99 !important',
     }
 }));
 
@@ -41,9 +61,12 @@ export default ({ modalProps, handleChange }) => {
                     {["newPassword0", "newPassword1"].map((item, index) => {
                         return (
                             <FormControl style={{ width: '100%' }}>
-                            <InputLabel>{index === 0 ? "Password" : "Re-Enter Password"}</InputLabel>
+                                <InputLabel classes={{ focused: classes.label }}>
+                                    {index === 0 ? "Password" : "Re-Enter Password"}
+                                </InputLabel>
                                 <Input
                                     className={classes.input}
+                                    classes={{ underline: classes.underline }}
                                     type={visible ? "text" : "password"}
                                     value={index === 0 ? newPassword0 : newPassword1}
                                     onChange={e => handleChange(e, item)}
@@ -68,6 +91,8 @@ export default ({ modalProps, handleChange }) => {
             <div className={classes.inputContainers}>
                 <TextField
                     className={classes.input}
+                    InputProps={{ classes: { underline: classes.underline }}}
+                    InputLabelProps={{ classes: { focused: classes.label }}}    
                     label="Email"
                     value={email}
                     onChange={(e) => handleChange(e, "email")}
@@ -80,9 +105,10 @@ export default ({ modalProps, handleChange }) => {
         return (
             <div className={classes.inputContainers}>
                 <FormControl style={{ width: '100%' }}>
-                    <InputLabel>Password</InputLabel>
+                    <InputLabel classes={{ focused: classes.label }}>Password</InputLabel>
                         <Input
                             className={classes.input}
+                            classes={{ underline: classes.underline }}
                             label="Password"
                             type={visible ? "text" : "password"}
                             value={password}
@@ -92,7 +118,9 @@ export default ({ modalProps, handleChange }) => {
                                     <IconButton
                                         onClick={e => handleChange(e, "visible")}
                                     >
-                                        <Icon>{visible ? "visibility" : "visibility_off"}</Icon>
+                                        <Icon style={{ color: visible ? '#3f51b5' : 'rgba(0, 0, 0, 0.54)' }}>
+                                            {visible ? "visibility" : "visibility_off"}
+                                        </Icon>
                                     </IconButton>
                                 </InputAdornment>
                             }

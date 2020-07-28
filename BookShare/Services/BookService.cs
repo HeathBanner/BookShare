@@ -61,7 +61,7 @@ namespace BookShare.Services
                 index = newPage * 3;
             }
 
-            var filter = builder.Eq("Title", book.Title)&builder.Eq("State", book.State)&builder.Eq("City", book.City);
+            var filter = builder.Regex("Title", new BsonRegularExpression(book.Title, "i"))&builder.Eq("State", book.State)&builder.Eq("City", book.City);
             
             if (sale == "Y" && trade == "N") filter = builder.Gt("Price", 0);
             else if (sale == "N" && trade == "Y") filter = builder.Eq("Price", 0);
@@ -104,15 +104,16 @@ namespace BookShare.Services
             return document = result;
         }
 
-        public CustomCodes Books(Region book)
+        public async Task<CustomCodes> PostBook(Region book)
         {
-            _books.InsertOne(book);
+            Console.WriteLine("\n\n\n SERVICES \n\n\n");
+            await _books.InsertOneAsync(book);
 
             var filter = Builders<Users>.Filter.Eq(x => x.Username, book.Owner);
             var options = new FindOneAndUpdateOptions<Users>() { ReturnDocument = ReturnDocument.After };
             var update = Builders<Users>.Update.Push(x => x.Posted, book);
 
-            var result = _users.FindOneAndUpdate(filter, update, options);
+            var result = await _users.FindOneAndUpdateAsync(filter, update, options);
 
             return new CustomCodes {
                 statusCode = 201,

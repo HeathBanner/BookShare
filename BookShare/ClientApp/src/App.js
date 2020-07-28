@@ -4,9 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchValidation } from './TokenServices';
 import Appbar from './components/Navigation/Appbar';
-
+import Notify from './components/Notifications/Notify';
 import Home from './pages/Home/index';
-
 import Books from './pages/Books/Index';
 import EditBook from './pages/Profile/EditBook';
 import Search from './pages/Books/Search/Index';
@@ -14,19 +13,23 @@ import BookView from './pages/Books/BookView/BookView';
 import Post from './pages/Post';
 import Profile from './pages/Profile/Profile';
 import BookProfile from './pages/Profile/Books';
+import Email from './pages/Email/index';
+import PasswordRecovery from './pages/Email/PasswordRecovery';
 
+import Theme from './store/Theme';
 import { ThemeProvider } from '@material-ui/styles';
 import './custom.css'
 import { createMuiTheme, useMediaQuery } from '@material-ui/core';
 
-export default () => {
+export default ({ history }) => {
 
     const store = useSelector(state => state);
     const dispatch = useDispatch();
     const theme = createMuiTheme()
 
     useEffect(() => {
-        if (store.loggedIn || !store.checking) return;
+        console.log(store)
+;        if (store.loggedIn || !store.checking) return;
 
         const token = localStorage.getItem("token");
 
@@ -60,20 +63,28 @@ export default () => {
 
     widthSignal();
 
+    const closeNotify = () => dispatch({ type: "RESET_NOTIFY" });
+
     return (
-        <ThemeProvider theme={theme}>
+        <Theme>
             <Appbar />
+            <Notify
+                notification={store.notification}
+                handleClose={closeNotify}
+            />
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/books/:page/:title/:state/:city/:sale/:trade" component={Search} />
                 <Route path="/bookList/:page/:state/:city/:list/:sale/:trade" component={Search} />
                 <Route path="/books/edit/:id" component={EditBook} />
                 <Route path="/books/:id" component={BookView} />
+                <Route path="/email/:token" component={Email} />
+                <Route path="/passwordRecovery" exact component={PasswordRecovery} />
                 <Route exact path="/books" component={Books} />
                 <Route exact path="/post" component={Post} />
                 <Route exact path="/profile" component={Profile} />
                 <Route exact path="/bookshelf" component={BookProfile} />
             </Switch>
-        </ThemeProvider>
+        </Theme>
     );
 };

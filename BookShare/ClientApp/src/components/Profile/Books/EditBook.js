@@ -4,7 +4,8 @@ import { makeStyles } from '@material-ui/styles';
 import {
     Button,
     Modal,
-    Paper
+    Paper,
+    Divider
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -25,12 +26,19 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         padding: 10,
         color: 'white',
-        backgroundColor: '#E85A4F',
+        borderRadius: 20,
+        backgroundColor: '#21ce99',
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#E98074',
+            backgroundColor: '#1cebad',
             color: 'white'
         }
+    },
+    divider: {
+        width: '60%',
+        marginTop: 20,
+        marginBottom: 20,
+        backgroundColor: 'rgb(0, 0, 0, 0.2)'
     }
 }));
 
@@ -47,10 +55,11 @@ export default ({ modal, handleClose, handleService }) => {
                 <Button
                     className={classes.buttons}
                     onClick={() => handleService("edit", modal.id)}
-                    style={{ marginBottom: 20 }}
                 >
                     Edit
                 </Button>
+
+                <Divider className={classes.divider} />
 
                 <Button
                     className={classes.buttons}

@@ -32,12 +32,32 @@ const useStyles = makeStyles(() => ({
         width: '100%',
         padding: 10,
         color: 'white',
-        backgroundColor: '#E98074',
+        backgroundColor: '#21ce99',
         transition: 'background-color 0.4s ease',
         '&:hover': {
-            backgroundColor: '#E85A4F',
+            backgroundColor: '#1cedad',
             color: 'white'
         }
+    },
+    underline: {
+        '&:before': {
+            borderBottom: '1px solid #21ce99'
+        },
+        '&:after': {
+            borderBottom: `2px solid #21ce99`
+        },
+        '&:hover:not($disabled):not($focused):not($error):before': {
+            borderBottom: `2px solid #f50057`
+        },
+        '&.MuiFormLabel-root': {
+            color: '#21ce99'
+        },
+        '&.MuiFormLabel-root .Mui-focused': {
+            color: '#21ce99'
+        }
+    },
+    label: {
+        color: '#21ce99 !important',
     }
 }));
 
@@ -50,6 +70,8 @@ export default ({ location, handleChange, handleAutocomplete, handleSave }) => {
         <Paper className={classes.paper}>
             <TextField
                 className={classes.inputs}
+                InputProps={{ classes: { underline: classes.underline }}}
+                InputLabelProps={{ classes: { focused: classes.label }}}    
                 value={city}
                 onChange={(e) => handleChange(e, "location", "city")}
                 label="City"
@@ -59,9 +81,10 @@ export default ({ location, handleChange, handleAutocomplete, handleSave }) => {
                 options={states}
                 getOptionLabel={option => option.title}
                 className={classes.inputs}
+                classes={{ inputRoot: classes.underline }}
                 value={{ title: state }}
                 onChange={(e, newValue) => handleAutocomplete(newValue, "state")}
-                renderInput={params => <TextField {...params} label="State" />}
+                renderInput={params => <TextField {...params} label="State" InputLabelProps={{ classes: { focused: classes.label }}} />}
             />
 
             <Button

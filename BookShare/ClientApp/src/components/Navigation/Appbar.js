@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Drawer from './Drawer';
 import Container from '../../pages/Auth/index';
@@ -18,7 +19,7 @@ import {
 
 const useStyles = makeStyles(() => ({
     toolbar: {
-        backgroundColor: '#8E8D9A'
+        backgroundColor: '#21ce99'
     },
     navHeader: {
         color: 'white',
@@ -42,7 +43,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export default ({ window }) => {
+const NavBar = ({ window, history }) => {
 
     const classes = useStyles();
     const store = useSelector(state => state);
@@ -80,19 +81,21 @@ export default ({ window }) => {
                             className={classes.navHeader}
                             variant="h5"
                         >
-                            Booksies
+                            Sothis
                         </Typography>
 
                         {renderAuth()}
+                    </Toolbar>
 
-                        </Toolbar>
-
-                        <Container
-                            auth={auth}
-                            handleClose={handleClose}
-                        />
+                    <Container
+                        auth={auth}
+                        handleClose={handleClose}
+                        history={history}
+                    />
                 </AppBar>
             </Slide>
         </>
     );
 };
+
+export default withRouter(NavBar);

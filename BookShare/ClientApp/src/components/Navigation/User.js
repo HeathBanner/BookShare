@@ -9,7 +9,8 @@ import {
     Popper,
     Fade,
     Paper,
-    Typography
+    Typography,
+    ClickAwayListener
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -64,17 +65,22 @@ const User = ({ user, history }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = (event) => {
-        const selection = event.currentTarget;
-        const getBoundingClientRect = () => selection.getBoundingClientRect();
-
-        if (anchorEl) return setAnchorEl(null);
-
-        setAnchorEl({
-            clientWidth: getBoundingClientRect().width,
-            clientHeight: getBoundingClientRect().height,
-            getBoundingClientRect
-        });
+        try {
+            const selection = event.currentTarget;
+            const getBoundingClientRect = () => selection.getBoundingClientRect();
+    
+            if (anchorEl) return setAnchorEl(null);
+    
+            setAnchorEl({
+                clientWidth: getBoundingClientRect().width,
+                clientHeight: getBoundingClientRect().height,
+                getBoundingClientRect
+            });
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
+    const closeAnchor = () => setAnchorEl(null);
 
     const open = Boolean(anchorEl);
     const id = open ? 'transition-popper' : undefined;
@@ -82,8 +88,12 @@ const User = ({ user, history }) => {
     const signOut = () => dispatch({ type: "SIGNOUT" });
 
     const handleHistory = (url) => {
-        history.push(url);
-        setAnchorEl(null);
+        try {
+            history.push(url);
+            setAnchorEl(null);
+        } catch (error) {
+            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
     };
 
     return (
@@ -106,22 +116,23 @@ const User = ({ user, history }) => {
             >
                 {({ TransitionProps }) => (
                     <Fade {...TransitionProps} timeout={50}>
-                        <Paper className={classes.paper}>
-                            {buttons.map((item) => {
-                                return (
-                                    <Button
-                                        key={item.text}
-                                        className={classes.buttons}
-                                        onClick={() => item.func ? signOut() : handleHistory(item.url)}
-                                    >
-                                        <Typography variant="body2">
-                                            {item.text}
-                                        </Typography>
-                                    </Button>
-                                );
-                            })}
-
-                        </Paper>
+                        <ClickAwayListener onClickAway={closeAnchor}>
+                            <Paper className={classes.paper}>
+                                {buttons.map((item) => {
+                                    return (
+                                        <Button
+                                            key={item.text}
+                                            className={classes.buttons}
+                                            onClick={() => item.func ? signOut() : handleHistory(item.url)}
+                                        >
+                                            <Typography variant="body2">
+                                                {item.text}
+                                            </Typography>
+                                        </Button>
+                                    );
+                                })}
+                            </Paper>
+                        </ClickAwayListener>
                     </Fade>
                 )}
             </Popper>

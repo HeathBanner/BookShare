@@ -1,9 +1,17 @@
 ﻿import { createStore } from 'redux';
 
+const initNotify = {
+    error: false,
+    warning: false,
+    success: false,
+    message: ""
+};
+
 const initState = {
     user: "",
     loggedIn: false,
-    checking: true
+    checking: true,
+    notification: initNotify
 };
 
 const auth = (state, action) => {
@@ -25,8 +33,14 @@ const auth = (state, action) => {
                 ...state,
                 user: action.payload
             };
+        case "NEW_BOOK":
+            return {
+                ...state,
+                ...action.payload
+            };
         case "VALIDATED":
             return {
+                ...state,
                 loggedIn: true,
                 user: action.payload,
                 checking: false
@@ -49,6 +63,38 @@ const auth = (state, action) => {
                 ...state,
                 checking: false
             };
+        case "ERROR_NOTIFY":
+            return {
+                ...state,
+                notification: {
+                    ...state.notification,
+                    error: true,
+                    message: action.payload
+                }
+            };
+        case "WARNING_NOTIFY":
+            return {
+                ...state,
+                notification: {
+                    ...state.notification,
+                    warning: true,
+                    message: action.payload
+                }
+            }
+        case "SUCCESS_NOTIFY":
+            return {
+                ...state,
+                notification: {
+                    ...state.notification,
+                    success: true,
+                    message: action.payload
+                }
+            };
+        case "RESET_NOTIFY":
+            return {
+                ...state,
+                notification: initNotify
+            }
         default:
             return state;
     }

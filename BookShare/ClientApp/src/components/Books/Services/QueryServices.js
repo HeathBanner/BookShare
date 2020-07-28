@@ -4,7 +4,6 @@
     const result = await fetch(`api/book/state=${state}&city=${city}&study=${study}`);
     const json = await result.json();
 
-    console.log(json);
     return { list: json, loaded: true };
 };
 
@@ -20,11 +19,8 @@ export const fetchByBook = async (params, lfBooks) => {
         }),
         headers: { "Content-Type": "application/json" }
     };
-
     const result = await fetch(`api/book/fetchBooks/page=${page}&sale=${sale}&trade=${trade}`, options);
     const json = await result.json();
-
-    console.log(json, page);
 
     return { list: json.books, loaded: true, page: page };
 };
@@ -32,8 +28,6 @@ export const fetchByBook = async (params, lfBooks) => {
 export const fetchByList = async (params) => {
     const { list, state, city, page, sale, trade } = params;
     const parsedList = list.split("&");
-    console.log(parsedList);
-
     const options = {
         method: "POST",
         body: JSON.stringify({
@@ -46,8 +40,6 @@ export const fetchByList = async (params) => {
 
     const result = await fetch(`api/book/fetchByList/page=${page}&sale=${sale}&trade=${trade}`, options);
     const json = await result.json();
-
-    console.log(json);
 
     return { list: json.books, loaded: true, page: page };
 };
@@ -66,7 +58,6 @@ export const genFilter = async (checked, params) => {
 
     const result = await fetch(link);
     const json = await result.json();
-
     return json;
 };
 
@@ -80,4 +71,11 @@ export const initFilter = {
 export const initModal = {
     query: false,
     filter: false
+};
+
+export const initNotify = {
+    error: false,
+    warning: false,
+    success: false,
+    message: ""
 };

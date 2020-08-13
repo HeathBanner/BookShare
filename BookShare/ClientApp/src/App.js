@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchValidation } from './TokenServices';
 import Appbar from './components/Navigation/Appbar';
 import Notify from './components/Notifications/Notify';
-import Home from './pages/Home/index';
+import Home from './pages/Home/index.tsx';
 import Books from './pages/Books/Index';
 import EditBook from './pages/Profile/EditBook';
 import Search from './pages/Books/Search/Index';
@@ -28,8 +28,7 @@ export default ({ history }) => {
     const theme = createMuiTheme()
 
     useEffect(() => {
-        console.log(store)
-;        if (store.loggedIn || !store.checking) return;
+        if (store.loggedIn || !store.checking) return;
 
         const token = localStorage.getItem("token");
 

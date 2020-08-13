@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import Drawer from './Drawer';
-import Container from '../../pages/Auth/index';
+import Container from '../../pages/Auth/index.tsx';
 import User from './User';
 
 import { makeStyles } from '@material-ui/styles';

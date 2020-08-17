@@ -10,15 +10,8 @@ import Manual from '../../components/Books/Manual';
 import LFBook from '../../components/Post/LFBook';
 import { initValidation } from '../../components/Books/Services/ContainerServices';
 
-import { withStyles, createStyles, makeStyles } from '@material-ui/styles';
-import {
-    Paper,
-    Tabs,
-    Tab,
-    Grow,
-    Grid
-} from '@material-ui/core';
-import Validation from '../../components/Post/Services/Validation';
+import { withStyles, createStyles } from '@material-ui/styles';
+import { Paper, Tabs, Tab, Grow, Grid } from '@material-ui/core';
 
 const styles = () => createStyles({
     // container: container,
@@ -60,22 +53,15 @@ interface IState {
 
 class Index extends Component<IProps, IState> {
 
-    // const store = useSelector(state => state);
-    // const dispatch = useDispatch();
-
     constructor(props : IProps) {
         super(props);
         this.state = {
             query: 0,
             validation: initValidation
         };
-    }
-
-    componentWillMount() {
-        console.log(this.props.store);
     };
 
-    toggleValidation = () => {
+    toggleValidation() {
         try {
             this.setState((state) => ({
                 ...state,
@@ -89,16 +75,17 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleBooks = async (type : string, param : string) => {
+    async handleBooks(type : string, param? : string, index? : number) {
         try {
             let result : any[];
+            const value = param ? param : index;
             if (type === "ADD") {
                 const { addBook } = await import('../../components/Books/Services/ContainerServices');
-                result = addBook(param, this.state.validation.lfBooks);
+                result = addBook(value, this.state.validation.lfBooks);
             }
             if (type === "REMOVE") {
                 const { removeBook } = await import('../../components/Books/Services/ContainerServices');
-                result = removeBook(param, this.state.validation.lfBooks);
+                result = removeBook(value, this.state.validation.lfBooks);
             }
             this.setState((state) => ({
                 ...state,
@@ -112,7 +99,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleSave = async () => {
+    async handleSave() {
         try {
             const { fetchUpdateLF } = await import('../../components/Profile/Services/InfoServices');
             const result = await fetchUpdateLF(this.state.validation.lfBooks, this.props.store.user.username);
@@ -134,7 +121,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleChange = (event : any, value : number) => {
+    handleChange = (value : number) => (event : React.MouseEvent<HTMLButtonElement>) => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -146,7 +133,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    renderSearch = () => {
+    renderSearch() {
         try {
             const props = {
                 history: this.props.history,
@@ -165,7 +152,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    classnameSwitch = () => {
+    classnameSwitch() {
         if (this.props.isModal) return this.props.classes.modal;
         if (this.props.isDesktop) return this.props.classes.desktop;
         else return this.props.classes.paper;
@@ -189,13 +176,13 @@ class Index extends Component<IProps, IState> {
     
                         <Grow in={this.state.validation.open}>
                             <div>
-                                {/* <LFBook
+                                <LFBook
                                     lfBooks={this.state.validation.lfBooks}
                                     handleBooks={this.handleBooks}
                                     handleSave={this.handleSave}
                                     isModal={true}
-                                    toggle={this.toggleValidation}
-                                /> */}
+                                    handleClose={this.toggleValidation}
+                                />
                             </div>
                         </Grow>
     
@@ -208,8 +195,6 @@ class Index extends Component<IProps, IState> {
     };
 };
 
-const mapStateToProps = function(state : any) {
-    return { store: state };
-}
+const mapStateToProps = (state : any) => ({ store: state });
 
 export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Index));

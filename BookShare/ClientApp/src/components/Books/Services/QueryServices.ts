@@ -1,4 +1,10 @@
-﻿export const fetchByRegion = async (params) => {
+﻿interface IAPI {
+    list : any[];
+    loaded? : boolean;
+    page? : number;
+};
+
+export const fetchByRegion = async (params : any) : Promise<IAPI> => {
     const { state, city, study } = params;
 
     const result = await fetch(`api/book/state=${state}&city=${city}&study=${study}`);
@@ -7,7 +13,7 @@
     return { list: json, loaded: true };
 };
 
-export const fetchByBook = async (params, lfBooks) => {
+export const fetchByBook = async (params : any, lfBooks : string[]) : Promise<IAPI> => {
     const { title, state, city, page, sale, trade } = params;
     const options = {
         method: "POST",
@@ -25,9 +31,9 @@ export const fetchByBook = async (params, lfBooks) => {
     return { list: json.books, loaded: true, page: page };
 };
 
-export const fetchByList = async (params) => {
+export const fetchByList = async (params : any) : Promise<IAPI> => {
     const { list, state, city, page, sale, trade } = params;
-    const parsedList = list.split("&");
+    const parsedList : string[] = list.split("&");
     const options = {
         method: "POST",
         body: JSON.stringify({
@@ -44,16 +50,13 @@ export const fetchByList = async (params) => {
     return { list: json.books, loaded: true, page: page };
 };
 
-export const genFilter = async (checked, params) => {
+export const genFilter = async (checked : any[], params : any) : Promise<any> => {
     const { title, state, city } = params;
-    let link = `api/book/filter/Title=${title}&State=${state}&City=${city}`;
+    let link : string = `api/book/filter/Title=${title}&State=${state}&City=${city}`;
 
     Object.entries(checked).forEach(([key, value]) => {
-        if (!value.on) {
-            link = link.concat("&", `${key}=${null}`);
-        } else {
-            link = link.concat("&", `${key}=${value.value}`);
-        }
+        if (!value.on) link = link.concat("&", `${key}=${null}`);
+        else link = link.concat("&", `${key}=${value.value}`);
     });
 
     const result = await fetch(link);
@@ -61,19 +64,43 @@ export const genFilter = async (checked, params) => {
     return json;
 };
 
-export const initFilter = {
+interface IOptions {
+    on : boolean;
+    value : string;
+};
+
+interface IFilter {
+    Study : IOptions;
+    Condition : IOptions;
+    ISBN : IOptions;
+    CourseId : IOptions;
+};
+
+export const initFilter : IFilter = {
     Study: { on: false, value: "" },
     Condition: { on: false, value: "" },
     ISBN: { on: false, value: "" },
     CourseId: { on: false, value: "" }
 };
 
-export const initModal = {
+interface IModal {
+    query : boolean;
+    filter: boolean;
+};
+
+export const initModal : IModal = {
     query: false,
     filter: false
 };
 
-export const initNotify = {
+interface INotify {
+    error : boolean;
+    warning : boolean;
+    success : boolean;
+    message : string;  
+};
+
+export const initNotify : INotify = {
     error: false,
     warning: false,
     success: false,

@@ -1,14 +1,26 @@
-export const handleRequest = async (user, book) => {
+import { IUser, INotify } from '../../../pages/Auth/interfaces';
+
+interface IBook {
+    info : any;
+    loaded : boolean;
+    notification : INotify;
+};
+
+interface IRequest {
+    id : string;
+    dateRequested : string;
+};
+
+export const handleRequest = async (user : IUser, book : IBook) : Promise<IBook> => {
     const obj = {
         Username: user.username,
         Email: user.email,
         Book: book.info,
         LFBooks: user.lfBooks,
-        City: user.City,
-        State: user.State,
+        City: user.city,
+        State: user.state,
         Phone: ""
     };
-    console.log(obj);
     const res = await fetch("api/book/request", {
         method: "POST",
         body: JSON.stringify(obj),
@@ -40,11 +52,16 @@ export const handleRequest = async (user, book) => {
     };
 };
 
-export const isRequested = (requests, id) => {
+interface IRequestResult {
+    flag : boolean;
+    date? : string;
+    error : boolean;
+};
+
+export const isRequested = (requests : IRequest[], id : string) => {
     try {
-        let result = { flag: false, error: false };
-        requests.forEach(request => {
-            console.log(request.id === id);
+        let result : IRequestResult = { flag: false, error: false };
+        requests.forEach((request) => {
             if (request.id === id) {
                 return result = {
                     flag: true,
@@ -55,12 +72,11 @@ export const isRequested = (requests, id) => {
         });
         return result;
     } catch (error) {
-        console.log(error);
         return { flag: false, error: true };
     }
 };
 
-export const renderCondition = (condition) => {
+export const renderCondition = (condition : string) : string => {
     switch (condition) {
         case "Mint":
             return "sentiment_very_satisfied";
@@ -73,7 +89,7 @@ export const renderCondition = (condition) => {
     }
 };
 
-export const bookInit = {
+export const bookInit : IBook = {
     info: null,
     loaded: false,
     notification: {

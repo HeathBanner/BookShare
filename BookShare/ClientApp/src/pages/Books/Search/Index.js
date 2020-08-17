@@ -2,6 +2,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 
+// On next start up, check to see if Landing.tsx is needed in components/Books;
+
 import QueryContainer from '../Index';
 import RegionQuery from '../../../components/Books/RegionQuery';
 import BookCards from '../../../components/Books/Search/BookCards';
@@ -166,7 +168,7 @@ const Landing = ({ match, history }) => {
         }
     };
 
-    const handleApply = async (checked) => {
+    const handleApply = async () => {
         try {
             const { genFilter } = await import('../../../components/Books/Services/QueryServices');
             const newBooks = await genFilter(checked, params);

@@ -33,17 +33,17 @@ export interface IRequests {
 };
 
 export interface IUser {
-    Id : string,
-    Username : string,
-    Email : string,
-    Password : string,
-    Posted : any[],
-    LFBooks : string[],
-    City : string,
-    State : string,
-    Link? : string,
-    Recovery : IRecovery,
-    Requests : IRequests[]
+    id : string,
+    username : string,
+    email : string,
+    password : string,
+    posted : any[],
+    lfBooks : string[],
+    city : string,
+    state : string,
+    link? : string,
+    recovery : IRecovery,
+    requests : IRequests[]
 };
 
 export interface INotify {

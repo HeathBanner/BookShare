@@ -65,7 +65,7 @@ class Manual extends Component<IManualProps, IState> {
             book: initBook,
             notify: initNotify
         };
-    }
+    };
 
     componentDidUpdate() {
         try {
@@ -265,6 +265,4 @@ class Manual extends Component<IManualProps, IState> {
     };
 };
 
-const mapStateToProps = (state : any) => ({ store: state });
-
-export default connect(mapStateToProps)(withStyles(styles)(Manual));
+export default connect()(withStyles(styles)(Manual));

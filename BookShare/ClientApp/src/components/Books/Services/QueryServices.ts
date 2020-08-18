@@ -1,10 +1,10 @@
-﻿interface IAPI {
+﻿export interface IBooks {
     list : any[];
     loaded? : boolean;
     page? : number;
 };
 
-export const fetchByRegion = async (params : any) : Promise<IAPI> => {
+export const fetchByRegion = async (params : any) : Promise<IBooks> => {
     const { state, city, study } = params;
 
     const result = await fetch(`api/book/state=${state}&city=${city}&study=${study}`);
@@ -13,7 +13,7 @@ export const fetchByRegion = async (params : any) : Promise<IAPI> => {
     return { list: json, loaded: true };
 };
 
-export const fetchByBook = async (params : any, lfBooks : string[]) : Promise<IAPI> => {
+export const fetchByBook = async (params : any, lfBooks : string[]) : Promise<IBooks> => {
     const { title, state, city, page, sale, trade } = params;
     const options = {
         method: "POST",
@@ -31,7 +31,7 @@ export const fetchByBook = async (params : any, lfBooks : string[]) : Promise<IA
     return { list: json.books, loaded: true, page: page };
 };
 
-export const fetchByList = async (params : any) : Promise<IAPI> => {
+export const fetchByList = async (params : any) : Promise<IBooks> => {
     const { list, state, city, page, sale, trade } = params;
     const parsedList : string[] = list.split("&");
     const options = {
@@ -50,7 +50,7 @@ export const fetchByList = async (params : any) : Promise<IAPI> => {
     return { list: json.books, loaded: true, page: page };
 };
 
-export const genFilter = async (checked : any[], params : any) : Promise<any> => {
+export const genFilter = async (checked : IFilter, params : any) : Promise<any> => {
     const { title, state, city } = params;
     let link : string = `api/book/filter/Title=${title}&State=${state}&City=${city}`;
 
@@ -69,7 +69,7 @@ interface IOptions {
     value : string;
 };
 
-interface IFilter {
+export interface IFilter {
     Study : IOptions;
     Condition : IOptions;
     ISBN : IOptions;
@@ -83,7 +83,7 @@ export const initFilter : IFilter = {
     CourseId: { on: false, value: "" }
 };
 
-interface IModal {
+export interface IModal {
     query : boolean;
     filter: boolean;
 };

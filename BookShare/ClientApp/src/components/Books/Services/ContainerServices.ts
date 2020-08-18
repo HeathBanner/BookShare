@@ -1,10 +1,10 @@
 // VALIDATION INITS AND FUNCTIONS
-interface IInitValidation {
-    open : Boolean;
+export interface IValidation {
+    open : boolean;
     lfBooks : string[];
 };
 
-export const initValidation : IInitValidation = {
+export const initValidation : IValidation = {
     open: false,
     lfBooks: []
 };

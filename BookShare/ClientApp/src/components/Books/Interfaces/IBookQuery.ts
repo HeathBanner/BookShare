@@ -30,8 +30,8 @@ export interface IProps extends RouteComponentProps {
     store : any;
     dispatch : any;
     validation : IValidation;
-    handleBooks : (type : string, param? : string, index? : number) => void;
-    handleSave : () => void;
+    handleBooks : (type : string, param : string, index : number) => Promise<void>;
+    handleSave : () => Promise<void>;
     classes : any;
 };
 

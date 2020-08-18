@@ -343,8 +343,6 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
     };
 };
 
-const mapStateToProps = function(state : any) {
-    return { store: state};
-};
+const mapStateToProps = (state : any) => ({ store: state });
 
 export default connect(mapStateToProps)(withStyles(styles)(BookQuery));

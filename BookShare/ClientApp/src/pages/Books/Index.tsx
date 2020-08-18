@@ -8,7 +8,7 @@ import BookQuery from '../../components/Books/BookQuery';
 import Multiple from '../../components/Books/Multiple';
 import Manual from '../../components/Books/Manual';
 import LFBook from '../../components/Post/LFBook';
-import { initValidation } from '../../components/Books/Services/ContainerServices';
+import { initValidation, IValidation } from '../../components/Books/Services/ContainerServices';
 
 import { withStyles, createStyles } from '@material-ui/styles';
 import { Paper, Tabs, Tab, Grow, Grid } from '@material-ui/core';
@@ -41,11 +41,6 @@ interface IProps extends RouteComponentProps {
     store : any;
 };
 
-interface IValidation {
-    open : boolean;
-    lfBooks : any[];
-};
-
 interface IState {
     query : number;
     validation: IValidation;
@@ -61,7 +56,7 @@ class Index extends Component<IProps, IState> {
         };
     };
 
-    toggleValidation() {
+    toggleValidation() : void {
         try {
             this.setState((state) => ({
                 ...state,
@@ -75,17 +70,16 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async handleBooks(type : string, param? : string, index? : number) {
+    async handleBooks(type : string, param : string, index : number) : Promise<void> {
         try {
             let result : any[];
-            const value = param ? param : index;
             if (type === "ADD") {
                 const { addBook } = await import('../../components/Books/Services/ContainerServices');
-                result = addBook(value, this.state.validation.lfBooks);
+                result = addBook(param, this.state.validation.lfBooks);
             }
             if (type === "REMOVE") {
                 const { removeBook } = await import('../../components/Books/Services/ContainerServices');
-                result = removeBook(value, this.state.validation.lfBooks);
+                result = removeBook(index, this.state.validation.lfBooks);
             }
             this.setState((state) => ({
                 ...state,
@@ -99,7 +93,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async handleSave() {
+    async handleSave() : Promise<void> {
         try {
             const { fetchUpdateLF } = await import('../../components/Profile/Services/InfoServices');
             const result = await fetchUpdateLF(this.state.validation.lfBooks, this.props.store.user.username);
@@ -121,14 +115,13 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleChange = (value : number) => (event : React.MouseEvent<HTMLButtonElement>) => {
+    handleChange = (value : number) => (event : React.MouseEvent<HTMLButtonElement>) : void => {
         try {
             this.setState((state) => ({
                 ...state,
                 query: value
             }));
-        }
-        catch (error) {
+        } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
@@ -145,8 +138,8 @@ class Index extends Component<IProps, IState> {
                 changeTab: this.handleChange
             };
             if (this.state.query === 0) return <BookQuery { ...props } />;
-            if (this.state.query === 1) return <Multiple { ...props } />;
-            return <Manual history={this.props.history} store={this.props.store} />;
+            else if (this.state.query === 1) return <Multiple { ...props } />;
+            else return <Manual history={this.props.history} store={this.props.store} />;
         } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }

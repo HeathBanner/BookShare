@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import * as interfaces from './Interfaces/IBookQuery';
 import { states } from '../Resources/index';
@@ -151,7 +152,7 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    handleSearch() {
+    handleSearch() : void {
         try {
             const { Title, State, City, Sale, Trade } = this.state.book;
             const filter = `${Sale ? "Y" : "N"}/${Trade ? "Y" : "N"}`;
@@ -161,7 +162,7 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    preSubmit() {
+    preSubmit() : void {
         const { Title, State, City } = this.state.book;
         switch (true) {
             case Title.length <= 0:
@@ -175,7 +176,7 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    toggleFilter(type : string) {
+    toggleFilter(type : string) : void {
         try {
             let newValue : boolean;
             switch(type) {
@@ -345,4 +346,4 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
 
 const mapStateToProps = (state : any) => ({ store: state });
 
-export default connect(mapStateToProps)(withStyles(styles)(BookQuery));
+export default connect(mapStateToProps)(withStyles(styles)(withRouter(BookQuery)));

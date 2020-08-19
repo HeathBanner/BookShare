@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { IManualProps, IState, initBook, initNotify } from './Interfaces/IBookQuery';
 import { states } from '../Resources/index';
@@ -265,4 +266,4 @@ class Manual extends Component<IManualProps, IState> {
     };
 };
 
-export default connect()(withStyles(styles)(Manual));
+export default connect()(withStyles(styles)(withRouter(Manual)));

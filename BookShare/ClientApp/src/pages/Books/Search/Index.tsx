@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { History, LocationState } from 'history';
 
 // On next start up, check to see if Landing.tsx is needed in components/Books;
@@ -290,8 +291,9 @@ class Index extends Component<IProps, IState> {
     };
 
     renderSearch() {
-        if (this.isDesktop) return <QueryContainer isDesktop={true} />
-        else return (
+        // if (this.isDesktop) return <QueryContainer />
+
+        return (
             <Button
                 className={this.props.classes.button}
                 onClick={this.handleOpen("query")}
@@ -301,7 +303,7 @@ class Index extends Component<IProps, IState> {
         );
     };
 
-    renderTiles() : JSX.Element | JSX.Element[] {
+    renderTiles() {
         if (this.state.books.loaded && this.state.books.list.length === 0) {
             return (
                 <Typography
@@ -334,8 +336,8 @@ class Index extends Component<IProps, IState> {
                 action={false}
             />
         );
-        if (!this.state.books.loaded) return <CircularProgress className={this.props.classes.circularProgress} />;
-        return (
+        else if (!this.state.books.loaded) return <CircularProgress className={this.props.classes.circularProgress} />;
+        else return (
             <Grid container>
                 <Grid className={this.props.classes.container} item xs={12}>
     
@@ -382,7 +384,7 @@ class Index extends Component<IProps, IState> {
                     <div className={this.props.classes.pageBox}>
                         <IconButton
                             className={this.props.classes.arrows}
-                            disabled={parseInt(this.state.books.page) === 1}
+                            disabled={this.state.books.page === 1}
                             onClick={this.handleBack}
                         >
                             <Icon>arrow_back_ios</Icon>
@@ -416,4 +418,4 @@ class Index extends Component<IProps, IState> {
 
 const mapStateToProps = (state : any) => ({ store: state });
 
-export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(withWidth()(Index)));
+export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(withRouter(Index)));

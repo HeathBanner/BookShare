@@ -1,4 +1,6 @@
-﻿export const fetchPost = async (book, user) => {
+﻿import { IUser } from '../../../store/interfaces';
+
+export const fetchPost = async (book, user) => {
     const newBook = ExtractValues(book);
     console.log(newBook);
     const options = {
@@ -23,9 +25,13 @@
     };
 };
 
-export const fetchEdit = async (book, user, id) => {
+interface IEditUser {
+    notify : INotify;
+    user: IUser | null;
+};
+
+export const fetchEdit = async (book : IBook, user : IUser, id : string) : Promise<IEditUser> => {
     const newBook = ExtractValues(book);
-    console.log(newBook);
     const options = {
         method: 'POST',
         body: JSON.stringify({ ...newBook, Owner: user.username, Id: id }),
@@ -37,25 +43,39 @@ export const fetchEdit = async (book, user, id) => {
 
     if (json.statusCode !== 200) {
         return {
-            notify: { error: true, message: "Something went wrong :(" },
+            notify: { ...initNotify, error: true, message: "Something went wrong :(" },
             user: null
         };
     }
 
     return {
-        notify: { success: true, message: "Book has been posted!" },
+        notify: { ...initNotify, success: true, message: "Book has been posted!" },
         user: json.user
     };
 };
 
-export const fetchById = async (id) => {
+export interface IFetchId {
+    notify : INotify;
+    book : IBook;
+};
+
+export const fetchById = async (id : string) : Promise<IFetchId> => {
     const result = await fetch(`api/book/getById/id=${id}`);
     const json = await result.json();
 
-    if (json.statusCode === 404) return { error: true, message: "Book could not be found" };
+    if (json.statusCode === 404) {
+        return {
+            notify: {
+                ...initNotify,
+                error: true,
+                message: "Book could not be found"
+            },
+            book: initBook
+        };
+    };
 
     const reObj = assignValue(json.book);
-    return { book: reObj };
+    return { book: reObj, notify: initNotify };
 };
 
 const assignValue = (book) => {
@@ -80,10 +100,12 @@ const ExtractValues = (book) => {
     return newObj;
 };
 
-export const preSubmit = (book, notify) => {
-    if (parseFloat(book.price.value) === NaN) return {
-        notify: { ...notify, warning: true, message: "Study field is required" },
-        book: { ...book, study: { ...book.study, error: true } }
+export const preSubmit = (book : IBook, notify : INotify) : IFetchId => {
+    if (parseFloat(book.price.value) === NaN) {
+        return {
+            notify: { ...notify, warning: true, message: "Study field is required" },
+            book: { ...book, study: { ...book.study, error: true } }
+        };
     };
 
     switch (true) {
@@ -138,9 +160,29 @@ export const handleBook = (type, param, list) => {
     return newList;
 };
 
-const initValues = { error: false, value: "" };
+interface IValues {
+    error : boolean;
+    value : string;
+};
 
-export const initBook = {
+const initValues : IValues = { error: false, value: "" };
+
+export interface IBook {
+    image: any,
+    title: IValues,
+    description: IValues,
+    condition: IValues,
+    price: IValues,
+    lfBooks: string[],
+    eMedia: IValues,
+    state: IValues,
+    city: IValues,
+    study: IValues,
+    isbn: IValues,
+    courseId: IValues,
+};
+
+export const initBook : IBook = {
     image: [],
     title: initValues,
     description: initValues,
@@ -155,7 +197,14 @@ export const initBook = {
     courseId: initValues,
 };
 
-export const initNotify = {
+export interface INotify {
+    error : boolean;
+    success : boolean;
+    warning : boolean;
+    message: string;
+};
+
+export const initNotify : INotify = {
     error: false,
     success: false,
     warning: false,

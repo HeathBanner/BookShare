@@ -1,6 +1,6 @@
 import { IUser, INotify } from '../../../pages/Auth/interfaces';
 
-interface IBook {
+export interface IBook {
     info : any;
     loaded : boolean;
     notification : INotify;

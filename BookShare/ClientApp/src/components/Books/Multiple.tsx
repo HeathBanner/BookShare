@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { IProps, initBook, initNotify } from './Interfaces/IBookQuery';
 import { states } from '../Resources/index';
@@ -81,6 +82,7 @@ const styles = () => createStyles({
         color: '#21ce99 !important',
     }
 });
+
 
 interface ILFBooks {
     value : string;
@@ -398,4 +400,4 @@ class Multiple extends Component<IProps, IState> {
 
 const mapStateToProps = (state : any) => ({ store: state });
 
-export default connect(mapStateToProps)(withStyles(styles)(Multiple));
+export default connect(mapStateToProps)(withStyles(styles)(withRouter(Multiple)));

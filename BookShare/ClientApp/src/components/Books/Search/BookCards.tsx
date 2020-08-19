@@ -1,5 +1,6 @@
 ﻿import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { RouteComponentProps } from 'react-router-dom';
 import { History, LocationState } from 'history';
@@ -177,4 +178,4 @@ class BookCards extends PureComponent<IProps> {
     };
 };
 
-export default connect()(withStyles(styles, { withTheme: true })(BookCards));
+export default connect()(withStyles(styles, { withTheme: true })(withRouter(BookCards)));

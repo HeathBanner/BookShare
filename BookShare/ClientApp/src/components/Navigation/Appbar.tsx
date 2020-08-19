@@ -1,12 +1,14 @@
-﻿import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+﻿import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
+import { History, LocationState } from 'history';
 import { withRouter } from 'react-router-dom';
 
 import Drawer from './Drawer';
-import Container from '../../pages/Auth/index.tsx';
+import Container from '../../pages/Auth/index';
 import User from './User';
 
-import { makeStyles } from '@material-ui/styles';
+import { withStyles, createStyles } from '@material-ui/styles';
 import {
     AppBar,
     Toolbar,
@@ -17,7 +19,7 @@ import {
     CircularProgress
 } from '@material-ui/core';
 
-const useStyles = makeStyles(() => ({
+const styles = () => createStyles({
     toolbar: {
         backgroundColor: '#21ce99'
     },
@@ -41,61 +43,82 @@ const useStyles = makeStyles(() => ({
         right: 16,
         padding: 12
     }
-}));
+});
 
-const NavBar = ({ window, history }) => {
+interface IProps extends RouteComponentProps {
+    window : any;
+    history : History<LocationState>;
+    classes : any;
+    store : any;
+};
 
-    const classes = useStyles();
-    const store = useSelector(state => state);
+interface IState {
+    auth : boolean;
+};
 
-    const [auth, setAuth] = useState(false);
+const trigger = useScrollTrigger();
 
-    const trigger = useScrollTrigger({ target: window ? window() : undefined });
+class Appbar extends Component<IProps, IState> {
 
-    const handleOpen = () => setAuth(true);
-    const handleClose = () => setAuth(false);
+    constructor(props : IProps) {
+        super(props);
+        this.state = {
+            auth: false
+        };
+    };
 
-    const renderAuth = () => {
-        if (store.loggedIn) return <User user={store.user} />;
-        if (store.checking) return <CircularProgress className={classes.progress} color="secondary" />;
 
-        return (
+    handleOpen = () => this.setState({ auth: true });
+    handleClose = () => this.setState({ auth: false });
+
+    renderAuth() {
+        if (this.props.store.loggedIn) {
+            return <User user={this.props.store.user} />;
+        }
+        else if (this.props.store.checking) {
+            return <CircularProgress className={this.props.classes.progress} color="secondary" />;
+        }
+        else return (
             <Button
-                className={classes.button}
-                onClick={handleOpen}
+                className={this.props.classes.button}
+                onClick={this.handleOpen}
             >
                 Login
             </Button>
         );
     };
 
-    return (
-        <>
-            <div className={classes.placeHolder}></div>
-            <Slide appear={false} direction="down" in={!trigger}>
-                <AppBar>
-                    <Toolbar className={classes.toolbar}>
-                        <Drawer />
-
-                        <Typography
-                            className={classes.navHeader}
-                            variant="h5"
-                        >
-                            Sothis
-                        </Typography>
-
-                        {renderAuth()}
-                    </Toolbar>
-
-                    <Container
-                        auth={auth}
-                        handleClose={handleClose}
-                        history={history}
-                    />
-                </AppBar>
-            </Slide>
-        </>
-    );
+    render() {
+        return (
+            <>
+                <div className={this.props.classes.placeHolder}></div>
+                <Slide appear={false} direction="down" in={!trigger}>
+                    <AppBar>
+                        <Toolbar className={this.props.classes.toolbar}>
+                            <Drawer />
+    
+                            <Typography
+                                className={this.props.classes.navHeader}
+                                variant="h5"
+                            >
+                                Sothis
+                            </Typography>
+    
+                            {this.renderAuth()}
+                        </Toolbar>
+    
+                        <Container
+                            auth={this.state.auth}
+                            handleClose={this.handleClose}
+                            history={history}
+                        />
+                    </AppBar>
+                </Slide>
+            </>
+        );
+    };
 };
 
-export default withRouter(NavBar);
+const mapStateToProps = (state : any) => ({ store: state });
+
+export default connect()(withStyles(styles)(withRouter(NavBar)));

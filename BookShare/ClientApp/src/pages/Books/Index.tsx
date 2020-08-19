@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { RouteComponentProps } from 'react-router-dom';
 import { History, LocationState } from 'history';
@@ -33,8 +34,8 @@ const styles = () => createStyles({
 });
 
 interface IProps extends RouteComponentProps {
-    isModal : boolean;
-    isDesktop : boolean;
+    isModal? : boolean;
+    isDesktop? : boolean;
     history : History<LocationState>;
     classes : any;
     dispatch : any;
@@ -126,11 +127,21 @@ class Index extends Component<IProps, IState> {
         }
     };
 
+    handleTab(event : any, value : any) : void {
+        try {
+            this.setState((state) => ({
+                ...state,
+                query: value
+            }));
+        } catch (error) {
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    };
+
     renderSearch() {
         try {
             const props = {
                 history: this.props.history,
-                store: this.props.store,
                 validation: this.state.validation,
                 toggleValidation: this.toggleValidation,
                 handleBooks: this.handleBooks,
@@ -139,7 +150,7 @@ class Index extends Component<IProps, IState> {
             };
             if (this.state.query === 0) return <BookQuery { ...props } />;
             else if (this.state.query === 1) return <Multiple { ...props } />;
-            else return <Manual history={this.props.history} store={this.props.store} />;
+            else return <Manual store={this.props.store} />;
         } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
@@ -159,7 +170,7 @@ class Index extends Component<IProps, IState> {
                     <Paper className={this.classnameSwitch()}>
                         <Tabs
                             value={this.state.query}
-                            onChange={this.handleChange}
+                            onChange={this.handleTab}
                             indicatorColor="primary"
                         >
                             <Tab label="Single" />
@@ -190,4 +201,4 @@ class Index extends Component<IProps, IState> {
 
 const mapStateToProps = (state : any) => ({ store: state });
 
-export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Index));
+export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(withRouter(Index)));

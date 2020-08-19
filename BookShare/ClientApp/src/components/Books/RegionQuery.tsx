@@ -1,20 +1,16 @@
-﻿import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+﻿import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
+import { History, LocationState } from 'history';
+import { withRouter } from 'react-router-dom';
 
 import { states } from '../Resources/index';
 
-import { makeStyles } from '@material-ui/styles';
-import {
-    TextField,
-    Button,
-    Paper,
-    Select,
-    MenuItem,
-    Input
-} from '@material-ui/core';
+import { withStyles, createStyles } from '@material-ui/styles';
+import { TextField, Button, Paper } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
-const useStyles = makeStyles(() => ({
+const styles = () => createStyles({
     container: {
         display: 'flex',
         alignContent: 'center',
@@ -72,95 +68,128 @@ const useStyles = makeStyles(() => ({
             color: 'white'
         }
     }
-}));
+});
 
-const fields = ["Mathmatics", "History", "Medical", "Computer Science", "Psycology"];
 const initInfo = {
     city: "",
     state: "",
     study: ""
 };
 
-export default ({ history }) => {
+interface IProps extends RouteComponentProps {
+    history : History<LocationState>;
+    classes : any;
+    dispatch : any;
+    isModal : boolean;
+};
 
-    const classes = useStyles();
-    const dispatch = useDispatch();
+interface IInfo {
+    city : string;
+    state : string;
+    study : string;
+};
 
-    const [info, setInfo] = useState({ ...initInfo });
+interface IState {
+    info : IInfo;
+};
 
-    const handleInput = (type) => event => {
+class RegionQuery extends Component<IProps, IState> {
+
+    constructor(props : IProps) {
+        super(props);
+        this.state = {
+            info : initInfo
+        };
+    };
+    
+    handleInput = (type : string) => (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) : void => {
         try {
-            setInfo({ ...info, [type]: event.target.value });
+            const { value } = event.target;
+            this.setState((state) => ({
+                info: {
+                    ...state.info,
+                    [type]: value
+                }
+            }));
         } catch (error) {
-            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    const handleAutocomplete = (value, type) => {
+    handleAutocomplete(value : any, type : string) : void {
         try {
-            setInfo({ ...info, [type]: value.title });
+            this.setState((state) => ({
+                info: {
+                    ...state.info,
+                    [type]: value.title
+                }
+            }));
         } catch (error) {
-            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    const handleSearch = () => {
+    handleSearch() {
         try {
-            const { city, state, study } = info;
-            history.push(`/books/${city}/${state}/${study}`);
+            const { city, state, study } = this.state.info;
+            this.props.history.push(`/books/${city}/${state}/${study}`);
         } catch (error) {
-            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    const preSubmit = () => {
+    preSubmit() {
         try {
             switch (true) {
-                case info.city.length <= 0:
-                    return dispatch({ type: "WARNING_NOTIFY", payload: "City field is blank" });
-                case info.state.length <= 2:
-                    return dispatch({ type: "WARNING_NOTIFY", payload: "State name is too short" });
+                case this.state.info.city.length <= 0:
+                    return this.props.dispatch({ type: "WARNING_NOTIFY", payload: "City field is blank" });
+                case this.state.info.state.length <= 2:
+                    return this.props.dispatch({ type: "WARNING_NOTIFY", payload: "State name is too short" });
                 default:
-                    return handleSearch();
+                    return this.handleSearch();
             }
         } catch (error) {
-            dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    return (
-        <Paper className={classes.paper}>
-            <TextField
-                className={classes.input}
-                value={info.city}
-                onChange={handleInput("city")}
-                label="City"
-                color="secondary"
-            />
-
-            <Autocomplete
-                options={states}
-                getOptionLabel={option => option.title}
-                className={classes.input}
-                value={{ title: info.state }}
-                onChange={(e, newValue) => handleAutocomplete(newValue, "state")}
-                renderInput={params => <TextField {...params} label="State" />}
-            />
-
-            <TextField
-                label="Study"
-                value={info.study}
-                onChange={handleInput("study")}
-                className={classes.input}
-            />
-
-            <Button
-                className={classes.search}
-                onClick={preSubmit}
-            >
-                Search
-            </Button>
-
-        </Paper>
-    );
+    render() {
+        return (
+            <Paper className={this.props.classes.paper}>
+                <TextField
+                    className={this.props.classes.input}
+                    value={this.state.info.city}
+                    onChange={this.handleInput("city")}
+                    label="City"
+                    color="secondary"
+                />
+    
+                <Autocomplete
+                    options={states}
+                    getOptionLabel={option => option.title}
+                    className={this.props.classes.input}
+                    value={{ title: this.state.info.state }}
+                    onChange={(e, newValue) => this.handleAutocomplete(newValue, "state")}
+                    renderInput={params => <TextField {...params} label="State" />}
+                />
+    
+                <TextField
+                    label="Study"
+                    value={this.state.info.study}
+                    onChange={this.handleInput("study")}
+                    className={this.props.classes.input}
+                />
+    
+                <Button
+                    className={this.props.classes.search}
+                    onClick={this.preSubmit}
+                >
+                    Search
+                </Button>
+    
+            </Paper>
+        );
+    };
 };
+
+export default connect()(withStyles(styles)(withRouter(RegionQuery)));

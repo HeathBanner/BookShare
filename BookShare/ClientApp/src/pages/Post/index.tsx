@@ -227,10 +227,10 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async bookInput(type : string, param : any) : Promise<void> {
+    async bookInput(type : string, param : string) : Promise<void> {
         try {
             const { handleBook } = await import('../../components/Post/Services/PostServices');
-            const result = handleBook(type, param, this.state.book.lfBooks);
+            const result = handleBook(type, param, 0, this.state.book.lfBooks);
             this.setState((state) => ({
                 book: {
                     ...state.book,

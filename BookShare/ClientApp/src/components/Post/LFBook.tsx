@@ -122,7 +122,7 @@ const initState = {
 
 interface IProps {
     lfBooks : string[];
-    handleBooks : (type : string, param? : string, index? : number) => void;
+    handleBooks : (type : string, param? : string, index? : number, list? : string[]) => void;
     handleSave : (type? : string) => void;
     isModal : boolean;
     handleClose : () => void;
@@ -156,7 +156,7 @@ class LFBook extends Component<IProps, IState> {
 
     preAdd() {
         try {
-            this.props.handleBooks("ADD", this.state.value);
+            this.props.handleBooks("ADD", this.state.value, 0, []);
             this.setState((state) => (initState));
         } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
@@ -217,7 +217,7 @@ class LFBook extends Component<IProps, IState> {
                                     <ListItem key={`${item}&${index}`}>
                                         <ListItemSecondaryAction>
                                             <IconButton
-                                                onClick={() => handleBooks("REMOVE", undefined, index)}
+                                                onClick={() => handleBooks("REMOVE", "", index, [])}
                                             >
                                                 <Icon>clear</Icon>
                                             </IconButton>

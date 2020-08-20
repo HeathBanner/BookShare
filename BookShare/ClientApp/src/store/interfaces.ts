@@ -2,7 +2,7 @@ interface IImage {
     url : any[];
 };
 
-interface IPosted {
+export interface IPosted {
     id : string;
     city : string;
     state : string;
@@ -14,7 +14,7 @@ interface IPosted {
     eMedia : string;
     isbn : string;
     courseId : string;
-    lfbooks : string[];
+    lfBooks : string[];
     price : number;
     owner : string;
     email : string;

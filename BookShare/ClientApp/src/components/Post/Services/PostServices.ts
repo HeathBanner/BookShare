@@ -1,8 +1,27 @@
-﻿import { IUser } from '../../../store/interfaces';
+﻿import { IUser, IPosted } from '../../../store/interfaces';
 
-export const fetchPost = async (book, user) => {
-    const newBook = ExtractValues(book);
-    console.log(newBook);
+interface IEditUser {
+    notify : INotify;
+    user : IUser | null;
+};
+
+export interface IBookRaw {
+    image : any,
+    title : string,
+    description : string,
+    condition : string,
+    price : number,
+    lfBooks : string[],
+    eMedia : string,
+    state : string,
+    city : string,
+    study : string,
+    isbn : string,
+    courseId : string,
+};
+
+export const fetchPost = async (book : IBook, user : IUser) : Promise<IEditUser> => {
+    const newBook = extractValues(book);
     const options = {
         method: 'POST',
         body: JSON.stringify({ ...newBook, Owner: user.username, Email: user.email }),
@@ -14,24 +33,19 @@ export const fetchPost = async (book, user) => {
 
     if (json.statusCode !== 201) {
         return {
-            notify: { error: true, message: "Something went wrong :(" },
+            notify: { ...initNotify, error: true, message: "Something went wrong :(" },
             user: user
         };
     }
 
     return {
-        notify: { success: true, message: `Book has been posted. If you wish to edit the book, you may do so in "My Books"` },
+        notify: { ...initNotify, success: true, message: `Book has been posted. If you wish to edit the book, you may do so in "My Books"` },
         user: json.user
     };
 };
 
-interface IEditUser {
-    notify : INotify;
-    user: IUser | null;
-};
-
 export const fetchEdit = async (book : IBook, user : IUser, id : string) : Promise<IEditUser> => {
-    const newBook = ExtractValues(book);
+    const newBook = extractValues(book);
     const options = {
         method: 'POST',
         body: JSON.stringify({ ...newBook, Owner: user.username, Id: id }),
@@ -78,26 +92,106 @@ export const fetchById = async (id : string) : Promise<IFetchId> => {
     return { book: reObj, notify: initNotify };
 };
 
-const assignValue = (book) => {
-    let newObj = initBook;
+interface IValueSwitch {
+    [key : string] : IValues;
+};
+
+const assignValue = (book : IPosted) : IBook => {
+    let newObj : IBook = initBook;
     Object.entries(book).forEach(([key, value]) => {
-        if (key === "lfBooks") newObj[key] = value;
-        else newObj[key] = { error: false, value: value };
+        if (key === "lfBooks") newObj.lfBooks = value;
+        const result : IValueSwitch | null = valueSwitch(key, value);
+        if (result) newObj = { ...newObj, ...result };
     });
 
     return newObj;
 };
 
-const ExtractValues = (book) => {
-    let newObj = {};
+const valueSwitch = (key : string, value : string) : IValueSwitch | null => {
+    switch(key) {
+        case "title":
+            return { title: { error: false, value: value }};
+        case "description":
+            return { descrption: { error: false, value: value }};
+        case "condition":
+            return { condition: { error: false, value: value }};
+        case "price":
+            return { price: { error: false, value: value }};
+        case "eMedia":
+            return {eMedia: { error: false, value: value }};
+        case "state":
+            return {state: { error: false, value: value }};
+        case "city":
+            return {city: { error: false, value: value }};
+        case "study":
+            return { study: { error: false, value: value }};
+        case "isbn":
+            return { isbn: { error: false, value: value }};
+        case "courseId":
+            return { courseId: { error: false, value: value }};
+        default:
+            return null;
+    }
+};
+
+interface IExtractSwitch {
+    [key : string] : string;
+};
+
+
+export const initBookRaw : IBookRaw = {
+    image: [],
+    title: "",
+    description: "",
+    condition: "",
+    price: 0,
+    lfBooks: [],
+    eMedia: "",
+    state: "",
+    city: "",
+    study: "",
+    isbn: "",
+    courseId: "",
+};
+
+const extractValues = (book : IBook) : IBookRaw => {
+    let newObj : IBookRaw = initBookRaw;
     Object.entries(book).forEach(([key, value]) => {
-        if (key === "image") newObj[key] = value;
+        if (key === "image") newObj.image = value;
         else if (key === "lfBooks") newObj[key] = value;
-        else if (key === "price" && isNaN(parseFloat(value.value))) newObj[key] = parseFloat(0);
+        else if (key === "price" && isNaN(parseFloat(value.value))) newObj.price = 0;
         else if (key === "price") newObj[key] = parseFloat(value.value);
-        else newObj[key] = value.value;
+        else {
+            const result : IExtractSwitch | null = extractSwitch(key, value);
+            newObj = { ...newObj, ...result };
+        }
     });
     return newObj;
+};
+
+const extractSwitch = (key : string, value : string) : IExtractSwitch | null => {
+    switch(key) {
+        case "title":
+            return { title: value };
+        case "description":
+            return { description: value };
+        case "condition":
+            return { condition: value };
+        case "eMedia":
+            return { eMedia: value };
+        case "state":
+            return { state: value };
+        case "city":
+            return { city: value };
+        case "study":
+            return { study: value };
+        case "isbn":
+            return { isbn: value };
+        case "courseId":
+            return { courseId: value };
+        default:
+            return null;
+    }
 };
 
 export const preSubmit = (book : IBook, notify : INotify) : IFetchId => {
@@ -109,7 +203,7 @@ export const preSubmit = (book : IBook, notify : INotify) : IFetchId => {
     };
 
     switch (true) {
-        case book.image.length < 0 || book.image.length > 5:
+        case book.image.value.length < 0 || book.image.value.length > 5:
             return {
                 notify: { ...notify, warning: true, message: "Image of book is required" },
                 book: { ...book, image: { ...book.image, error: true } }
@@ -152,10 +246,12 @@ export const preSubmit = (book : IBook, notify : INotify) : IFetchId => {
     };
 };
 
-export const handleBook = (type, param, list) => {
+export const handleBook = (type : string, param : string, index : number, list : string[]) : string[] => {
     let newList = list;
+    let newParam : string;
+    if (typeof param !== undefined) newParam = param;
     if (type === "ADD") newList.push(param);
-    if (type === "REMOVE") newList.splice(param, 1);
+    if (type === "REMOVE") newList.splice(index, 1);
 
     return newList;
 };
@@ -165,10 +261,15 @@ interface IValues {
     value : string;
 };
 
+interface IImage {
+    error: boolean;
+    value: any[];
+};
+
 const initValues : IValues = { error: false, value: "" };
 
 export interface IBook {
-    image: any,
+    image: IImage,
     title: IValues,
     description: IValues,
     condition: IValues,
@@ -183,7 +284,7 @@ export interface IBook {
 };
 
 export const initBook : IBook = {
-    image: [],
+    image: { value: [], error: false },
     title: initValues,
     description: initValues,
     condition: initValues,

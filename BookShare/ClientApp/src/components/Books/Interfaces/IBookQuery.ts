@@ -26,12 +26,12 @@ export interface IValidation {
 export interface IProps extends RouteComponentProps {
     history : History<LocationState>;
     toggleValidation : () => void;
-    changeTab : (value : number) => (event : React.MouseEvent<HTMLButtonElement>) => void;
+    changeTab : (value : number) => void;
     store : any;
     dispatch : any;
     validation : IValidation;
     handleBooks : (type : string, param : string, index : number) => Promise<void>;
-    handleSave : () => Promise<void>;
+    handleSave : (type: string) => Promise<void>;
     classes : any;
 };
 

@@ -83,7 +83,7 @@ export default ({ location, handleChange, handleAutocomplete, handleSave }) => {
                 className={classes.inputs}
                 classes={{ inputRoot: classes.underline }}
                 value={{ title: state }}
-                onChange={(e, newValue) => handleAutocomplete(newValue, "state")}
+                onChange={(e, newValue) => handleAutocomplete(newValue.title, "state")}
                 renderInput={params => <TextField {...params} label="State" InputLabelProps={{ classes: { focused: classes.label }}} />}
             />
 

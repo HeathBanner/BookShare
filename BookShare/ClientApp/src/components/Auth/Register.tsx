@@ -33,11 +33,11 @@ const styles = () => createStyles({
 });
 
 interface IProps {
-    register : IInfo;
-    handleInput : (mode : string, type : string) => (event : React.ChangeEvent<HTMLInputElement>) => void;
-    toggleVisibility : () => void;
-    handleSubmit : (mode : string) => void;
-    classes : any;
+    register: IInfo;
+    handleInput: (mode : string, type : string) => (event : React.ChangeEvent<HTMLInputElement>) => void;
+    toggleVisibility: () => void;
+    handleSubmit: (mode : string) => void;
+    classes: any;
 };
 
 class Register extends PureComponent<IProps> {

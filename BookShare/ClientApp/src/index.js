@@ -10,6 +10,8 @@ import { store } from './store/global';
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
 
+console.log(baseUrl);
+
 ReactDOM.render(
     <BrowserRouter basename={baseUrl}>
         <Provider store={store}>

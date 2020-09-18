@@ -62,24 +62,24 @@ const styles = (theme : Theme) => createStyles({
 });
 
 interface IProps extends RouteComponentProps {
-    match : any;
-    history : History<LocationState>;
-    classes : any;
-    dispatch : any;
-    store : any;
+    match: any;
+    history: History<LocationState>;
+    classes: any;
+    dispatch: any;
+    store: any;
     width: WithWidthProps;
 };
 
 interface IViewer {
-    open : boolean;
-    index : number;
+    open: boolean;
+    index: number;
 };
 
 interface IState {
-    modal : IModal;
-    books : IBooks;
-    checked : IFilter;
-    viewer : IViewer;
+    modal: IModal;
+    books: IBooks;
+    checked: IFilter;
+    viewer: IViewer;
 };
 
 class Index extends Component<IProps, IState> {
@@ -87,8 +87,8 @@ class Index extends Component<IProps, IState> {
     constructor(props : IProps) {
         super(props);
         this.state = {
-            modal : initModal,
-            books : { list: [], loaded: false, page: 1 },
+            modal: initModal,
+            books: { list: [], loaded: false, page: 1 },
             checked: initFilter,
             viewer: { open: false, index: 0 }
         };
@@ -96,13 +96,13 @@ class Index extends Component<IProps, IState> {
     
     isDesktop = this.props.width >= 600;
 
-    componentDidUpdate() {
+    componentDidMount() {
         if (!this.state.books.loaded && this.props.store.user || this.props.match.params.page !== this.state.books.page) {
             this.fetchSwitch();
         }
     };
 
-    handleOpen = (type : string) => (event : React.MouseEvent<HTMLButtonElement>) : void => {
+    handleOpen = (type: string) => (event: React.MouseEvent<HTMLButtonElement>): void => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -116,7 +116,7 @@ class Index extends Component<IProps, IState> {
         }
     };
     
-    handleClose = (type : string) => (event : React.MouseEvent<HTMLButtonElement>) : void => {
+    handleClose = (type: string) => (event: React.MouseEvent<HTMLButtonElement>): void => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -130,7 +130,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleBack() {
+    handleBack = () => {
         try {
             const { params } = this.props.match;
             const newPage = parseInt(params.page) - 1;
@@ -143,7 +143,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleNext() {
+    handleNext = () => {
         try {
             const { params } = this.props.match;
             const newPage = parseInt(params.page) + 1;
@@ -156,7 +156,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleSwitch = (type : string) => (event : React.ChangeEvent<HTMLInputElement>) : void => {
+    handleSwitch = (type: string) => (event: React.ChangeEvent<HTMLInputElement>): void => {
         try {
             let value : Object;
             switch(type) {
@@ -182,10 +182,10 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleChange = (type : string) => (event : React.ChangeEvent<{ value: unknown }>) : void => {
+    handleChange = (type: string) => (event: React.ChangeEvent<{ value: unknown }>): void => {
         try {
             const { value } = event.target;
-            let obj : Object;
+            let obj: Object;
             if (type === "Study") obj = { ...this.state.checked.Study, value: value };
             else obj = { ...this.state.checked.Condition, value: value };
 
@@ -201,7 +201,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleInput = (type : string) => (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) : void => {
+    handleInput = (type: string) => (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         try {
             const { value } = event.target;
             let obj : Object;
@@ -220,7 +220,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    openViewer(index : number) : void {
+    openViewer = (index: number): void => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -233,7 +233,7 @@ class Index extends Component<IProps, IState> {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
-    closeViewer() : void {
+    closeViewer = (): void => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -247,9 +247,9 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async fetchSwitch() : Promise<void> {
+    fetchSwitch = async(): Promise<void> => {
         try {
-            let result : IBooks;
+            let result: IBooks;
             const { params } = this.props.match;
             if (params.title) {
                 const { fetchByBook } = await import('../../../components/Books/Services/QueryServices');
@@ -269,7 +269,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async handleApply() : Promise<void> {
+    handleApply = async(): Promise<void> => {
         try {
             const { genFilter } = await import('../../../components/Books/Services/QueryServices');
             const newBooks = await genFilter(this.state.checked, this.props.match.params);
@@ -290,7 +290,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    renderSearch() {
+    renderSearch = () => {
         // if (this.isDesktop) return <QueryContainer />
 
         return (
@@ -303,7 +303,7 @@ class Index extends Component<IProps, IState> {
         );
     };
 
-    renderTiles() {
+    renderTiles = () => {
         if (this.state.books.loaded && this.state.books.list.length === 0) {
             return (
                 <Typography
@@ -329,14 +329,21 @@ class Index extends Component<IProps, IState> {
             ));
     };
 
-    render() {
+    render(): JSX.Element {
         if (!this.props.store.user) return (
             <InfoScreen
+                active={false}
                 message="You must be logged in to view this"
-                action={false}
+                action={{
+                    func: () => "",
+                    message: ""
+                }}
+                icon="alert"
             />
         );
-        else if (!this.state.books.loaded) return <CircularProgress className={this.props.classes.circularProgress} />;
+        else if (!this.state.books.loaded) {
+            return <CircularProgress className={this.props.classes.circularProgress} />;
+        }
         else return (
             <Grid container>
                 <Grid className={this.props.classes.container} item xs={12}>
@@ -384,7 +391,7 @@ class Index extends Component<IProps, IState> {
                     <div className={this.props.classes.pageBox}>
                         <IconButton
                             className={this.props.classes.arrows}
-                            disabled={this.state.books.page === 1}
+                            disabled={this.state.books.page && this.state.books.page <= 1 ? true : false}
                             onClick={this.handleBack}
                         >
                             <Icon>arrow_back_ios</Icon>
@@ -405,11 +412,13 @@ class Index extends Component<IProps, IState> {
                         </IconButton>
                     </div>
     
+                    {this.state.books.list.length <= 0 ? "" :
                     <ImageViewer
                         images={this.state.books.list[this.state.viewer.index].image}
                         open={this.state.viewer.open}
                         handleClose={this.closeViewer}
-                    />
+                    />}
+
                 </Grid>
             </Grid>
         );

@@ -101,7 +101,7 @@ const styles = () => createStyles({
     }
 });
 
-const passInit : services.IPass = {
+const passInit: services.IPass = {
     checked: false,
     pass: false,
     password1: {
@@ -122,19 +122,19 @@ const passInit : services.IPass = {
 };
 
 interface IProps extends RouteComponentProps {
-    match : any;
-    history : History<LocationState>;
-    classes : any;
-    dispatch : any;
+    match: any;
+    history: History<LocationState>;
+    classes: any;
+    dispatch: any;
 };
 
 interface IState {
-    pass : services.IPass;
+    pass: services.IPass;
 };  
 
 class Index extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             pass: passInit
@@ -144,11 +144,11 @@ class Index extends Component<IProps, IState> {
     password1 = services.passwordTest(this.state.pass.password1.value);
     password2 = services.passwordTest(this.state.pass.password2.value);
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.passwordRequest();
     };
 
-    async passwordRequest() : Promise<void> {
+    passwordRequest = async(): Promise<void> => {
         try {
             const result = await fetch(`api/token/validatePasswordToken/token=${this.props.match.params.token}`);
             const json = await result.json();
@@ -174,9 +174,9 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleInput(event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, key : string) : void {
+    handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, key: string): void => {
         try {
-            let newValue : services.IPassword;
+            let newValue: services.IPassword;
             if (key === "password1") newValue = this.state.pass.password1;
             else newValue = this.state.pass.password2;
             newValue.value = event.target.value;
@@ -192,7 +192,7 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    toggleVisibility(event : React.MouseEvent<HTMLButtonElement>, type : string) : void {
+    toggleVisibility = (event: React.MouseEvent<HTMLButtonElement>, type: string): void => {
         try {
             if (type === "password1") {
                 this.setState((state) => ({
@@ -220,13 +220,13 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async handleSave() : Promise<void> {
+    handleSave = async(): Promise<void> => {
         try {
             const { password1, password2 } = this.state.pass;
             if (!password1.value || !password2.value || password1.value !== password2.value) {
                 return;
             }
-            const result : services.IPass = await services.handleSave(this.state.pass);
+            const result: services.IPass = await services.handleSave(this.state.pass);
             this.setState((state) => ({
                 pass: result
             }));
@@ -235,7 +235,7 @@ class Index extends Component<IProps, IState> {
         }
     };
     
-    render() {
+    render(): JSX.Element {
         const { pass } = this.state;
         if (!pass.pass && !pass.checked) {
             return (

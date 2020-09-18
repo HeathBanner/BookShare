@@ -60,32 +60,32 @@ const buttons = [
 ];
 
 interface IProps extends RouteComponentProps {
-    user : any;
-    history : History<LocationState>;
-    classes : any;
-    dispatch : any;
+    user: any;
+    history: History<LocationState>;
+    classes: any;
+    dispatch: any;
 };
 
 interface IState {
-    anchorEl : any;
+    anchorEl: any;
 };
 
 class User extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
-            anchorEl: null
+            anchorEl: false
         };
     };
 
-    handleClick = (event : React.MouseEvent<HTMLButtonElement>) : void => {
+    handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
         try {
             const selection = event.currentTarget;
             const getBoundingClientRect = () => selection.getBoundingClientRect();
     
             if (this.state.anchorEl) {
-                return this.setState({ anchorEl: null });
+                return this.setState({ anchorEl: false });
             }
     
             this.setState({
@@ -99,23 +99,22 @@ class User extends Component<IProps, IState> {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
-    closeAnchor = () => this.setState({ anchorEl: null });
-
-    open : boolean = Boolean(this.state.anchorEl);
-    id : string | undefined = this.open ? 'transition-popper' : undefined;
+    closeAnchor = () => this.setState({ anchorEl: false });
 
     signOut = () => this.props.dispatch({ type: "SIGNOUT" });
 
-    handleHistory(url : string) : void {
+    handleHistory = (url: string): void => {
         try {
             this.props.history.push(url);
-            this.setState({ anchorEl: null });
+            this.setState({ anchorEl: false });
         } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    render() {
+    render(): JSX.Element {
+        const open: boolean = Boolean(this.state.anchorEl);
+        const id: string | undefined = open ? 'transition-popper' : undefined;
         return (
             <>
                 <Button
@@ -129,9 +128,9 @@ class User extends Component<IProps, IState> {
     
                 <Popper
                     className={this.props.classes.popper}
-                    id={this.id}
-                    open={this.open}
-                    anchorEl={this.state.anchorEl}
+                    id={id}
+                    open={open}
+                    anchorEl={this.state.anchorEl ? this.state.anchorEl : null}
                     transition
                 >
                     {({ TransitionProps }) => (

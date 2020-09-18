@@ -27,26 +27,26 @@ const styles = () => createStyles({
 });
 
 interface IProps {
-    lfBooks : string[];
-    classes : any;
+    lfBooks: string[];
+    classes: any;
 };
 
 interface IState {
-    open : boolean;
+    open: boolean;
 };
 
 class LFBooks extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             open: true
         };
     };
 
-    handleOpen = () => this.setState((state) => ({ open: !state.open }));
+    handleOpen = (): void => this.setState((state) => ({ open: !state.open }));
 
-    render() {
+    render(): JSX.Element {
         return (
             <List className={this.props.classes.list}>
                 <ListItem button onClick={this.handleOpen}>

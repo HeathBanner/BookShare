@@ -1,4 +1,5 @@
 ﻿export const fetchValidation = async (token, dispatch) => {
+    console.log("FETCH");
     const options = {
         method: "POST",
         body: JSON.stringify({ access_token: token }),
@@ -12,6 +13,7 @@
 };
 
 const statusCodeCheck = (json) => {
+    console.log(json.statusCode);
     switch (json.statusCode) {
         case 200:
             return {

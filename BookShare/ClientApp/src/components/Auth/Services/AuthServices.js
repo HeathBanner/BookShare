@@ -1,4 +1,8 @@
-﻿export const fetchRegister = async (info) => {
+﻿import { User } from '../../../store/interfaces';
+
+const notify = new User().generateEmptyNotify();
+
+export const fetchRegister = async (info) => {
     try {
         const obj = assignValues(info);
         const options = {
@@ -13,7 +17,7 @@
         const status = statusHandler(json);
         return status;
     } catch (error) {
-        return { error: true, message: "Something went wrong :(" };
+        return { ...notify, error: true, message: "Something went wrong :(" };
     }
 };
 
@@ -32,7 +36,7 @@ export const fetchLogin = async (info) => {
         const status = statusHandler(json);
         return status;
     } catch (error) {
-        return { error: true, message: "Something went wrong :(" };
+        return { ...notify, error: true, message: "Something went wrong :(" };
     }
 };
 
@@ -59,21 +63,21 @@ const statusHandler = (status) => {
     try {
         switch (status.statusCode) {
             case 404:
-                return { error: true, message: "Email or Password was incorrect!" };
+                return { ...notify, error: true, message: "Email or Password was incorrect!" };
             case 403:
-                return { error: true, message: "Password was incorrect!" };
+                return { ...notify, error: true, message: "Password was incorrect!" };
             case 401:
-                return { error: true, message: "Email already exists" };
+                return { ...notify, error: true, message: "Email already exists" };
             case 200:
                 localStorage.setItem("token", status.access_token);
-                return { success: true, message: "Login was successful!", payload: status.user };
+                return { ...notify, success: true, message: "Login was successful!", payload: status.user };
             case 201:
-                return { success: true, message: "Your account has been created!" };
+                return { ...notify, success: true, message: "Your account has been created!" };
             default:
-                return { error: true, message: "Something went wrong :(" };
+                return { ...notify, error: true, message: "Something went wrong :(" };
         }
     } catch (error) {
-        return { error: true, message: "Something went wrong :(" };
+        return { ...notify, error: true, message: "Something went wrong :(" };
     }
 };
 
@@ -82,11 +86,4 @@ export const initInfo = {
     Email: "",
     Password: "",
     Visible: false
-};
-
-export const initNotify = {
-    error: false,
-    success: false,
-    warning: false,
-    message: ""
 };

@@ -46,32 +46,65 @@ const styles = () => createStyles({
 });
 
 interface IProps extends RouteComponentProps {
-    window : any;
-    history : History<LocationState>;
-    classes : any;
-    store : any;
+    history: History<LocationState>;
+    classes: any;
+    store: any;
 };
 
 interface IState {
-    auth : boolean;
+    auth: boolean;
+    customScrollyBoi: boolean;
 };
 
-const trigger = useScrollTrigger();
+interface IElevationScroll {
+    handleTrigger: (type: "OPEN" | "CLOSE") => void;
+};
+
+function ElevationScroll(props: IElevationScroll) {
+    const trigger = useScrollTrigger();
+
+    console.log("HOOK: " + trigger);
+    if (trigger) {
+        props.handleTrigger("OPEN");
+    } else {
+        props.handleTrigger("CLOSE");
+    }
+
+    return <></>;
+};
 
 class Appbar extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
-            auth: false
+            auth: false,
+            customScrollyBoi: false
         };
     };
 
+    private handleOpen = (): void => this.setState({ auth: true });
+    private handleClose = (): void => this.setState({ auth: false });
 
-    handleOpen = () => this.setState({ auth: true });
-    handleClose = () => this.setState({ auth: false });
+    private handleTrigger = (type: "OPEN" | "CLOSE") => {        
+        if (this.state === undefined) return;
+        if (type === "OPEN" && this.state.customScrollyBoi === false) {
+            this.setState((state) => ({
+                ...state,
+                customScrollyBoi: true
+            }));
+        }
+        else if (type === "CLOSE" && this.state.customScrollyBoi === true) {
+            this.setState((state) => ({
+                ...state,
+                customScrollyBoi: false
+            }));
+        }
+    };
 
-    renderAuth() {
+    private handleHistory = () => this.props.history.push('/passwordRecovery');
+
+    private renderAuth = (): JSX.Element => {
         if (this.props.store.loggedIn) {
             return <User user={this.props.store.user} />;
         }
@@ -88,11 +121,12 @@ class Appbar extends Component<IProps, IState> {
         );
     };
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 <div className={this.props.classes.placeHolder}></div>
-                <Slide appear={false} direction="down" in={!trigger}>
+                <ElevationScroll handleTrigger={this.handleTrigger} />
+                <Slide appear={false} direction="down" in={!this.state.customScrollyBoi}>
                     <AppBar>
                         <Toolbar className={this.props.classes.toolbar}>
                             <Drawer />
@@ -106,11 +140,11 @@ class Appbar extends Component<IProps, IState> {
     
                             {this.renderAuth()}
                         </Toolbar>
-    
+
                         <Container
                             auth={this.state.auth}
                             handleClose={this.handleClose}
-                            history={history}
+                            handleHistory={this.handleHistory}
                         />
                     </AppBar>
                 </Slide>
@@ -119,6 +153,6 @@ class Appbar extends Component<IProps, IState> {
     };
 };
 
-const mapStateToProps = (state : any) => ({ store: state });
+const mapStateToProps = (state: any) => ({ store: state });
 
-export default connect()(withStyles(styles)(withRouter(NavBar)));
+export default connect(mapStateToProps)(withStyles(styles)(withRouter(Appbar)));

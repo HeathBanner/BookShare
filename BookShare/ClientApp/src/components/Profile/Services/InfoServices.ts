@@ -1,5 +1,15 @@
-﻿
-export const fetchValidatePassword = async (props, username) => {
+﻿import { INotify, IUser, IPosted, User } from '../../../store/interfaces';
+
+interface IJson {
+    user: IUser;
+    book: IPosted;
+    books: IPosted[];
+    statusCode: number;
+    message: string;
+    access_token: string;
+};
+
+export const fetchValidatePassword = async (props: IModal, username: string): Promise<IModal> => {
     const options = {
         method: "POST",
         body: JSON.stringify({
@@ -9,12 +19,12 @@ export const fetchValidatePassword = async (props, username) => {
         headers: { "Content-Type": "application/json" }
     };
     const result = await fetch("api/user/validatePassword", options);
-    const json = await result.json();
+    const json: IJson = await result.json();
 
     return statusHandler(json, props);
 };
 
-export const fetchUpdatePassword = async (props, username) => {
+export const fetchUpdatePassword = async (props: IModal, username: string): Promise<IModal> => {
     if (props.newPassword0 !== props.newPassword1) {
         return {
             ...props,
@@ -35,12 +45,12 @@ export const fetchUpdatePassword = async (props, username) => {
         headers: { "Content-Type": "application/json" }
     };
     const result = await fetch("api/user/updatePassword", options);
-    const json = await result.json();
+    const json: IJson = await result.json();
 
     return statusHandler(json, props);
 };
 
-export const fetchUpdateEmail = async (props, username) => {
+export const fetchUpdateEmail = async (props: IModal, username: string): Promise<IModal> => {
     const options = {
         method: "POST",
         body: JSON.stringify({
@@ -50,12 +60,12 @@ export const fetchUpdateEmail = async (props, username) => {
         headers: { "Content-Type": "application/json" }
     };
     const result = await fetch("api/user/updateEmail", options);
-    const json = await result.json();
+    const json: IJson = await result.json();
 
     return statusHandler(json, props);
 };
 
-export const fetchUpdateLF = async (list, username) => {
+export const fetchUpdateLF = async (list: string[], username: string): Promise<IUserReturn> => {
     const options = {
         method: "POST",
         body: JSON.stringify({ lfBooks: list, username: username }),
@@ -63,14 +73,28 @@ export const fetchUpdateLF = async (list, username) => {
     };
 
     const result = await fetch("api/user/updateLF", options);
-    const json = await result.json();
+    const json: IJson = await result.json();
 
-    if (json.statusCode !== 200) return 
+    const emptyUser = new User().generateEmptyUser();
 
-    return json.user;
+    if (json.statusCode !== 200) {
+        return {
+            notify: {
+                ...initNotify,
+                error: true,
+                message: "Something went wrong :("
+            },
+            user: emptyUser
+        };
+    }
+
+    return {
+        notify: initNotify,
+        user: json.user
+    };
 };
 
-export const fetchUpdateLocation = async (location, username) => {
+export const fetchUpdateLocation = async (location: ILocation, username: string): Promise<IUserReturn> => {
     const options = {
         method: 'POST',
         body: JSON.stringify({
@@ -82,13 +106,27 @@ export const fetchUpdateLocation = async (location, username) => {
     };
 
     const result = await fetch("api/user/updateLocation", options);
-    const json = await result.json();
+    const json: IJson = await result.json();
+    console.log(json);
+    const emptyUser = new User().generateEmptyUser();
 
-    if (json.statusCode !== 200) return { error: true, message: "Something went wrong :(" };
-    return json.user;
+    if (json.statusCode !== 200) {
+        return {
+            notify: {
+                ...initNotify,
+                error: true,
+                message: "Something went wrong :("
+            },
+            user: emptyUser
+        };
+    }
+    return {
+        notify: initNotify,
+        user: json.user
+    };
 };
 
-const statusHandler = (json, props) => {
+const statusHandler = (json: IJson, props: IModal): IModal => {
     switch (json.statusCode) {
         case 200:
             return {
@@ -117,7 +155,24 @@ const statusHandler = (json, props) => {
     }
 };
 
-export const initModalProps = {
+export interface IUserReturn {
+    notify: INotify,
+    user: IUser
+};
+
+export interface IModal {
+    open: boolean;
+    type: string;
+    email: string;
+    password: string;
+    newPassword0: string;
+    newPassword1: string;
+    visible: boolean;
+    activeStep: number;
+    notify: INotify;
+};
+
+export const initModalProps: IModal = {
     open: false,
     type: "",
     email: "",
@@ -134,14 +189,23 @@ export const initModalProps = {
     }
 };
 
-export const initNotify = {
+export const initNotify: INotify = {
     error: false,
     success: false,
     warning: false,
     message: ""
 };
 
-export const initLFBooks = {
+interface ILFBooks {
+    open: boolean;
+    value: string;
+    list: string[];
+    openList: boolean;
+    loaded: boolean;
+    notify: INotify;
+};
+
+export const initLFBooks: ILFBooks = {
     open: false,
     value: "",
     list: [],
@@ -155,7 +219,14 @@ export const initLFBooks = {
     }
 };
 
-export const initLocation = {
+interface ILocation {
+    open: boolean;
+    city: string;
+    state: string;
+    notify: INotify;
+};
+
+export const initLocation: ILocation = {
     open: false,
     city: "",
     state: "",
@@ -167,19 +238,26 @@ export const initLocation = {
     }
 };
 
-export const emailSteps = [
+export interface IState {
+    modalProps: IModal;
+    lfBooks: ILFBooks;
+    location: ILocation;
+    notify: INotify;
+};
+
+export const emailSteps: string[] = [
     "Verify Password",
     "Change Email",
     "Finished"
 ];
 
-export const passwordSteps = [
+export const passwordSteps: string[] = [
     "Verify Password",
     "Change Password",
     "Finished"
 ];
 
-export const getEmailContent = (step) => {
+export const getEmailContent = (step: number): string => {
     switch (step) {
         case 0:
             return "Verify your password to proceed";
@@ -192,7 +270,7 @@ export const getEmailContent = (step) => {
     }
 };
 
-export const getPasswordContent = (step) => {
+export const getPasswordContent = (step: number): string => {
     switch (step) {
         case 0:
             return "Verify your password to proceed";
@@ -205,7 +283,14 @@ export const getPasswordContent = (step) => {
     }
 };
 
-export const buttonInfo = [
+interface IButton {
+    click: boolean;
+    icon: string;
+    text: string;
+    data: string;
+};
+
+export const buttonInfo: IButton[] = [
     {
         click: true,
         icon: "edit",
@@ -238,24 +323,24 @@ export const buttonInfo = [
     }
 ];
 
-export const buttonData = (data, store) => {
+export const buttonData = (data: string, user: IUser): string | number => {
     switch (data) {
         case "posted":
-            return store.posted.length;
+            return user.posted.length;
         case "email":
-            return store.email;
+            return user.email;
         case "lfBooks":
-            return store.lfBooks ? store.lfBooks.length === 0 ? "Click the Edit button to add some!" : genLFBooks(store.lfBooks) : "Click the Edit button to add some!";
+            return user.lfBooks ? user.lfBooks.length === 0 ? "Click the Edit button to add some!" : genLFBooks(user.lfBooks) : "Click the Edit button to add some!";
         case "location":
-            return !store.city && !store.state ? "Set your location for easier searching!" : `${store.city}, ${store.state}`;
+            return !user.city && !user.state ? "Set your location for easier searching!" : `${user.city}, ${user.state}`;
         default:
             return "";
     }
 };
 
-const genLFBooks = (list) => {
+const genLFBooks = (list: string[]): string => {
     if (list.length === 1) return list[0];
-    let newList;
+    let newList: string = "";
     list.forEach((item, index) => {
         if (!newList) return newList = `${item}, `;
         if (index === list.length - 1) return newList = newList + item;

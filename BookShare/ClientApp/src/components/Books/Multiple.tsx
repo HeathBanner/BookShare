@@ -85,36 +85,36 @@ const styles = () => createStyles({
 
 
 interface ILFBooks {
-    value : string;
-    checked : boolean;
+    value: string;
+    checked: boolean;
 };
 
 interface IBook {
-    lfBooks : ILFBooks[];
-    trash : string[];
-    Title : string;
-    State : string;
-    City : string;
-    Sale : boolean;
-    Trade : boolean;
-    Imported : boolean;
+    lfBooks: ILFBooks[];
+    trash: string[];
+    Title: string;
+    State: string;
+    City: string;
+    Sale: boolean;
+    Trade: boolean;
+    Imported: boolean;
 };
 
 interface INotify {
-    error : boolean;
-    success : boolean;
-    warning : boolean;
-    message : string;
+    error: boolean;
+    success: boolean;
+    warning: boolean;
+    message: string;
 };
 
 interface IState {
-    book : IBook;
-    notify : INotify;
+    book: IBook;
+    notify: INotify;
 };
 
 class Multiple extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             book: initBook,
@@ -122,13 +122,14 @@ class Multiple extends Component<IProps, IState> {
         };
     };
 
-    componentDidUpdate() {
+    componentDidMount() {
         try {
+            console.log(this.state.book);
             if (!this.state.book.Imported && this.props.store.user) {
-                let lfBooks : ILFBooks[];
                 const { user } = this.props.store;
+                let lfBooks: ILFBooks[] = [];
                 if (user.lfBooks && user.lfBooks.length > 0) {
-                    user.lfBooks.forEach((item : string) => {
+                    user.lfBooks.forEach((item: string) => {
                         lfBooks.push({
                             value: item,
                             checked: false
@@ -140,7 +141,7 @@ class Multiple extends Component<IProps, IState> {
                     ...state,
                     book: {
                         ...state.book,
-                        lfBooks: user.lfBooks ? user.lfBooks.length > 0 ? lfBooks : [] : [],
+                        lfBooks: lfBooks,
                         City: user.city ? user.city : "",
                         State: user.state ? user.state : "",
                         Imported: true    
@@ -152,7 +153,7 @@ class Multiple extends Component<IProps, IState> {
         }
     };
 
-    toggleFilter = (type : string) => {
+    toggleFilter = (type: string): void => {
         try {
             let newValue : boolean;
             if (type === "Sale") newValue = this.state.book.Sale;
@@ -170,7 +171,7 @@ class Multiple extends Component<IProps, IState> {
         }
     };
 
-    handleInput = (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, type : string) => {
+    handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, type: string): void => {
         try {
             const { value } = event.target;
             this.setState((state) => ({
@@ -185,7 +186,7 @@ class Multiple extends Component<IProps, IState> {
         }
     };
 
-    handleAutocomplete(value : any, type : string) {
+    handleAutocomplete = (value: any, type: string): void => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -199,9 +200,9 @@ class Multiple extends Component<IProps, IState> {
         }
     };
 
-    handleToggle(index : number) {
+    handleToggle = (index: number): void => {
         try {
-            let newList : ILFBooks[] = this.state.book.lfBooks;
+            let newList: ILFBooks[] = [...this.state.book.lfBooks];
             newList[index].checked = !newList[index].checked;
             this.setState((state) => ({
                 ...state,
@@ -215,7 +216,7 @@ class Multiple extends Component<IProps, IState> {
         }
     };
 
-    handleSearch() {
+    handleSearch = (): void => {
         try {
             const { lfBooks, State, City, Sale, Trade } = this.state.book;
             let list : string = "";
@@ -231,7 +232,7 @@ class Multiple extends Component<IProps, IState> {
         }
     };
 
-    preSubmit() {
+    preSubmit = (): void => {
         try {
             const { book } = this.state;
             switch (true) {
@@ -261,10 +262,10 @@ class Multiple extends Component<IProps, IState> {
         }
     };
 
-    render() {
-        const flag : boolean = this.props.store.user && this.props.store.user.lfBooks;
-
-        if (flag) {
+    render(): JSX.Element {
+        const flag : boolean = this.props.store.user && this.props.store.user.lfBooks ? true : false;
+        console.log(this.state.book.lfBooks);
+        if (!flag) {
             return (
                 <>
                     <Typography className={this.props.classes.warningMessage} variant="body2">
@@ -326,22 +327,19 @@ class Multiple extends Component<IProps, IState> {
 
                     <FormGroup className={this.props.classes.checkboxContainer} row>
                         {this.state.book.lfBooks.map((item, index) => {
-                            if (!item.checked) {
-                                return (
-                                    <FormControlLabel 
-                                        control={
-                                            <Checkbox
-                                                checked={item.checked}
-                                                onChange={() => this.handleToggle(index)}
-                                                name={item.value}
-                                                color="primary"
-                                            />
-                                        }
-                                        label={item.value}
-                                    />
-                                );
-                            } 
-                            else return "";
+                            return (
+                                <FormControlLabel 
+                                    control={
+                                        <Checkbox
+                                            checked={item.checked}
+                                            onChange={() => this.handleToggle(index)}
+                                            name={item.value}
+                                            color="primary"
+                                        />
+                                    }
+                                    label={item.value}
+                                />
+                            );
                         })}
                     </FormGroup>
 

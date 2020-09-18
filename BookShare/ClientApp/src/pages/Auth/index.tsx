@@ -8,14 +8,7 @@ import * as interfaces from './interfaces';
 
 import { withStyles, createStyles } from '@material-ui/styles';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import {
-    Grid,
-    Paper,
-    Tabs,
-    Tab,
-    Modal,
-    Button
-} from '@material-ui/core';
+import { Grid, Paper, Tabs, Tab, Modal, Button } from '@material-ui/core';
 
 const styles = ({ breakpoints } : Theme) => createStyles({
     paper: {
@@ -47,7 +40,7 @@ const styles = ({ breakpoints } : Theme) => createStyles({
 
 class Index extends Component<interfaces.IProps, interfaces.IState> {
 
-    constructor(props : interfaces.IProps) {
+    constructor(props: interfaces.IProps) {
         super(props);
         this.state = {
             mode: 0,
@@ -55,7 +48,7 @@ class Index extends Component<interfaces.IProps, interfaces.IState> {
         };
     };
 
-    handleChange = (event : any, value : any) => {
+    handleChange = (event: any, value: any): void => {
         try {
             this.setState((state) => ({ ...state, mode: value }));
         } catch (error) {
@@ -63,7 +56,7 @@ class Index extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    handleInput = (mode : string, type : string) => (event : React.ChangeEvent<HTMLInputElement>) => {
+    handleInput = (mode: string, type: string) => (event: React.ChangeEvent<HTMLInputElement>): void => {
         try {
             const { value } = event.target;
             if (mode === "Visible") {
@@ -87,7 +80,7 @@ class Index extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    toggleVisibility = () => {
+    toggleVisibility = (): void => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -101,7 +94,7 @@ class Index extends Component<interfaces.IProps, interfaces.IState> {
         }
     }
 
-    handleSubmit = async (mode : String) => {
+    handleSubmit = async(mode : String): Promise<void> => {
         try {
             let result : interfaces.INotify;
     
@@ -113,6 +106,7 @@ class Index extends Component<interfaces.IProps, interfaces.IState> {
                 result = await fetchRegister(this.state.info);
             }
 
+            console.log(result);
             if (result.error) {
                 return this.props.dispatch({ type: "ERROR_NOTIFY", payload: result.message });
             }
@@ -131,9 +125,9 @@ class Index extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    handlePush = () => {
+    handlePush = (): void => {
         try {
-            this.props.history.push("/passwordRecovery");
+            this.props.handleHistory();
             this.props.handleClose();
         } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
@@ -161,7 +155,7 @@ class Index extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    render() {
+    render(): JSX.Element {
         return (
             <Grid container>
                 <Grid item xs={12}>

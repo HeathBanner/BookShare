@@ -56,25 +56,25 @@ const navList = [
 ];
 
 interface IProps extends RouteComponentProps {
-    history : History<LocationState>;
-    classes : any;
-    dispatch : any;
+    history: History<LocationState>;
+    classes: any;
+    dispatch: any;
 };
 
 interface IState {
-    open : boolean;
+    open: boolean;
 };
 
 class NavDrawer extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             open: false
         };
     };
 
-    toggleDrawer = (open : boolean) => (event : React.MouseEvent<HTMLButtonElement>) : void => {
+    toggleDrawer = (open: boolean) => (event: React.MouseEvent<HTMLButtonElement>): void => {
         try {
             if (event.type === "keydown") {
                 return;
@@ -87,7 +87,7 @@ class NavDrawer extends Component<IProps, IState> {
 
     };
 
-    handleRedirect(link : string) : void {
+    handleRedirect = (link: string): void => {
         try {
             this.setState({ open: false});
             this.props.history.push(link);
@@ -96,7 +96,7 @@ class NavDrawer extends Component<IProps, IState> {
         }
     };
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 <IconButton

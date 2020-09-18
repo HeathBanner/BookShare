@@ -23,7 +23,7 @@ export const removeBook = function(index : number, list : string[]) : string[] {
     return newList;
 };
 
-interface IInitNotify {
+export interface IInitNotify {
     error : boolean;
     success : boolean;
     warning : boolean;

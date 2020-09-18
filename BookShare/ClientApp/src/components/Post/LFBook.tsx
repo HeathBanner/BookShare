@@ -121,28 +121,30 @@ const initState = {
 };
 
 interface IProps {
-    lfBooks : string[];
-    handleBooks : (type : string, param? : string, index? : number, list? : string[]) => void;
-    handleSave : (type? : string) => void;
-    isModal : boolean;
-    handleClose : () => void;
-    dispatch : any;
-    classes : any;
+    lfBooks: string[];
+    handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    handleList?: () => void;
+    handleBooks: (type: string, param: string, index?: number) => void;
+    handleSubmit?: (type: string) => void;
+    isModal?: boolean;
+    handleClose?: () => void;
+    dispatch: any;
+    classes: any;
 };
 
 interface IState {
-    value : string,
-    open : boolean;
+    value: string,
+    open: boolean;
 };
 
 class LFBook extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = initState;
     };
 
-    handleChange(event : React.ChangeEvent<HTMLInputElement>) {
+    handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         try {
             const { value } = event.target;
             this.setState((state) => ({
@@ -154,19 +156,27 @@ class LFBook extends Component<IProps, IState> {
         }
     };
 
-    preAdd() {
+    preAdd = (): void => {
         try {
-            this.props.handleBooks("ADD", this.state.value, 0, []);
+            this.props.handleBooks("ADD", this.state.value);
             this.setState((state) => (initState));
         } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    handleList = () => this.setState((state) => ({ ...state, open: !state.open }));
+    handleSave = (): void => {
+        if (this.props.handleSubmit) {
+            this.setState(initState);
+            this.props.handleSubmit("lfBooks");
+        }
+    };
+ 
+    handleList = (): void => this.setState((state) => ({ ...state, open: !state.open }));
 
-    render() {
-        const { isModal, classes, handleClose, lfBooks, handleBooks, handleSave } = this.props;
+    render(): JSX.Element {
+        const { isModal, classes, handleClose, lfBooks, handleBooks } = this.props;
+        console.log(lfBooks);
         return (
             <Paper
                 className={isModal ? classes.modalPaper : classes.listContainer}
@@ -217,7 +227,7 @@ class LFBook extends Component<IProps, IState> {
                                     <ListItem key={`${item}&${index}`}>
                                         <ListItemSecondaryAction>
                                             <IconButton
-                                                onClick={() => handleBooks("REMOVE", "", index, [])}
+                                                onClick={() => handleBooks("REMOVE", "", index)}
                                             >
                                                 <Icon>clear</Icon>
                                             </IconButton>
@@ -233,7 +243,7 @@ class LFBook extends Component<IProps, IState> {
                     {isModal ? (
                     <Button
                         className={classes.saveButton}
-                        onClick={() => handleSave("lfBooks")}
+                        onClick={() => this.handleSave()}
                     >
                         Save
                     </Button>

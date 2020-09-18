@@ -23,13 +23,65 @@ import {
 } from '@material-ui/core';
 
 const styles = (theme : Theme) => createStyles({
-    // container: theme.container,
-    // paper: theme.bookPaper,
-    // gridList: theme.imagesGridList,
-    // titleBar: theme.imagesTitleBar,
-    // title: theme.imagesTitle,
-    // divider: theme.divider,
-    // contentContainer: theme.alignmentContainer,
+    container: {
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        padding: '20% 10% 10% 10%',
+        minHeight: '100vh'
+    },
+    paper: {
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        background: 'rgb(255, 255, 255, 0.5)',
+        padding: '0% 0% 0% 0%',
+        borderRadius: '12px',
+        [theme.breakpoints.up('lg')]: {
+            width: '45%'
+        },
+        [theme.breakpoints.down('md')]: {
+            width: '60%',
+            padding: '0% 0% 0% 0%',
+        },
+        [theme.breakpoints.down('xs')]: {
+            width: '100%',
+            padding: '0% 0% 0% 0%'
+        },
+        boxShadow: "0px 2px 1px -1px rgba(0,0,0,0.2), 2px 2px 3px 0px rgba(0,0,0,0.14), 2px 2px 3px 1px rgba(0,0,0,0.12), 0px 1px 3px 0px rgba(0,0,0,0.12), 0px 1px 3px 0px rgba(0,0,0,0.12)"
+    },
+    gridList: {
+        flexWrap: 'nowrap',
+        transform: 'translateZ(0)',
+        width: '100%',
+        marginBottom: '20px !important'
+    },
+    titleBar: {
+        background:
+        'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+    },
+    title: {
+        width: '100%',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    divider: {
+        marginBlockStart: '0.5em',
+        width: '60%',
+        marginBottom: 20,
+        backgroundColor: 'rgb(0, 0, 0, 0.2)'
+    },
+    contentContainer: {
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+    },
     img: {
         width: 'auto',
         height: 300,
@@ -94,7 +146,7 @@ class BookView extends Component<IProps, IState> {
     imgHelper = "data:image/jpeg;base64,";
 
 
-    componentDidUpdate() {
+    componentDidMount() {
         try {
             if (this.state.book.loaded || !this.props.store.user) return;
             this.fetchBooks();
@@ -103,11 +155,19 @@ class BookView extends Component<IProps, IState> {
         }
     };
 
-    async fetchBooks() : Promise<void> {
+    componentDidUpdate() {
+        try {
+            if (this.state.book.loaded || !this.props.store.user) return;
+            this.fetchBooks();
+        } catch (error) {
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    }
+
+    fetchBooks = async(): Promise<void> => {
         try {
             const result = await fetch(`api/book/id=${this.props.match.params.id}`);
             const json = await result.json();
-            
             this.setState((state) => ({
                 ...state,
                 book: {
@@ -124,7 +184,7 @@ class BookView extends Component<IProps, IState> {
     openViewer = () => this.setState((state) => ({ ...state, viewer: true }));
     closeViewer = () => this.setState((state) => ({ ...state, viewer: false }));
 
-    async handleRequest() : Promise<void> {
+    handleRequest = async(): Promise<void> => {
         try {
             const result = await services.handleRequest(this.props.store.user, this.state.book)
             this.setState((state) => ({
@@ -136,11 +196,16 @@ class BookView extends Component<IProps, IState> {
         }
     };
 
-    render() {
+    render(): JSX.Element {
         if (!this.props.store.user) return (
             <InfoScreen
+                active={false}
                 message="You must be logged in to view this"
-                action={false}
+                action={{
+                    func: () => "",
+                    message: ""
+                }}
+                icon="alert"
             />
         );
         else if (!this.state.book.loaded) return <CircularProgress />;
@@ -233,8 +298,8 @@ class BookView extends Component<IProps, IState> {
     
                     <ImageViewer
                         images={image}
-                        open={viewer}
-                        handleClose={closeViewer}
+                        open={this.state.viewer}
+                        handleClose={this.closeViewer}
                     />
     
                 </Grid>

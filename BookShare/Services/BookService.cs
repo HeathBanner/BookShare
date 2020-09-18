@@ -16,14 +16,14 @@ namespace BookShare.Services
 
         public BookService(IBookDatabaseSettings settings)
         {
-            var client = new MongoClient(settings.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
+            var client = new MongoClient(Environment.GetEnvironmentVariable("ConnectionString"));
+            var database = client.GetDatabase(Environment.GetEnvironmentVariable("DatabaseName"));
 
             Console.WriteLine("\n\n\n {0} \n {1} \n {2} \n\n\n",
                 settings.UsersCollectionName, settings.DatabaseName, settings.ConnectionString);
 
-            _users = database.GetCollection<Users>(settings.UsersCollectionName);
-            _books = database.GetCollection<Region>(settings.BooksCollectionName);
+            _users = database.GetCollection<Users>(Environment.GetEnvironmentVariable("UsersCollectionName"));
+            _books = database.GetCollection<Region>(Environment.GetEnvironmentVariable("BooksCollectionName"));
         }
 
         public HttpResponseMessage Create(Users user)

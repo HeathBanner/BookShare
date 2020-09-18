@@ -1,200 +1,130 @@
 ﻿import { IUser, IPosted } from '../../../store/interfaces';
+import * as interfaces from './interfaces';
 
-interface IEditUser {
-    notify : INotify;
-    user : IUser | null;
-};
+// Add Instance of vertifications to API calls
+export class PostServices {
 
-export interface IBookRaw {
-    image : any,
-    title : string,
-    description : string,
-    condition : string,
-    price : number,
-    lfBooks : string[],
-    eMedia : string,
-    state : string,
-    city : string,
-    study : string,
-    isbn : string,
-    courseId : string,
-};
-
-export const fetchPost = async (book : IBook, user : IUser) : Promise<IEditUser> => {
-    const newBook = extractValues(book);
-    const options = {
-        method: 'POST',
-        body: JSON.stringify({ ...newBook, Owner: user.username, Email: user.email }),
-        headers: { "Content-Type": "application/json" }
+    private initValues: interfaces.IValues = { error: false, value: "" };
+    public initBookRaw: interfaces.IBookRaw = {
+        image: [],
+        title: "",
+        description: "",
+        condition: "",
+        price: 0,
+        lfBooks: [],
+        eMedia: "",
+        state: "",
+        city: "",
+        study: "",
+        isbn: "",
+        courseId: ""
+    };
+    public initBook: interfaces.IBook = {
+        image: { value: [], error: false },
+        title: this.initValues,
+        description: this.initValues,
+        condition: this.initValues,
+        price: this.initValues,
+        lfBooks: [],
+        eMedia: this.initValues,
+        state: this.initValues,
+        city: this.initValues,
+        study: this.initValues,
+        isbn: this.initValues,
+        courseId: this.initValues,
+    };
+    public initNotify: interfaces.INotify = {
+        error: false,
+        success: false,
+        warning: false,
+        message: ""
+    };
+    
+    public assignValue = (book: IPosted): interfaces.IBook => {
+        let newObj: interfaces.IBook = this.initBook;
+        Object.entries(book).forEach(([key, value]) => {
+            if (key === "lfBooks") newObj.lfBooks = value;
+            const result: interfaces.IValueSwitch | null = this.valueSwitch(key, value);
+            if (result) newObj = { ...newObj, ...result };
+        });
+    
+        return newObj;
     };
 
-    const res = await fetch("api/book/postBook", options);
-    const json = await res.json();
-
-    if (json.statusCode !== 201) {
-        return {
-            notify: { ...initNotify, error: true, message: "Something went wrong :(" },
-            user: user
-        };
-    }
-
-    return {
-        notify: { ...initNotify, success: true, message: `Book has been posted. If you wish to edit the book, you may do so in "My Books"` },
-        user: json.user
-    };
-};
-
-export const fetchEdit = async (book : IBook, user : IUser, id : string) : Promise<IEditUser> => {
-    const newBook = extractValues(book);
-    const options = {
-        method: 'POST',
-        body: JSON.stringify({ ...newBook, Owner: user.username, Id: id }),
-        headers: { "Content-Type": "application/json" }
-    };
-
-    const res = await fetch("api/book/editBook", options);
-    const json = await res.json();
-
-    if (json.statusCode !== 200) {
-        return {
-            notify: { ...initNotify, error: true, message: "Something went wrong :(" },
-            user: null
-        };
-    }
-
-    return {
-        notify: { ...initNotify, success: true, message: "Book has been posted!" },
-        user: json.user
-    };
-};
-
-export interface IFetchId {
-    notify : INotify;
-    book : IBook;
-};
-
-export const fetchById = async (id : string) : Promise<IFetchId> => {
-    const result = await fetch(`api/book/getById/id=${id}`);
-    const json = await result.json();
-
-    if (json.statusCode === 404) {
-        return {
-            notify: {
-                ...initNotify,
-                error: true,
-                message: "Book could not be found"
-            },
-            book: initBook
-        };
-    };
-
-    const reObj = assignValue(json.book);
-    return { book: reObj, notify: initNotify };
-};
-
-interface IValueSwitch {
-    [key : string] : IValues;
-};
-
-const assignValue = (book : IPosted) : IBook => {
-    let newObj : IBook = initBook;
-    Object.entries(book).forEach(([key, value]) => {
-        if (key === "lfBooks") newObj.lfBooks = value;
-        const result : IValueSwitch | null = valueSwitch(key, value);
-        if (result) newObj = { ...newObj, ...result };
-    });
-
-    return newObj;
-};
-
-const valueSwitch = (key : string, value : string) : IValueSwitch | null => {
-    switch(key) {
-        case "title":
-            return { title: { error: false, value: value }};
-        case "description":
-            return { descrption: { error: false, value: value }};
-        case "condition":
-            return { condition: { error: false, value: value }};
-        case "price":
-            return { price: { error: false, value: value }};
-        case "eMedia":
-            return {eMedia: { error: false, value: value }};
-        case "state":
-            return {state: { error: false, value: value }};
-        case "city":
-            return {city: { error: false, value: value }};
-        case "study":
-            return { study: { error: false, value: value }};
-        case "isbn":
-            return { isbn: { error: false, value: value }};
-        case "courseId":
-            return { courseId: { error: false, value: value }};
-        default:
-            return null;
-    }
-};
-
-interface IExtractSwitch {
-    [key : string] : string;
-};
-
-
-export const initBookRaw : IBookRaw = {
-    image: [],
-    title: "",
-    description: "",
-    condition: "",
-    price: 0,
-    lfBooks: [],
-    eMedia: "",
-    state: "",
-    city: "",
-    study: "",
-    isbn: "",
-    courseId: "",
-};
-
-const extractValues = (book : IBook) : IBookRaw => {
-    let newObj : IBookRaw = initBookRaw;
-    Object.entries(book).forEach(([key, value]) => {
-        if (key === "image") newObj.image = value;
-        else if (key === "lfBooks") newObj[key] = value;
-        else if (key === "price" && isNaN(parseFloat(value.value))) newObj.price = 0;
-        else if (key === "price") newObj[key] = parseFloat(value.value);
-        else {
-            const result : IExtractSwitch | null = extractSwitch(key, value);
-            newObj = { ...newObj, ...result };
+    public valueSwitch = (key: string, value: string): interfaces.IValueSwitch | null => {
+        switch(key) {
+            case "title":
+                return { title: { error: false, value: value }};
+            case "description":
+                return { descrption: { error: false, value: value }};
+            case "condition":
+                return { condition: { error: false, value: value }};
+            case "price":
+                return { price: { error: false, value: value }};
+            case "eMedia":
+                return { eMedia: { error: false, value: value }};
+            case "state":
+                return { state: { error: false, value: value }};
+            case "city":
+                return { city: { error: false, value: value }};
+            case "study":
+                return { study: { error: false, value: value }};
+            case "isbn":
+                return { isbn: { error: false, value: value }};
+            case "courseId":
+                return { courseId: { error: false, value: value }};
+            case "image":
+                return { image: { error: false, value: value }};
+            default:
+                return null;
         }
-    });
-    return newObj;
+    };
+
+    public extractValues = (book: interfaces.IBook): interfaces.IBookRaw => {
+        let newObj: interfaces.IBookRaw = this.initBookRaw;
+        Object.entries(book).forEach(([key, value]) => {
+            if (key === "image") {
+                newObj.image = value.value;
+            }
+            else if (key === "lfBooks") newObj[key] = value;
+            else if (key === "price" && isNaN(parseFloat(value.value))) newObj.price = 0;
+            else if (key === "price") newObj[key] = parseFloat(value.value);
+            else {
+                const result: interfaces.IExtractSwitch | null = this.extractSwitch(key, value.value);
+                newObj = { ...newObj, ...result };
+            }
+        });
+        return newObj;
+    };
+
+    public extractSwitch = (key: string, value: string): interfaces.IExtractSwitch | null => {
+        console.log(value)
+        switch(key) {
+            case "title":
+                return { title: value };
+            case "description":
+                return { description: value };
+            case "condition":
+                return { condition: value };
+            case "eMedia":
+                return { eMedia: value };
+            case "state":
+                return { state: value };
+            case "city":
+                return { city: value };
+            case "study":
+                return { study: value };
+            case "isbn":
+                return { isbn: value };
+            case "courseId":
+                return { courseId: value };
+            default:
+                return null;
+        }
+    };
 };
 
-const extractSwitch = (key : string, value : string) : IExtractSwitch | null => {
-    switch(key) {
-        case "title":
-            return { title: value };
-        case "description":
-            return { description: value };
-        case "condition":
-            return { condition: value };
-        case "eMedia":
-            return { eMedia: value };
-        case "state":
-            return { state: value };
-        case "city":
-            return { city: value };
-        case "study":
-            return { study: value };
-        case "isbn":
-            return { isbn: value };
-        case "courseId":
-            return { courseId: value };
-        default:
-            return null;
-    }
-};
-
-export const preSubmit = (book : IBook, notify : INotify) : IFetchId => {
+export const preSubmit = (book: interfaces.IBook, notify: interfaces.INotify): interfaces.IFetchId => {
     if (parseFloat(book.price.value) === NaN) {
         return {
             notify: { ...notify, warning: true, message: "Study field is required" },
@@ -246,7 +176,7 @@ export const preSubmit = (book : IBook, notify : INotify) : IFetchId => {
     };
 };
 
-export const handleBook = (type : string, param : string, index : number, list : string[]) : string[] => {
+export const handleBook = (type: string, param: string, index: number, list: string[]): string[] => {
     let newList = list;
     let newParam : string;
     if (typeof param !== undefined) newParam = param;
@@ -256,60 +186,78 @@ export const handleBook = (type : string, param : string, index : number, list :
     return newList;
 };
 
-interface IValues {
-    error : boolean;
-    value : string;
+export const fetchById = async (id: string): Promise<interfaces.IFetchId> => {
+    const services = new PostServices();
+    const result = await fetch(`api/book/getById/id=${id}`);
+    const json = await result.json();
+
+    if (json.statusCode === 404) {
+        return {
+            notify: {
+                ...services.initNotify,
+                error: true,
+                message: "Book could not be found"
+            },
+            book: services.initBook
+        };
+    };
+
+    const reObj = services.assignValue(json.book);
+    return { book: reObj, notify: services.initNotify };
 };
 
-interface IImage {
-    error: boolean;
-    value: any[];
+export const fetchEdit = async (book: interfaces.IBook, user: IUser, id: string): Promise<interfaces.IEditUser> => {
+    const services = new PostServices();
+    const newBook = services.extractValues(book);
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({ ...newBook, Owner: user.username, Id: id }),
+        headers: { "Content-Type": "application/json" }
+    };
+
+    const res = await fetch("api/book/editBook", options);
+    const json = await res.json();
+
+    if (json.statusCode !== 200) {
+        return {
+            notify: { ...services.initNotify, error: true, message: "Something went wrong :(" },
+            user: null
+        };
+    }
+
+    return {
+        notify: { ...services.initNotify, success: true, message: "Book has been posted!" },
+        user: json.user
+    };
 };
 
-const initValues : IValues = { error: false, value: "" };
+export const fetchPost = async (book: interfaces.IBook, user: IUser): Promise<interfaces.IEditUser> => {
+    const services = new PostServices();
+    const newBook = services.extractValues(book);
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({
+            ...newBook,
+            Owner: user.username,
+            Email: user.email
+        }),
+        headers: { "Content-Type": "application/json" }
+    };
 
-export interface IBook {
-    image: IImage,
-    title: IValues,
-    description: IValues,
-    condition: IValues,
-    price: IValues,
-    lfBooks: string[],
-    eMedia: IValues,
-    state: IValues,
-    city: IValues,
-    study: IValues,
-    isbn: IValues,
-    courseId: IValues,
-};
+    const result = await fetch("api/book/postBook", options);
+    const json = await result.json();
+    console.log(json);
+    if (json.statusCode !== 201) {
+        return {
+            notify: { ...services.initNotify, error: true, message: "Something went wrong :(" },
+            user: user
+        };
+    }
 
-export const initBook : IBook = {
-    image: { value: [], error: false },
-    title: initValues,
-    description: initValues,
-    condition: initValues,
-    price: initValues,
-    lfBooks: [],
-    eMedia: initValues,
-    state: initValues,
-    city: initValues,
-    study: initValues,
-    isbn: initValues,
-    courseId: initValues,
-};
-
-export interface INotify {
-    error : boolean;
-    success : boolean;
-    warning : boolean;
-    message: string;
-};
-
-export const initNotify : INotify = {
-    error: false,
-    success: false,
-    warning: false,
-    message: ""
+    return {
+        notify: { ...services.initNotify, success: true, message: `Book has been posted. If you wish to edit the book, you may do so in "My Books"` },
+        user: json.user
+    };
 };
 
 export const conditions = ["Mint", "Good", "Fair", "Rough"];

@@ -33,6 +33,12 @@ const auth = (state, action) => {
                 ...state,
                 user: action.payload
             };
+        case "UPDATE&NOTIFY":
+            return {
+                ...state,
+                user: action.payload.user,
+                notification: action.payload.notification
+            };
         case "NEW_BOOK":
             return {
                 ...state,
@@ -63,7 +69,16 @@ const auth = (state, action) => {
                 ...state,
                 checking: false
             };
+        case "CUSTOM_NOTIFY":
+            return {
+                ...state,
+                notification: {
+                    ...state.notification,
+                    ...action.payload
+                }
+            };
         case "ERROR_NOTIFY":
+            console.log("STORE ERROR");
             return {
                 ...state,
                 notification: {

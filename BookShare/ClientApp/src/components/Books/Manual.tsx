@@ -60,7 +60,7 @@ const styles = () => createStyles({
 
 class Manual extends Component<IManualProps, IState> {
 
-    constructor(props : IManualProps) {
+    constructor(props: IManualProps) {
         super(props);
         this.state = {
             book: initBook,
@@ -88,9 +88,9 @@ class Manual extends Component<IManualProps, IState> {
         }
     };
 
-    toggleFilter(type : string) {
+    toggleFilter = (type: string): void => {
         try {
-            let newValue : boolean;
+            let newValue: boolean;
             if (type === "Sale") newValue = !this.state.book.Sale;
             else newValue = !this.state.book.Trade;
 
@@ -106,7 +106,7 @@ class Manual extends Component<IManualProps, IState> {
         }
     };
 
-    handleInput(event : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, type : string) {
+    handleInput = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, type: string): void => {
         try {
             const { value } = event.target;
             this.setState((state) => ({
@@ -121,7 +121,7 @@ class Manual extends Component<IManualProps, IState> {
         }
     };
 
-    handleAutocomplete = (value : any, type : string) => {
+    handleAutocomplete = (value: any, type: string): void => {
         try {
             this.setState((state) => ({
                 ...state,
@@ -135,9 +135,9 @@ class Manual extends Component<IManualProps, IState> {
         }
     };
 
-    handleClose = () => this.setState((state) => ({ ...state, notify: initNotify }));
+    handleClose = (): void => this.setState((state) => ({ ...state, notify: initNotify }));
 
-    handleSearch() {
+    handleSearch = (): void =>  {
         try {
             const { Title, State, City, Sale, Trade } = this.state.book;
             this.props.history.push(`/books/1/${Title}/${State}/${City}/${Sale}/${Trade}`);
@@ -146,7 +146,7 @@ class Manual extends Component<IManualProps, IState> {
         }
     };
 
-    preSubmit() {
+    preSubmit = (): void => {
         try {
             switch (true) {
                 case this.state.book.Title.length <= 0:
@@ -184,7 +184,7 @@ class Manual extends Component<IManualProps, IState> {
         }
     };
 
-    render() {
+    render(): JSX.Element {
         return (
             <>
                 <FormControl>

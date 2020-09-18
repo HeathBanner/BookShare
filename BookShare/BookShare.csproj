@@ -19,11 +19,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="MimeKit" Version="2.8.0" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.10.2" />
-    <PackageReference Include="MongoDB.Driver" Version="2.10.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.2" />
     <PackageReference Include="RazorEngine" Version="3.10.0" />
     <PackageReference Include="System.CodeDom" Version="4.7.0" />
     <PackageReference Include="system.configuration.configurationmanager" Version="4.7.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.11.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,7 +52,7 @@
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaRoot)build\**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

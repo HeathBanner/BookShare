@@ -77,32 +77,32 @@ const initInfo = {
 };
 
 interface IProps extends RouteComponentProps {
-    history : History<LocationState>;
-    classes : any;
-    dispatch : any;
-    isModal : boolean;
+    history: History<LocationState>;
+    classes: any;
+    dispatch: any;
+    isModal: boolean;
 };
 
 interface IInfo {
-    city : string;
-    state : string;
-    study : string;
+    city: string;
+    state: string;
+    study: string;
 };
 
 interface IState {
-    info : IInfo;
+    info: IInfo;
 };
 
 class RegionQuery extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             info : initInfo
         };
     };
     
-    handleInput = (type : string) => (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) : void => {
+    handleInput = (type: string) => (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         try {
             const { value } = event.target;
             this.setState((state) => ({
@@ -116,7 +116,7 @@ class RegionQuery extends Component<IProps, IState> {
         }
     };
 
-    handleAutocomplete(value : any, type : string) : void {
+    handleAutocomplete = (value: any, type: string): void => {
         try {
             this.setState((state) => ({
                 info: {
@@ -129,7 +129,7 @@ class RegionQuery extends Component<IProps, IState> {
         }
     };
 
-    handleSearch() {
+    handleSearch = (): void => {
         try {
             const { city, state, study } = this.state.info;
             this.props.history.push(`/books/${city}/${state}/${study}`);
@@ -138,7 +138,7 @@ class RegionQuery extends Component<IProps, IState> {
         }
     };
 
-    preSubmit() {
+    preSubmit = (): void => {
         try {
             switch (true) {
                 case this.state.info.city.length <= 0:
@@ -153,7 +153,7 @@ class RegionQuery extends Component<IProps, IState> {
         }
     };
 
-    render() {
+    render(): JSX.Element {
         return (
             <Paper className={this.props.classes.paper}>
                 <TextField

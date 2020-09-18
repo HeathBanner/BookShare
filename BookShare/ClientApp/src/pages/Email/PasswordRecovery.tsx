@@ -82,7 +82,7 @@ const styles = () => createStyles({
     }
 });
 
-const initEmail : IEmail = {
+const initEmail: IEmail = {
     value: "",
     valid: false,
     notification: {
@@ -94,18 +94,18 @@ const initEmail : IEmail = {
 };
 
 interface IProps extends RouteComponentProps {
-    history : History<LocationState>;
-    classes : any;
-    dispatch : any;
+    history: History<LocationState>;
+    classes: any;
+    dispatch: any;
 };
 
 interface IState {
-    email : IEmail;
+    email: IEmail;
 };
 
 class PasswordRecovery extends Component<IProps, IState> {
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             email: initEmail
@@ -115,7 +115,7 @@ class PasswordRecovery extends Component<IProps, IState> {
     re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     valid = this.re.test(String(this.state.email.value).toLowerCase());
 
-    handleChange = (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) : void => {
+    handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         try {
             const { value } = event.target;
             this.setState((state) => ({
@@ -129,7 +129,7 @@ class PasswordRecovery extends Component<IProps, IState> {
         }
     };
 
-    async handleSubmit() : Promise<void> {
+    handleSubmit = async(): Promise<void> => {
         try {
             if (!this.valid) return;
             const result = await handleEmail(this.state.email);
@@ -139,7 +139,7 @@ class PasswordRecovery extends Component<IProps, IState> {
         }
     };
 
-    render() {
+    render(): JSX.Element {
         if (this.state.email.notification.success) {
             return (
                 <Grid container className={this.props.classes.container}>

@@ -7,6 +7,7 @@ using BookShare.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Security.Authentication;
 
 namespace BookShare.Services
 {
@@ -14,9 +15,22 @@ namespace BookShare.Services
     {
         private readonly IMongoCollection<Users> _users;
         private readonly IMongoCollection<Book> _books;
+        private string _host = "127.0.0.1";
+        private Int32 _port = 30017;
 
         public UserService(IBookDatabaseSettings settings)
         {
+            MongoClientSettings serverSettings = new MongoClientSettings();
+            serverSettings.Server = new MongoServerAddress(_host, _port);
+            serverSettings.UseTls = false;
+            serverSettings.SslSettings = new SslSettings();
+            serverSettings.SslSettings.EnabledSslProtocols = SslProtocols.Tls12;
+
+            MongoIdentity identity = new MongoInternalIdentity("admin", "Heath");
+            MongoIdentityEvidence evidence = new PasswordEvidence("Mixedpass1");
+
+            serverSettings.Credential = new MongoCredential("SCRAM-SHA-1", identity, evidence);
+
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
@@ -111,6 +125,8 @@ namespace BookShare.Services
 
         public async Task<CustomCodes> Register(Users user)
         {
+            Console.WriteLine("\n\n\n{0}\n {1}\n\n\n", user.Username, user.Email);
+
             var filter = Builders<Users>.Filter;
             var find = filter.Or(
                     filter.Eq("Username", user.Username),
@@ -118,10 +134,14 @@ namespace BookShare.Services
                     );
             var query = await _users.Find(find).FirstOrDefaultAsync();
 
+            Console.WriteLine("\n\n\nQUERY RECIEVED");
+
             if (query != null && query.Email == user.Email)
             {
                 return new CustomCodes { statusCode = 401 };
             }
+
+            Console.WriteLine("NO QUERY");
 
             _users.InsertOne(user);
 
@@ -227,7 +247,7 @@ namespace BookShare.Services
 
             var result = await _users.FindOneAndUpdateAsync(filter, update, options);
 
-            return new CustomCodes { statusCode = 200 };
+            return new CustomCodes { statusCode = 200, user = result };
         }
     }
 }

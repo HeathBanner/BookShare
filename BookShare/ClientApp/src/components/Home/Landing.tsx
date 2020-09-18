@@ -6,7 +6,7 @@ import { withStyles, createStyles } from '@material-ui/styles';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { Grid, Typography, Divider } from '@material-ui/core';
 
-const styles = ({ breakpoints } : Theme) => createStyles({
+const styles = ({ breakpoints }: Theme) => createStyles({
     container: {
         display: 'flex',
         alignContent: 'center',
@@ -46,7 +46,7 @@ const styles = ({ breakpoints } : Theme) => createStyles({
 });
 
 class Landing extends PureComponent<any> {
-    render() {
+    render(): JSX.Element {
         return (
             <Grid item xs={12} className={this.props.classes.container}>
                 <Typography className={this.props.classes.title}>

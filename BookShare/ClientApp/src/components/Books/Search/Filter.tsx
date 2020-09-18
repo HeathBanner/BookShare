@@ -64,16 +64,16 @@ const fields = ["Medical", "Mathmatics", "Engineering"];
 const conditions = ["Mint", "Good", "Fair", "Rough"];
 
 interface IProps {
-    handleApply : () => Promise<void>;
-    handleSwitch : (type : string) => (event : React.ChangeEvent<HTMLInputElement>) => void;
-    handleChange : (type : string) => (event : React.ChangeEvent<{ value: unknown }>) => void;
-    handleInput : (type : string) => (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
-    checked : any;
-    classes : any;
+    handleApply: () => Promise<void>;
+    handleSwitch: (type : string) => (event : React.ChangeEvent<HTMLInputElement>) => void;
+    handleChange: (type : string) => (event : React.ChangeEvent<{ value: unknown }>) => void;
+    handleInput: (type : string) => (event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+    checked: any;
+    classes: any;
 };
 
 class Filter extends PureComponent<IProps> {
-    render() {
+    render(): JSX.Element {
         return (
             <Paper className={this.props.classes.paper}>
                 <Typography

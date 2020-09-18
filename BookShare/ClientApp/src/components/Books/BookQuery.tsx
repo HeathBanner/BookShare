@@ -80,7 +80,7 @@ const styles = () => createStyles({
 
 class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
 
-    constructor(props : interfaces.IProps) {
+    constructor(props: interfaces.IProps) {
         super(props);
         this.state = {
             book: interfaces.initBook,
@@ -88,15 +88,16 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         };
     };
 
-    componentDidUpdate() {
+    componentDidMount() {
         try {
-            const { store } = this.props;
+            const store = { ...this.props.store };
             if (!this.state.book.Imported && this.props.store.user) {
+                const lfBooks: string[] = store.user.lfBooks && store.user.lfBooks.length > 0 ? store.user.lfBooks : [];
                 this.setState((state) => ({
                     ...state,
                     book: {
                         ...state.book,
-                        lfBooks: store.user.lfBooks ? store.user.lfBooks.length > 0 ? store.user.lfBooks : [] : [],
+                        lfBooks:  lfBooks,
                         City: store.user.city ? store.user.city : "",
                         State: store.user.state ? store.user.state : "",
                         Imported: true    
@@ -108,7 +109,7 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    handleInput = (type : string, event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    handleInput = (type : string, event : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
         try {
             const { value } = event.target;
             this.setState((state) => ({
@@ -125,7 +126,8 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
 
     handleSelect = (type : string, event : React.ChangeEvent<{ value : unknown }>) => {
         try {
-            const { value } = event.currentTarget;
+            const { value } = event.target;
+            console.log(value);
             this.setState((state) => ({
                 ...state,
                 book: {
@@ -138,13 +140,14 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    handleAutocomplete(value : any, type : string) {
+    handleAutocomplete = (value: any, type: string): void => {
         try {
+            const title = !value ? "" : value.title;
             this.setState((state) => ({
                 ...state,
                 book: {
                     ...state.book,
-                    [type]: value.title
+                    [type]: title
                 }
             }));
         } catch (error) {
@@ -152,7 +155,7 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    handleSearch() : void {
+    handleSearch = (): void => {
         try {
             const { Title, State, City, Sale, Trade } = this.state.book;
             const filter = `${Sale ? "Y" : "N"}/${Trade ? "Y" : "N"}`;
@@ -162,7 +165,7 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    preSubmit() : void {
+    preSubmit = (): void => {
         const { Title, State, City } = this.state.book;
         switch (true) {
             case Title.length <= 0:
@@ -176,7 +179,7 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    toggleFilter(type : string) : void {
+    toggleFilter = (type : string): void => {
         try {
             let newValue : boolean;
             switch(type) {
@@ -204,10 +207,10 @@ class BookQuery extends Component<interfaces.IProps, interfaces.IState> {
         }
     };
 
-    render() {
-        const flag : boolean = this.props.store.user && this.props.store.user.lfBooks;
-
-        if (flag) {
+    render(): JSX.Element {
+        const flag: boolean = this.props.store.user && this.props.store.user.lfBooks ? true : false;
+        console.log(this.state.book.Title);
+        if (!flag) {
             return (
                 <>
                     <Typography className={this.props.classes.warningMessage} variant="body2">

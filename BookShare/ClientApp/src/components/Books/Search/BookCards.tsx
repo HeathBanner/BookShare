@@ -85,27 +85,29 @@ const styles = (theme : Theme) => createStyles({
 });
 
 interface IProps extends RouteComponentProps {
-    book : any;
-    id : string;
-    openViewer : (index : number) => void;
-    index : number;
-    openModal? : (id : string) => void;
-    history : History<LocationState>;
-    classes : any;
-    dispatch : any;
+    book: any;
+    id: string;
+    openViewer: (index: number) => void;
+    index: number;
+    openModal?: (id: string) => void;
+    history: History<LocationState>;
+    classes: any;
+    dispatch: any;
 };
 
 class BookCards extends PureComponent<IProps> {
         
-    handleClick = () => (event : React.MouseEvent<HTMLDivElement>) => {
+    handleClick = () => {
         try {
+            console.log("CLICK")
             this.props.history.push(`/books/${this.props.id}`);
         } catch (error) {
             this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
         }
     };
 
-    render() {
+    render(): JSX.Element {
+        console.log(this.props.openModal ? true : false);
         const imgHelper = "data:image/jpeg;base64,";
         const { image, title, description, condition, eMedia, state, city, lfBooks, price } = this.props.book;
         return (
@@ -126,7 +128,7 @@ class BookCards extends PureComponent<IProps> {
                     ))}
                 </GridList>
     
-                <CardContent className={this.props.classes.content} onClick={() => this.props.openModal ? this.props.openModal : this.handleClick}>
+                <CardContent className={this.props.classes.content} onClick={() => this.props.openModal ? this.props.openModal(this.props.id) : this.handleClick()}>
                     <Typography
                         className={this.props.classes.title}
                         variant="h5"

@@ -1,10 +1,11 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component, ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 
 import InfoScreen from '../../components/ScreenCatchers/InfoScreen';
 import Stepper from '../../components/Post/Stepper';
 import ValidationScreen from '../../components/ScreenCatchers/ValidationScreen';
-import { initBook, IBook, IFetchId } from '../../components/Post/Services/PostServices';
+import { PostServices } from '../../components/Post/Services/PostServices';
+import { IBook, IBookRaw, IImageRaw, IFetchId } from '../../components/Post/Services/interfaces';
 
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { withStyles, createStyles } from '@material-ui/styles';
@@ -21,70 +22,26 @@ const styles = (theme : Theme) => createStyles({
             padding: '10% 5%',
         }
     },
-    paper: {
-        display: 'flex',
-        alignContent: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-        padding: '5%',
-        marginTop: 50,
-    },
-    image: {
-        width: '100%',
-        height: 300,
-        marginBottom: 20,
-        backgroundSize: 'contain',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: '50% 50%'
-    },
-    title: {
-        width: '100%',
-        textAlign: 'center'
-    },
-    divider: {
-        marginBlockCenter: '0.5em',
-        width: '40%',
-        backgroundColor: 'rgb(0, 0, 0, 0.2)',
-        marginBottom: 30,
-    },
-    inputs: {
-        width: '100%',
-        marginBottom: 20
-    },
-    inputContainers: {
-        width: '100%',
-        marginBottom: 20,
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'flex-end',
-        alignItems: 'flex-end'
-    },
-    button: {
-        padding: 10,
-        backgroundColor: 'red',
-        color: 'white',
-        width: '100%'
-    }
 });
 
 interface IProps {
-    editId : string;
-    classes : any;
-    dispatch : any;
-    store : any
+    editId: string;
+    classes: any;
+    dispatch: any;
+    store: any
 };
 
 interface IState {
-    book : IBook
+    book: IBook
 };
 
 class Index extends Component<IProps, IState> {
+    public services = new PostServices();
 
-    constructor(props : IProps) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
-            book : initBook
+            book: this.services.initBook
         };
     };
 
@@ -93,10 +50,14 @@ class Index extends Component<IProps, IState> {
         this.handleBook();
     };
 
-    async handleBook() : Promise<void> {
+    componentDidUpdate() {
+        console.log(this.state.book);
+    }
+
+    private handleBook = async(): Promise<void> => {
         try {
             const { fetchById } = await import('../../components/Post/Services/PostServices');
-            const result : IFetchId = await fetchById(this.props.editId);
+            const result: IFetchId = await fetchById(this.props.editId);
 
             if (result.notify.warning) {
                 this.props.dispatch({ type: "WARNING_NOTIFY", payload: result.notify.message });
@@ -111,54 +72,20 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    handleInput = (type : string, event : React.ChangeEvent<HTMLInputElement>) : void => {
+    private saveImage = async(event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         try {
-            if (type === "image") {
-                const { files } = event.target;
-                return this.saveImage(type, files);
+            const { files } = event.target;
+            if (files === null) {
+                return this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
             }
-            else if (type === "deleteImage") return this.deleteImage(event);
-            else {
-                const { value } = event.target;
-                this.setState((state) => ({
-                    book: {
-                        ...state.book,
-                        [type]: {
-                            error: false,
-                            value: value
-                        }
-                    }
-                }));
-            }
-        } catch (error) {
-            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
-        }
-    };
-
-    handleAutocomplete(value : any) : void {
-        try {
-            this.setState((state) => ({
-                book: {
-                    ...state.book,
-                    error: false,
-                    value: value.title
-                }
-            }));
-        } catch (error) {
-            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
-        }
-    };
-
-    async saveImage(type : string, blob : any) : Promise<void> {
-        try {
-            if (blob.length > 5) {
+            else if (files.length > 5) {
                 this.props.dispatch({ type: "ERROR_NOTIFY", payload: "You can only upload 5 photos" });
             }
-            let currentImages = this.state.book.image;
-            let count = blob.length;
-            for (let file of blob) {
+            let currentImages: IImageRaw[] = this.state.book.image.value;
+            let count = files.length;
+            for (let file of files) {
                 let reader = new FileReader();
-                reader.onload = (e : any) => {
+                reader.onload = (e: any) => {
                     const parsed = e.target.result.split("base64,");
                     currentImages.push({ url: parsed[1] });
     
@@ -166,7 +93,10 @@ class Index extends Component<IProps, IState> {
                         return this.setState((state) => ({
                             book: {
                                 ...state.book,
-                                [type]: currentImages
+                                image: {
+                                    ...state.book.image,
+                                    value: currentImages
+                                }
                             }
                         }));
                     }
@@ -178,14 +108,17 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    deleteImage = (index: number) : void => {
+    private deleteImage = (index: number, event: React.MouseEvent<HTMLButtonElement>): void => {
         try {
-            let images = this.state.book.image;
+            let images: IImageRaw[] = this.state.book.image.value;
             images.splice(index, 1);
             this.setState((state) => ({
                 book: {
                     ...state.book,
-                    image: images
+                    image: {
+                        ...state.book.image,
+                        value: images
+                    }
                 }
             }));
         } catch (error) {
@@ -193,7 +126,58 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async handleSubmit() : Promise<void> {
+    protected handleInput = (type: string, event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, index?: number): void => {
+        try {
+            const { value } = event.target;
+            this.setState((state) => ({
+                book: {
+                    ...state.book,
+                    [type]: {
+                        error: false,
+                        value: value
+                    }
+                }
+            }));
+        } catch (error) {
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    };
+
+    protected handleSelectInput = (type: string, event: React.ChangeEvent<{ value: unknown }>): void => {
+        try {
+            const { value } = event.target;
+            this.setState((state) => ({
+                book: {
+                    ...state.book,
+                    [type]: {
+                        error: false,
+                        value: value
+                    }
+                }
+            }));
+        } catch (error) {
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    };
+
+    protected handleAutocomplete = (value: any): void => {
+        try {
+            const newValue: string = value ? value.title : "";
+            this.setState((state) => ({
+                book: {
+                    ...state.book,
+                    state: {
+                        error: false,
+                        value: value.title
+                    }
+                }
+            }));
+        } catch (error) {
+            this.props.dispatch({ type: "ERROR_NOTIFY", payload: "Something went wrong :(" });
+        }
+    };
+
+    protected handleSubmit = async(): Promise<void> => {
         try {
             let result;
             const { preSubmit } = await import('../../components/Post/Services/PostServices');
@@ -227,10 +211,15 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    async bookInput(type : string, param : string) : Promise<void> {
+    protected bookInput = async(type: string, param: string, index?: number): Promise<void> => {
         try {
+            let result: string[] = [...this.state.book.lfBooks];
             const { handleBook } = await import('../../components/Post/Services/PostServices');
-            const result = handleBook(type, param, 0, this.state.book.lfBooks);
+            if (typeof index === 'number') {
+                result = handleBook(type, param, index, result);
+            } else {
+                result = handleBook(type, param, 0, result);
+            }
             this.setState((state) => ({
                 book: {
                     ...state.book,
@@ -242,12 +231,16 @@ class Index extends Component<IProps, IState> {
         }
     };
 
-    render() {
-
+    render(): JSX.Element {
         if (!this.props.store.loggedIn) return <ValidationScreen />;
         if (this.props.store.user.posted.length >= 5) {
             return <InfoScreen
+                active={false}
                 message="You've reached your limit of 5 books posted."
+                action={{
+                    func: () => "",
+                    message: ""
+                }}
                 icon="warning"
             />;
         }
@@ -257,6 +250,9 @@ class Index extends Component<IProps, IState> {
                     <Stepper
                         book={this.state.book}
                         handleInput={this.handleInput}
+                        handleSelectInput={this.handleSelectInput}
+                        saveImage={this.saveImage}
+                        deleteImage={this.deleteImage}
                         handleAutocomplete={this.handleAutocomplete}
                         bookInput={this.bookInput}
                         handleSubmit={this.handleSubmit}

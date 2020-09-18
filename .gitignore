@@ -1,6 +1,6 @@
 #privacy
-appsettings.json
-appsettings.Development.json
+BookShare/appsettings.json
+BookShare/appsettings.Development.json
 
 # globs
 Makefile.in
